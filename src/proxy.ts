@@ -1,23 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getSessionCookie } from "better-auth/cookies";
+import { auth } from "@/lib/auth/next-auth/auth";
+import { NextResponse } from "next/server";
 
 const protectedRoutes = ["/dashboard", "/account"];
 const publicRoutePrefixes = ["/sign-in", "/sign-up"];
 
 /**
- * Edge-compatible middleware using Better Auth.
+ * Edge-compatible middleware using NextAuth v5.
  *
- * Better Auth stores sessions in SQLite, so a full DB lookup cannot happen
- * in the Edge Runtime. We verify that the session COOKIE exists and has a
- * valid Better Auth signature — no DB call required.
- *
- * Fine-grained RBAC (ADMIN → /dashboard, USER → /account) is enforced by
- * each layout via `getCurrentUser()`, which runs in Node.js and can hit the DB.
+ * NextAuth stores the session in a signed JWT cookie — no DB call required
+ * at the middleware level. Fine-grained RBAC (ADMIN → /dashboard,
+ * USER → /account) is enforced by each layout via `getCurrentUser()`.
  */
-export default async function proxy(req: NextRequest) {
+export default auth(function middleware(req) {
   const path = req.nextUrl.pathname;
-
-  // Normalize path (remove trailing slash except root)
   const normalized = path.endsWith("/") && path.length > 1 ? path.slice(0, -1) : path;
 
   const isProtectedRoute = protectedRoutes.some(
@@ -27,9 +22,7 @@ export default async function proxy(req: NextRequest) {
     (p) => normalized === p || normalized.startsWith(p + "/"),
   );
 
-  // Edge-compatible session check (cookie signature, no DB)
-  const sessionCookie = getSessionCookie(req);
-  const isAuthenticated = !!sessionCookie;
+  const isAuthenticated = !!req.auth;
 
   // Not authenticated → redirect to sign-in
   if (isProtectedRoute && !isAuthenticated) {
@@ -43,7 +36,7 @@ export default async function proxy(req: NextRequest) {
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
   // eslint-disable-next-line unicorn/prefer-string-raw

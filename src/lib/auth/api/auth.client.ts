@@ -1,68 +1,39 @@
 "use client";
 
-import { betterAuthClient } from "@lib/auth/better-auth/auth.client";
-import { signOutAction } from "@/lib/auth/actions/auth";
+import { signInAction, signOutAction, signUpAction } from "@/lib/auth/actions/auth";
 import { Registrer, Login } from "@lib/auth/models/auth.model";
 import { CrudApiError } from "@/lib/shared/helpers/crud-api-error";
-
-type SignInResult = { user: { role: string; email: string } } | { error: CrudApiError };
-type SignUpResult = { user: { email: string } } | { error: CrudApiError };
 
 export const authClient = {
   signIn: {
     /**
-     * Calls the custom BA backend-credentials endpoint.
-     * BA sets the session cookie + ba_role cookie automatically.
+     * Signs in via NextAuth Credentials provider (server action).
+     * NextAuth sets the session cookie automatically.
      */
     email: async ({
       email,
       password,
-    }: Pick<Login, "email" | "password">): Promise<SignInResult> => {
-      const { data, error } = await betterAuthClient.$fetch<{
-        user: { role: string; email: string };
-      }>("/api/auth/sign-in/backend", {
-        method: "POST",
-        body: { email, password },
-      });
-
-      if (error) {
-        return {
-          error: {
-            error: "Unauthorized",
-            status: error.status ?? 401,
-            message: error.message ?? "Invalid credentials",
-          },
-        };
-      }
-
-      return { user: data!.user };
+    }: Pick<Login, "email" | "password">): Promise<
+      Record<string, never> | { error: CrudApiError }
+    > => {
+      const result = await signInAction({ email, password });
+      if ("error" in result) return { error: result as unknown as CrudApiError };
+      return {};
     },
 
     social: async (_provider: string) => {
-      // TODO: implement social sign-in via BA social providers
+      // TODO: implement social sign-in
     },
   },
 
-  signUp: async ({ body }: { body: Registrer }): Promise<SignUpResult> => {
-    const { data, error } = await betterAuthClient.$fetch<{ user: { email: string } }>(
-      "/api/auth/sign-up/backend",
-      {
-        method: "POST",
-        body,
-      },
-    );
-
-    if (error) {
-      return {
-        error: {
-          error: "UnprocessableEntity",
-          status: error.status ?? 422,
-          message: error.message ?? "Registration failed",
-        },
-      };
-    }
-
-    return { user: data!.user };
+  signUp: async ({
+    body,
+  }: {
+    body: Registrer;
+  }): Promise<Record<string, never> | { error: CrudApiError }> => {
+    const result = await signUpAction(body);
+    if ("error" in result) return { error: result as unknown as CrudApiError };
+    return {};
   },
 
   signOut: async () => {
@@ -70,10 +41,7 @@ export const authClient = {
   },
 
   getCurrentUser: async () => {
-    const { data, error } = await betterAuthClient.$fetch("/api/auth/session/me");
-    if (error) return { ok: false, error };
-    return { ok: true, data };
+    const res = await fetch("/api/auth/session/me", { credentials: "include" });
+    return res.json();
   },
-
-  useSession: () => betterAuthClient.useSession(),
 };

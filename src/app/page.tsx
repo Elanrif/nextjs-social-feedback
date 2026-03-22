@@ -1,7 +1,7 @@
 import CTASection from "@/components/features/cta-section";
 import { Footer } from "@/components/features/footer";
 import GettingStartedSection from "@/components/features/getting-started-section";
-import { Header } from "@/components/features/header";
+import { Header } from "@/components/features/Header";
 import Hero from "@/components/features/hero";
 
 export const metadata = {

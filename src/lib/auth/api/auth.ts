@@ -1,11 +1,10 @@
 "server-only";
 
 import * as authService from "@lib/auth/auth.service";
-import * as baService from "@lib/auth/better-auth/better-auth.service";
+import * as nextAuthService from "@lib/auth/next-auth/next-auth.service";
 import { Login, Registrer } from "@lib/auth/models/auth.model";
 import { Config } from "@/config/api.config";
-import { auth as baAuth } from "@/lib/auth/better-auth/auth";
-import { headers } from "next/headers";
+import { signOut as nextAuthSignOut } from "@/lib/auth/next-auth/auth";
 
 export const auth = {
   api: {
@@ -18,18 +17,18 @@ export const auth = {
     },
 
     signOut: async () => {
-      await baAuth.api.signOut({ headers: await headers() });
+      await nextAuthSignOut({ redirect: false });
     },
 
     getSession: async () => {
-      return baService.getSession();
+      return nextAuthService.getSession();
     },
 
     getCurrentUser: async () => {
-      return baService.getCurrentUser();
+      return nextAuthService.getCurrentUser();
     },
 
-    verifyEmail: async ({ query }: { query: { token: string } }) => {
+    verifyEmail: async ({ query: _query }: { query: { token: string } }) => {
       // TODO: implement email verification
     },
   },

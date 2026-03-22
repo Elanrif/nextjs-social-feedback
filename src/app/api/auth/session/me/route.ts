@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getLogger } from "@/config/logger.config";
 import { crudApiErrorResponse } from "@/lib/shared/helpers/crud-api-error.server";
-import { getCurrentUser } from "@/lib/auth/better-auth/better-auth.service";
+import { getCurrentUser } from "@/lib/auth/next-auth/next-auth.service";
 
 const logger = getLogger("server");
 

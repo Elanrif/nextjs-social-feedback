@@ -7,7 +7,7 @@ import {
 } from "@/lib/products/models/product.model";
 import { getLogger } from "@config/logger.config";
 import { crudApiErrorResponse } from "@/lib/shared/helpers/crud-api-error.server";
-import { getSession } from "@/lib/auth/jose/jose.service";
+import { getSession } from "@/lib/auth/next-auth/next-auth.service";
 import { validationError } from "@/utils/utils.server";
 
 const logger = getLogger("server");

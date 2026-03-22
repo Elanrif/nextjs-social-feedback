@@ -6,7 +6,7 @@ import {
   Result,
 } from "@/lib/shared/helpers/crud-api-error.server";
 import { Session } from "@/lib/auth/models/auth.model";
-import { getSession } from "@/lib/auth/better-auth/better-auth.service";
+import { getSession } from "@/lib/auth/next-auth/next-auth.service";
 
 const logger = getLogger("server");
 

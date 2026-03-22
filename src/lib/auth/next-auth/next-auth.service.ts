@@ -1,9 +1,7 @@
 import "server-only";
 
-import { headers } from "next/headers";
 import { cache } from "react";
 import { auth } from "./auth";
-import { getLogger } from "@/config/logger.config";
 import { fetchUserById } from "@/lib/users/services/user.service";
 import {
   CrudApiError,
@@ -11,49 +9,47 @@ import {
   Result,
 } from "@/lib/shared/helpers/crud-api-error.server";
 import { CurrentUser, Session } from "@/lib/auth/models/auth.model";
+import { getLogger } from "@/config/logger.config";
 
 const logger = getLogger("server");
 
 /**
- * Reads the current Better Auth session from the request headers.
- * Equivalent of the JOSE getSession — returns a normalized Session object.
+ * Reads the current NextAuth session.
+ * Equivalent of the JOSE/BetterAuth getSession — returns a normalized Session object.
  */
 export const getSession = cache(async (): Promise<Result<Session, CrudApiError>> => {
   try {
-    const reqHeaders = await headers();
-    const baSession = await auth.api.getSession({ headers: reqHeaders });
+    const session = await auth();
 
-    if (!baSession?.user) {
-      logger.warn("No active Better Auth session");
+    if (!session?.user) {
+      logger.warn("No active NextAuth session");
       return {
         ok: false,
         error: { error: "Unauthorized", status: 401, message: "No active session" },
       };
     }
 
-    const user = baSession.user as typeof baSession.user & { backendId?: number; role?: string };
-
     return {
       ok: true,
       data: {
         user: {
-          userId: user.backendId ?? undefined,
-          email: user.email,
-          role: user.role ?? "USER",
+          userId: session.user.backendId,
+          email: session.user.email ?? undefined,
+          role: session.user.role ?? "USER",
         },
         isAuth: true,
-        expiresAt: new Date(baSession.session.expiresAt),
+        expiresAt: session.expires ? new Date(session.expires) : undefined,
       },
     };
   } catch (error) {
-    logger.error({ err: error }, "Error retrieving Better Auth session");
+    logger.error({ err: error }, "Error retrieving NextAuth session");
     return { ok: false, error: crudApiErrorResponse(error) };
   }
 });
 
 /**
- * Returns the full User object from the external backend, using the
- * backendId stored in the BA session.
+ * Returns the full User object from the external backend,
+ * using the backendId stored in the NextAuth JWT.
  */
 export const getCurrentUser = cache(async (): Promise<Result<CurrentUser, CrudApiError>> => {
   const session = await getSession();
