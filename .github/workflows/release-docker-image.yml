@@ -1,0 +1,60 @@
+---
+name: Release Docker image
+run-name: Release kickstart-nextjs ${{ github.event.inputs.environment }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Release environment"
+        required: true
+        type: choice
+        options:
+          - staging
+          - prod
+      latest:
+        description: "Is latest"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build environment variables
+        shell: bash
+        run: |
+          cp -f env/.env.${{ github.event.inputs.environment }} .env
+      - name: Build release tag
+        uses: Elanrif/github-toolkit/.github/actions/tag-release@main
+        with:
+          env: ${{ github.event.inputs.environment }}
+      - name: Build latest tag
+        if: ${{ github.event.inputs.latest == 'true' }}
+        uses: Elanrif/github-toolkit/.github/actions/tag-latest@main
+        with:
+          env: ${{ github.event.inputs.environment }}
+      - name: Read environment variables
+        shell: bash
+        run: |
+          source .env
+          echo "DOCKER_USER_GID=$DOCKER_USER_GID" >> "$GITHUB_ENV"
+          echo "DOCKER_USER_UID=$DOCKER_USER_UID" >> "$GITHUB_ENV"
+      - name: Create release
+        uses: Elanrif/github-toolkit/.github/actions/release-docker-image@main
+        with:
+          docker-registry: ${{ vars.DOCKER_REGISTRY }}
+          docker-username: ${{ vars.DOCKER_USERNAME }}
+          docker-password: ${{ secrets.DOCKER_PASSWORD }}
+          docker-image-name: ${{ vars.DOCKER_NAMESPACE }}/kickstart-nextjs
+          docker-image-tag: ${{ env.RELEASE_TAG }}
+          docker-build-args: |
+            USER_GID=${{ env.DOCKER_USER_GID }}
+            USER_UID=${{ env.DOCKER_USER_UID }}
+          is-latest: ${{ github.event.inputs.latest }}
+          tag-latest: ${{ env.LATEST_TAG }}

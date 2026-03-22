@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -r \"ToastProvider\\\\|ModalProvider\\\\|CTASection\\\\|CodeBlock\\\\|Footer\\\\|GettingStartedSection\\\\|Header\\\\|Hero\\\\|SignInForm\\\\|SignOutButton\\\\|SignUpForm\\\\|ChangePasswordPage\\\\|ProfileDetailPage\\\\|ProfileEditPage\\\\|DashboardButton\\\\|ConfirmModal\\\\|DataTable\\\\|Sidebar\\\\|UserCreatePage\\\\|UserDetailPage\\\\|UserEditPage\\\\|UserListPage\\\\|CategoryListPage\\\\|CategoryDetailPage\\\\|CategoryEditPage\\\\|CategoryCreatePage\\\\|ProductListPage\\\\|ProductDetailPage\\\\|ProductEditPage\\\\|ProductCreatePage\" /d/developer/Projects/nextjs-starter-kit/src --include=*.tsx --include=*.ts -l)",
+      "Bash(xargs head:*)",
+      "Bash(wc -l /d/developer/Projects/nextjs-starter-kit/src/components/features/dashboard/products/*.tsx)",
+      "Bash(wc -l /d/developer/Projects/nextjs-starter-kit/src/components/features/dashboard/categories/*.tsx)"
+    ]
+  }
+}

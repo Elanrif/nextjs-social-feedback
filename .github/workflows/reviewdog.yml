@@ -1,0 +1,41 @@
+---
+name: reviewdog
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  dotenv-linter:
+    name: dotenv-linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run dotenv-linter
+        uses: Elanrif/github-toolkit/.github/actions/lint-dotenv-linter@main
+
+  eslint:
+    name: eslint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run eslint
+        uses: Elanrif/github-toolkit/.github/actions/lint-eslint@main
+
+  hadolint:
+    name: hadolint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run hadolint
+        uses: Elanrif/github-toolkit/.github/actions/lint-hadolint@main
+
+  yamllint:
+    name: yamllint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run yamllint
+        uses: Elanrif/github-toolkit/.github/actions/lint-yamllint@main

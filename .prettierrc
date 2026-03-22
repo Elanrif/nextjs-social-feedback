@@ -1,0 +1,11 @@
+{
+  "semi": true,
+  "singleQuote": false,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "printWidth": 100,
+  "bracketSameLine": false,
+  "arrowParens": "always",
+  "plugins": ["prettier-plugin-classnames", "prettier-plugin-merge"],
+  "customFunctions": ["cn", "clsx", "cva"]
+}
