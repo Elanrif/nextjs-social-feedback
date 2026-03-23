@@ -3,21 +3,10 @@ import "server-only";
 import NextAuth, { type DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { getLogger } from "@/config/logger.config";
-import apiClient from "@/config/api.config";
-import environment from "@/config/environment.config";
-import { User } from "@/lib/users/models/user.model";
-import { AxiosResponse } from "axios";
 import { LoginSchema } from "@/lib/auth/models/auth.model";
+import { kcSignIn } from "@/lib/auth/keycloak/keycloak.service";
 
 const logger = getLogger("server");
-
-const {
-  api: {
-    rest: {
-      endpoints: { login: loginUrl },
-    },
-  },
-} = environment;
 
 // ─── Type augmentation ───────────────────────────────────────────────────────
 
@@ -26,16 +15,20 @@ declare module "next-auth" {
     user: {
       role: string;
       backendId: number;
+      kcSub: string;
       firstName: string;
       lastName: string;
+      phoneNumber: string;
     } & DefaultSession["user"];
   }
 
   interface User {
     role: string;
     backendId: number;
+    kcSub: string;
     firstName: string;
     lastName: string;
+    phoneNumber: string;
   }
 }
 
@@ -52,25 +45,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const parsed = LoginSchema.safeParse(credentials);
         if (!parsed.success) return null;
 
-        try {
-          const { data: user } = await apiClient(true).post<any, AxiosResponse<User>>(loginUrl, {
-            email: parsed.data.email,
-            password: parsed.data.password,
-          });
-
-          return {
-            id: String(user.id),
-            email: user.email,
-            name: `${user.firstName} ${user.lastName}`,
-            role: user.role,
-            backendId: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-          };
-        } catch {
-          logger.warn({ email: parsed.data.email }, "NextAuth credentials authorize failed");
+        const result = await kcSignIn(parsed.data.email, parsed.data.password);
+        if (!result.ok) {
+          logger.warn({ email: parsed.data.email }, "Keycloak authorize failed");
           return null;
         }
+
+        const user = result.data;
+
+        return {
+          id: String(user.id),
+          email: user.email,
+          name: `${user.firstName} ${user.lastName}`,
+          role: user.role,
+          backendId: user.id,
+          kcSub: user.kcSub,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          phoneNumber: user.phoneNumber,
+        };
       },
     }),
   ],
@@ -80,17 +73,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.role = user.role;
         token.backendId = user.backendId;
+        token.kcSub = user.kcSub;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
+        token.phoneNumber = user.phoneNumber;
       }
       return token;
     },
     session({ session, token }) {
       session.user.role = token.role as string;
       session.user.backendId = token.backendId as number;
+      session.user.kcSub = token.kcSub as string;
       session.user.firstName = token.firstName as string;
       session.user.lastName = token.lastName as string;
-      session.user.id = String(token.backendId);
+      session.user.phoneNumber = token.phoneNumber as string;
+      session.user.id = token.kcSub as string;
       return session;
     },
   },

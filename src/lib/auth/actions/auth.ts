@@ -1,11 +1,7 @@
 "use server";
 
-import {
-  changePasswordProfile,
-  editProfile,
-  resetPassword,
-  signUp as serverSignUp,
-} from "@/lib/auth/auth.service";
+import { changePasswordProfile, editProfile, resetPassword } from "@/lib/auth/auth.service";
+import { kcSignUp } from "@/lib/auth/keycloak/keycloak.service";
 import { CrudApiError, crudApiErrorResponse } from "@/lib/shared/helpers/crud-api-error.server";
 import {
   ChangePasswordProfileFormData,
@@ -48,13 +44,13 @@ export async function signInAction(
 
 /**
  * Server Action: Sign Up
- * Registers via the external backend then creates a NextAuth session.
+ * Registers via Keycloak Admin API then creates a NextAuth session.
  */
 export async function signUpAction(
   userData: Registrer,
 ): Promise<Record<string, never> | CrudApiError> {
   try {
-    const res = await serverSignUp(userData);
+    const res = await kcSignUp(userData);
     if (!res.ok) return res.error;
 
     // Create NextAuth session after successful registration

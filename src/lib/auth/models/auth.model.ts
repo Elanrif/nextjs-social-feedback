@@ -37,6 +37,10 @@ export type Session = {
     userId?: number;
     email?: string;
     role?: string;
+    firstName?: string;
+    lastName?: string;
+    phoneNumber?: string;
+    kcSub?: string;
   };
   isAuth: boolean;
   expiresAt?: Date;
