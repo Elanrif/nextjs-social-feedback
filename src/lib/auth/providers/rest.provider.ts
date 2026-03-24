@@ -4,10 +4,9 @@ import apiClient from "@/config/api.config";
 import environment from "@/config/environment.config";
 import { crudApiErrorResponse } from "@/lib/shared/helpers/crud-api-error.server";
 import type { CrudApiError, Result } from "@/lib/shared/helpers/crud-api-error.server";
-import type { Registrer } from "@/lib/auth/models/auth.model";
+import type { Registrer, AuthProvider, AuthUser } from "@/lib/auth/models/auth.model";
 import type { AxiosResponse } from "axios";
 import { getLogger } from "@/config/logger.config";
-import type { AuthProvider, AuthUser } from "./provider.model";
 
 const logger = getLogger("server");
 
@@ -20,18 +19,16 @@ const {
 } = environment;
 
 /**
- * Shape returned by the backend /keycloak/login endpoint.
- * { token: { accessToken, refreshToken, ... }, user: { id, email, ... } }
+ * Raw shape returned by the backend /keycloak/login endpoint.
+ * Internal to this provider — not exported.
  */
 type AuthResponse = {
-  token: {
-    accessToken: string;
-    refreshToken?: string;
-    expiresIn?: number;
-    refreshExpiresIn?: number;
-    tokenType?: string;
-    scope?: string;
-  };
+  access_token: string;
+  refresh_token?: string;
+  expires_in?: number;
+  refresh_expires_in?: number;
+  token_type?: string;
+  scope?: string;
   user: {
     id: number;
     email: string;
@@ -50,8 +47,9 @@ export const restProvider: AuthProvider = {
         password,
       });
 
-      const { token, user: u } = data;
+      const { access_token, refresh_token, expires_in, refresh_expires_in, user: u } = data;
       logger.info({ email }, "Backend sign-in successful");
+      logger.debug({ accessToken: access_token }, "REST access_token (decode: jwt.io)");
       return {
         ok: true,
         data: {
@@ -61,14 +59,7 @@ export const restProvider: AuthProvider = {
           phoneNumber: u.phoneNumber ?? "",
           role: u.role,
           externalId: String(u.id),
-          ...(token?.accessToken && {
-            tokens: {
-              accessToken: token.accessToken,
-              refreshToken: token.refreshToken,
-              expiresIn: token.expiresIn,
-              refreshExpiresIn: token.refreshExpiresIn,
-            },
-          }),
+          ...(access_token && { access_token, refresh_token, expires_in, refresh_expires_in }),
         },
       };
     } catch {

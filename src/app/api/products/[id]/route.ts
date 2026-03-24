@@ -105,7 +105,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Params }
   }
 
   const reqHeaders = new Headers(request.headers);
-  const config = { headers: reqHeaders };
+  const config = { headers: reqHeaders, access_token: session.data?.access_token };
 
   try {
     const response = await updateProduct(config, productId, parsed.data as ProductUpdate);
@@ -178,7 +178,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Params 
   }
 
   const reqHeaders = new Headers(request.headers);
-  const config = { headers: reqHeaders };
+  const config = { headers: reqHeaders, access_token: session.data?.access_token };
 
   try {
     const response = await deleteProduct(config, productId);

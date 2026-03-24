@@ -1,10 +1,9 @@
 import environment from "@config/environment.config";
 import { InternalAxiosRequestConfig } from "axios";
-import { Token } from "@config/auth.utils";
 import { ApiError } from "@/lib/shared/helpers/crud-api-error";
 import { getLogger } from "@config/logger.config";
 
-const { api: apiConfig, auth: authConfig } = environment;
+const { api: apiConfig } = environment;
 const logger = getLogger();
 const SAFE_URLS = [apiConfig.rest.endpoints.register, apiConfig.rest.endpoints.login];
 
@@ -20,10 +19,13 @@ export const anonTokenInterceptor = async (config: InternalAxiosRequestConfig) =
   return config;
 };
 
-export const ownTokenInterceptor = async (config: InternalAxiosRequestConfig, token?: Token) => {
+export const ownTokenInterceptor = async (
+  config: InternalAxiosRequestConfig,
+  access_token?: string,
+) => {
   const { headers } = config;
-  if (token) {
-    headers["Authorization"] = `Bearer ${token.accessToken}`;
+  if (access_token) {
+    headers["Authorization"] = `Bearer ${access_token}`;
   } else {
     throw new ApiError("Not Authenticated", 401);
   }

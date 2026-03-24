@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
   }
 
   const reqHeaders = new Headers(request.headers);
-  const config = { headers: reqHeaders };
+  const config = { headers: reqHeaders, access_token: session.data?.access_token };
 
   try {
     const response = await createProduct(config, parsed.data as ProductCreate);

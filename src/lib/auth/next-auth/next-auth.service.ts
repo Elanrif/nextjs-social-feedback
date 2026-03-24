@@ -13,10 +13,6 @@ import { getLogger } from "@/config/logger.config";
 
 const logger = getLogger("server");
 
-/**
- * Reads the current NextAuth session.
- * Returns a normalized Session object with all user fields from the JWT.
- */
 export const getSession = cache(async (): Promise<Result<Session, CrudApiError>> => {
   try {
     const session = await auth();
@@ -32,12 +28,8 @@ export const getSession = cache(async (): Promise<Result<Session, CrudApiError>>
     return {
       ok: true,
       data: {
-        token: session.user.accessToken
-          ? {
-              accessToken: session.user.accessToken,
-              refreshToken: session.user.refreshToken,
-            }
-          : undefined,
+        access_token: session.user.access_token,
+        refresh_token: session.user.refresh_token,
         user: {
           email: session.user.email ?? undefined,
           role: session.user.role ?? "USER",
@@ -55,10 +47,6 @@ export const getSession = cache(async (): Promise<Result<Session, CrudApiError>>
   }
 });
 
-/**
- * Returns the full User object built from the JWT session.
- * No backend fetch needed — all user data is embedded in the token.
- */
 export const getCurrentUser = cache(async (): Promise<Result<CurrentUser, CrudApiError>> => {
   const session = await getSession();
 

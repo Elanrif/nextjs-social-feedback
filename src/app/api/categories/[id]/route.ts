@@ -144,7 +144,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Params }
   const body = (await request.json()) as CategoryUpdate;
 
   const reqHeaders = new Headers(request.headers);
-  const config = { headers: reqHeaders };
+  const config = { headers: reqHeaders, access_token: session.data?.access_token };
 
   try {
     const response = await updateCategory(config, categoryId, body);
@@ -222,7 +222,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Params 
   }
 
   const reqHeaders = new Headers(request.headers);
-  const config = { headers: reqHeaders };
+  const config = { headers: reqHeaders, access_token: session.data?.access_token };
 
   try {
     const result = await deleteCategory(config, categoryId);

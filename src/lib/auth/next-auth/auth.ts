@@ -18,8 +18,8 @@ declare module "next-auth" {
       firstName: string;
       lastName: string;
       phoneNumber: string;
-      accessToken?: string;
-      refreshToken?: string;
+      access_token?: string;
+      refresh_token?: string;
     } & DefaultSession["user"];
   }
 
@@ -29,8 +29,8 @@ declare module "next-auth" {
     firstName: string;
     lastName: string;
     phoneNumber: string;
-    accessToken?: string;
-    refreshToken?: string;
+    access_token?: string;
+    refresh_token?: string;
   }
 }
 
@@ -64,8 +64,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           firstName: user.firstName,
           lastName: user.lastName,
           phoneNumber: user.phoneNumber,
-          accessToken: user.tokens?.accessToken,
-          refreshToken: user.tokens?.refreshToken,
+          access_token: user.access_token,
+          refresh_token: user.refresh_token,
         };
       },
     }),
@@ -79,8 +79,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.firstName = user.firstName;
         token.lastName = user.lastName;
         token.phoneNumber = user.phoneNumber;
-        token.accessToken = user.accessToken;
-        token.refreshToken = user.refreshToken;
+        token.access_token = user.access_token;
+        token.refresh_token = user.refresh_token;
       }
       return token;
     },
@@ -91,8 +91,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       session.user.lastName = token.lastName as string;
       session.user.phoneNumber = token.phoneNumber as string;
       session.user.id = token.externalId as string;
-      session.user.accessToken = token.accessToken as string | undefined;
-      session.user.refreshToken = token.refreshToken as string | undefined;
+      session.user.access_token = token.access_token as string | undefined;
+      session.user.refresh_token = token.refresh_token as string | undefined;
       return session;
     },
   },

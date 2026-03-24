@@ -117,7 +117,7 @@ export async function updateCategory(
   if (!parse.success) return validationError(parse.error.issues, "Invalid category data");
 
   try {
-    const res = await apiClient(true, config).patch<unknown, AxiosResponse<Category>>(
+    const res = await apiClient(false, config).patch<unknown, AxiosResponse<Category>>(
       `${CATEGORIES_URL}/${id}`,
       parse.data,
     );
@@ -143,7 +143,7 @@ export async function deleteCategory(
   if (idError) return idError;
 
   try {
-    await apiClient(true, config).delete(`${CATEGORIES_URL}/${id}`);
+    await apiClient(false, config).delete(`${CATEGORIES_URL}/${id}`);
     logger.info({ id }, "Category deleted successfully");
     return { ok: true, data: { success: true } };
   } catch (error) {

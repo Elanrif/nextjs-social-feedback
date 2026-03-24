@@ -127,7 +127,7 @@ export async function createProduct(
   if (!parse.success) return validationError(parse.error.issues, "Invalid product data");
 
   try {
-    const res = await apiClient(true, config).post<unknown, AxiosResponse<Product>>(
+    const res = await apiClient(false, config).post<unknown, AxiosResponse<Product>>(
       PRODUCTS_URL,
       parse.data,
     );
@@ -163,7 +163,7 @@ export async function updateProduct(
   if (!parse.success) return validationError(parse.error.issues, "Invalid product data");
 
   try {
-    const res = await apiClient(true, config).patch<unknown, AxiosResponse<Product>>(
+    const res = await apiClient(false, config).patch<unknown, AxiosResponse<Product>>(
       `${PRODUCTS_URL}/${id}`,
       parse.data,
     );
@@ -190,7 +190,7 @@ export async function deleteProduct(
   if (idError) return idError;
 
   try {
-    await apiClient(true, config).delete(`${PRODUCTS_URL}/${id}`);
+    await apiClient(false, config).delete(`${PRODUCTS_URL}/${id}`);
     logger.info({ id }, "Product deleted successfully");
     return { ok: true, data: { success: true } };
   } catch (error) {

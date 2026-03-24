@@ -135,6 +135,7 @@ export async function kcSignIn(
     const user = mapKcClaimsToUser(claims);
 
     logger.info({ email }, "Keycloak sign-in successful");
+    logger.debug({ accessToken: tokens.access_token }, "KC access_token (decode: jwt.io)");
     return {
       ok: true,
       data: { user, accessToken: tokens.access_token, refreshToken: tokens.refresh_token },
