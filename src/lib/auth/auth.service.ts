@@ -11,6 +11,7 @@ import {
 } from "@/lib/shared/helpers/crud-api-error.server";
 import { getLogger } from "@/config/logger.config";
 import {
+  AuthPayload,
   ChangePasswordProfileFormData,
   Login,
   parseChangePasswordProfile,
@@ -44,13 +45,19 @@ const logger = getLogger("server");
 /**
  * Sign in a user with email and password
  */
-export async function signIn(login: Login, config?: Config): Promise<Result<User, CrudApiError>> {
+export async function signIn(
+  login: Login,
+  config?: Config,
+): Promise<Result<AuthPayload, CrudApiError>> {
   const validation = parseLogin(login);
   if (!validation.success) return validationError(validation.error.issues, "Invalid login data");
 
   try {
-    const { data } = await apiClient(true, config).post<any, AxiosResponse<User>>(loginUrl, login);
-    logger.info({ email: data.email }, "User signed in successfully");
+    const { data } = await apiClient(true, config).post<any, AxiosResponse<AuthPayload>>(
+      loginUrl,
+      login,
+    );
+    logger.info({ access_token: data.access_token }, "Access token");
     return { ok: true, data };
   } catch (error) {
     logger.error({ email: login.email }, "Failed to sign in");
@@ -67,13 +74,18 @@ export async function signIn(login: Login, config?: Config): Promise<Result<User
 export async function signUp(
   registration: RegisterFormData,
   config?: Config,
-): Promise<Result<User, CrudApiError>> {
+): Promise<Result<AuthPayload, CrudApiError>> {
   const validation = parseRegister(registration);
   if (!validation.success)
     return validationError(validation.error.issues, "Invalid registration data");
 
   try {
-    await apiClient(true, config).post<any, AxiosResponse<any>>(registerUrl, registration);
+    const { data } = await apiClient(true, config).post<any, AxiosResponse<AuthPayload>>(
+      registerUrl,
+      registration,
+    );
+    logger.info({ access_token: data.access_token }, "Access token");
+    return { ok: true, data };
   } catch (error) {
     logger.error({ email: registration.email }, "Failed to register user");
     return {
@@ -81,21 +93,9 @@ export async function signUp(
       error: crudApiErrorResponse(error, "signUp"),
     };
   }
-
-  const maybeUser = await signIn(registration, config);
-  if (!maybeUser.ok) {
-    logger.error(
-      {
-        email: registration.email,
-        message: maybeUser.error.message,
-      },
-      "Error after registration during sign in",
-    );
-    throw new Error(maybeUser.error.message);
-  }
-  return maybeUser;
 }
 
+// ──────────────────────────── Manage account ─────────────────────────────
 export async function changeUserPassword(
   config: Config,
   userId: number,
@@ -168,7 +168,10 @@ export async function editProfile(
   if (!validation.success) return validationError(validation.error.issues, "Invalid profile data");
 
   try {
-    const res = await apiClient(true, config).patch<any, AxiosResponse<User>>(editProfileUrl, data);
+    const res = await apiClient(false, config).patch<any, AxiosResponse<User>>(
+      editProfileUrl,
+      data,
+    );
     logger.info({ id: res.data.id }, "Profile updated successfully");
     return { ok: true, data: res.data };
   } catch (error: any) {
@@ -191,7 +194,7 @@ export async function changePasswordProfile(
   if (!validation.success) return validationError(validation.error.issues, "Invalid password data");
 
   try {
-    const res = await apiClient(true, config).patch<any, AxiosResponse<User>>(
+    const res = await apiClient(false, config).patch<any, AxiosResponse<User>>(
       changeProfilePasswordUrl,
       data,
     );

@@ -14,7 +14,6 @@ declare module "next-auth" {
   interface Session {
     user: {
       role: string;
-      externalId: string;
       firstName: string;
       lastName: string;
       phoneNumber: string;
@@ -25,7 +24,6 @@ declare module "next-auth" {
 
   interface User {
     role: string;
-    externalId: string;
     firstName: string;
     lastName: string;
     phoneNumber: string;
@@ -53,19 +51,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
-        const user = result.data;
+        const { user: u, access_token, refresh_token } = result.data;
 
         return {
-          id: user.externalId,
-          email: user.email,
-          name: `${user.firstName} ${user.lastName}`,
-          role: user.role,
-          externalId: user.externalId,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          phoneNumber: user.phoneNumber,
-          access_token: user.access_token,
-          refresh_token: user.refresh_token,
+          id: u.id,
+          email: u.email,
+          name: `${u.firstName} ${u.lastName}`,
+          role: u.role,
+          firstName: u.firstName,
+          lastName: u.lastName,
+          phoneNumber: u.phoneNumber,
+          access_token,
+          refresh_token,
         };
       },
     }),
@@ -75,7 +72,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     jwt({ token, user }) {
       if (user) {
         token.role = user.role;
-        token.externalId = user.externalId;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
         token.phoneNumber = user.phoneNumber;
@@ -86,11 +82,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     session({ session, token }) {
       session.user.role = token.role as string;
-      session.user.externalId = token.externalId as string;
       session.user.firstName = token.firstName as string;
       session.user.lastName = token.lastName as string;
       session.user.phoneNumber = token.phoneNumber as string;
-      session.user.id = token.externalId as string;
       session.user.access_token = token.access_token as string | undefined;
       session.user.refresh_token = token.refresh_token as string | undefined;
       return session;

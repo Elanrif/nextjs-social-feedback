@@ -7,13 +7,13 @@ import {
   crudApiErrorResponse,
   Result,
 } from "@/lib/shared/helpers/crud-api-error.server";
-import { CurrentUser, Session } from "@/lib/auth/models/auth.model";
+import { CurrentUser, AuthPayload } from "@/lib/auth/models/auth.model";
 import { User, UserRole } from "@/lib/users/models/user.model";
 import { getLogger } from "@/config/logger.config";
 
 const logger = getLogger("server");
 
-export const getSession = cache(async (): Promise<Result<Session, CrudApiError>> => {
+export const getSession = cache(async (): Promise<Result<AuthPayload, CrudApiError>> => {
   try {
     const session = await auth();
 
@@ -31,14 +31,13 @@ export const getSession = cache(async (): Promise<Result<Session, CrudApiError>>
         access_token: session.user.access_token,
         refresh_token: session.user.refresh_token,
         user: {
-          email: session.user.email ?? undefined,
+          id: session.user.id ?? "",
+          email: session.user.email ?? "",
           role: session.user.role ?? "USER",
           firstName: session.user.firstName,
           lastName: session.user.lastName,
           phoneNumber: session.user.phoneNumber,
-          externalId: session.user.externalId,
         },
-        expiresAt: session.expires ? new Date(session.expires) : undefined,
       },
     };
   } catch (error) {
@@ -70,7 +69,7 @@ export const getCurrentUser = cache(async (): Promise<Result<CurrentUser, CrudAp
     avatarUrl: null,
     role: (s.role as UserRole) ?? UserRole.USER,
     isActive: true,
-    externalId: s.externalId,
+    externalId: s.id,
   };
 
   return { ok: true, data: { user, session: session.data } };

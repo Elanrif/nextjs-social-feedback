@@ -40,12 +40,7 @@ export default async function AccountPage() {
       })
     : "—";
 
-  const sessionExpires = session.expiresAt
-    ? new Date(session.expiresAt).toLocaleString("fr-FR", {
-        dateStyle: "medium",
-        timeStyle: "short",
-      })
-    : "N/A";
+  const sessionExpires = "N/A";
 
   return (
     <div className="min-h-screen p-6 space-y-6 max-w-7xl mx-auto">

@@ -1,12 +1,12 @@
 "use client";
 
-import { Session } from "@/lib/auth/models/auth.model";
+import { AuthPayload } from "@/lib/auth/models/auth.model";
 import type { CrudApiError, Result } from "@/lib/shared/helpers/crud-api-error";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const SESSION_QUERY_KEY = ["session"];
 
-const fetcher = async (): Promise<Result<Session, CrudApiError>> => {
+const fetcher = async (): Promise<Result<AuthPayload, CrudApiError>> => {
   const res = await fetch("/api/auth/session", {
     credentials: "include",
   });
@@ -27,9 +27,9 @@ const fetcher = async (): Promise<Result<Session, CrudApiError>> => {
     } as CrudApiError;
   }
 
-  const session: Result<Session, CrudApiError> = await res.json();
+  const session: Result<AuthPayload, CrudApiError> = await res.json();
 
-  if (!session.ok || !session.data?.user?.externalId) {
+  if (!session.ok || !session.data?.user?.id) {
     return {
       ok: false,
       error: { error: "Unauthorized", status: 401, message: "You must be logged in" },
@@ -42,7 +42,7 @@ const fetcher = async (): Promise<Result<Session, CrudApiError>> => {
 export const useSession = () => {
   const queryClient = useQueryClient();
 
-  const { data, error, isLoading } = useQuery<Result<Session, CrudApiError>>({
+  const { data, error, isLoading } = useQuery<Result<AuthPayload, CrudApiError>>({
     queryKey: SESSION_QUERY_KEY,
     queryFn: fetcher,
     refetchOnWindowFocus: false,

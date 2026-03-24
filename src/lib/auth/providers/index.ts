@@ -4,7 +4,7 @@ import { keycloakProvider } from "./keycloak.provider";
 import { restProvider } from "./rest.provider";
 import type { AuthProvider } from "@/lib/auth/models/auth.model";
 
-export type { AuthUser, AuthProvider } from "@/lib/auth/models/auth.model";
+export type { AuthPayload, AuthProvider } from "@/lib/auth/models/auth.model";
 
 const PROVIDERS = {
   keycloak: keycloakProvider,

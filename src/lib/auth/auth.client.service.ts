@@ -2,7 +2,7 @@ import { AxiosResponse } from "axios";
 import { CrudApiError, Result } from "@lib/shared/helpers/crud-api-error";
 import { proxyEnvironment } from "@config/proxy-api.config";
 import { frontendHttp } from "@config/axios/frontend-http.config";
-import { Login, Registrer } from "@lib/auth/models/auth.model";
+import { AuthPayload, Login, Registrer } from "@lib/auth/models/auth.model";
 import { User } from "@lib/users/models/user.model";
 
 /**
@@ -24,8 +24,8 @@ const {
 /**
  * Sign in a user with email and password (client-side)
  */
-export async function signIn(login: Login): Promise<Result<User, CrudApiError>> {
-  const result = await frontendHttp().post<any, AxiosResponse<Result<User, CrudApiError>>>(
+export async function signIn(login: Login): Promise<Result<AuthPayload, CrudApiError>> {
+  const result = await frontendHttp().post<any, AxiosResponse<Result<AuthPayload, CrudApiError>>>(
     loginUrl,
     login,
   );
@@ -35,14 +35,15 @@ export async function signIn(login: Login): Promise<Result<User, CrudApiError>> 
 /**
  * Register a new user (client-side)
  */
-export async function signUp(registration: Registrer): Promise<Result<User, CrudApiError>> {
-  const res = await frontendHttp().post<any, AxiosResponse<Result<User, CrudApiError>>>(
+export async function signUp(registration: Registrer): Promise<Result<AuthPayload, CrudApiError>> {
+  const res = await frontendHttp().post<any, AxiosResponse<Result<AuthPayload, CrudApiError>>>(
     registerUrl,
     registration,
   );
   return res.data;
 }
 
+// ──────────────────────────── Profile management ─────────────────────────────
 /**
  * Change the password of an authenticated user (client-side)
  */

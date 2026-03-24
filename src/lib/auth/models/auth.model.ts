@@ -21,47 +21,37 @@ export interface Login extends AuthSignIn {
   password: string;
 }
 
-// ─── Auth provider types ──────────────────────────────────────────────────────
+// ─── Auth payload ─────────────────────────────────────────────────────────────
 
 /**
- * Normalized user returned by any auth provider.
- * User fields + optional token fields (flat, via Partial<Token>).
+ * Single auth type — mirrors the backend response shape.
+ * Used by providers (sign-in result) and the session layer.
+ * Token fields are flat via Partial<Token>.
  */
-export type AuthUser = {
-  email: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  role: string;
-  externalId: string;
-} & Partial<Token>;
+export type AuthPayload = Partial<Token> & {
+  user: {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    role: string;
+  };
+};
 
 /**
- * Contract every auth provider must implement — Keycloak, external backend, etc.
- * The session layer (NextAuth) calls these methods without knowing which provider is used.
+ * Contract every auth provider must implement.
  */
 export interface AuthProvider {
-  signIn(email: string, password: string): Promise<Result<AuthUser, CrudApiError>>;
-  signUp(data: Registrer): Promise<Result<void, CrudApiError>>;
+  signIn(email: string, password: string): Promise<Result<AuthPayload, CrudApiError>>;
+  signUp(data: Registrer): Promise<Result<AuthPayload, CrudApiError>>;
 }
 
-// ─── Session types ────────────────────────────────────────────────────────────
-
-export type Session = Partial<Token> & {
-  user: {
-    email?: string;
-    role?: string;
-    firstName?: string;
-    lastName?: string;
-    phoneNumber?: string;
-    externalId?: string;
-  };
-  expiresAt?: Date;
-};
+// ─── Current user ─────────────────────────────────────────────────────────────
 
 export type CurrentUser = {
   user: User;
-  session: Session;
+  session: AuthPayload;
 };
 
 // ─── Zod schemas ──────────────────────────────────────────────────────────────
