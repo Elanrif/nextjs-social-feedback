@@ -92,10 +92,12 @@ async function getAdminToken(): Promise<string> {
  * Sign in via Keycloak ROPC (Resource Owner Password Credentials).
  * Returns a mapped User built from the id_token claims.
  */
+type KcSignInResult = { user: User; accessToken: string; refreshToken?: string };
+
 export async function kcSignIn(
   email: string,
   password: string,
-): Promise<Result<User, CrudApiError>> {
+): Promise<Result<KcSignInResult, CrudApiError>> {
   try {
     const res = await fetch(kcUrls.token(), {
       method: "POST",
@@ -124,11 +126,19 @@ export async function kcSignIn(
     }
 
     const tokens = await res.json();
-    const claims = decodeJwtPayload(tokens.id_token);
+    const idClaims = decodeJwtPayload(tokens.id_token);
+    const accessClaims = decodeJwtPayload(tokens.access_token);
+    const claims: KcTokenClaims = {
+      ...idClaims,
+      realm_access: accessClaims.realm_access,
+    };
     const user = mapKcClaimsToUser(claims);
 
     logger.info({ email }, "Keycloak sign-in successful");
-    return { ok: true, data: user };
+    return {
+      ok: true,
+      data: { user, accessToken: tokens.access_token, refreshToken: tokens.refresh_token },
+    };
   } catch (error) {
     logger.error({ err: error }, "Keycloak sign-in error");
     return { ok: false, error: crudApiErrorResponse(error, "kcSignIn") };
