@@ -1,7 +1,11 @@
 "use server";
 
-import { changePasswordProfile, editProfile, resetPassword } from "@/lib/auth/auth.service";
-import { authProvider } from "@/lib/auth/providers";
+import {
+  signUp as restSignUp,
+  changePasswordProfile,
+  editProfile,
+  resetPassword,
+} from "@/lib/auth/auth.service";
 import { CrudApiError, crudApiErrorResponse } from "@/lib/shared/helpers/crud-api-error.server";
 import {
   ChangePasswordProfileFormData,
@@ -50,7 +54,7 @@ export async function signUpAction(
   userData: Registrer,
 ): Promise<Record<string, never> | CrudApiError> {
   try {
-    const res = await authProvider.signUp(userData);
+    const res = await restSignUp(userData);
     if (!res.ok) return res.error;
 
     // Create NextAuth session after successful registration

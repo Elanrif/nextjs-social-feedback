@@ -4,7 +4,7 @@ import NextAuth, { type DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { getLogger } from "@/config/logger.config";
 import { LoginSchema } from "@/lib/auth/models/auth.model";
-import { authProvider } from "@/lib/auth/providers";
+import { signIn as restSignIn } from "@/lib/auth/auth.service";
 
 const logger = getLogger("server");
 
@@ -45,7 +45,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const parsed = LoginSchema.safeParse(credentials);
         if (!parsed.success) return null;
 
-        const result = await authProvider.signIn(parsed.data.email, parsed.data.password);
+        const result = await restSignIn({
+          email: parsed.data.email,
+          password: parsed.data.password,
+        });
         if (!result.ok) {
           logger.warn({ email: parsed.data.email }, "Auth provider signIn failed");
           return null;
