@@ -6,7 +6,7 @@ import {
   editProfile,
   resetPassword,
 } from "@/lib/auth/auth.service";
-import { CrudApiError, crudApiErrorResponse } from "@/lib/shared/helpers/crud-api-error.server";
+import { crudApiErrorResponse } from "@/lib/errors/crud-api-error.server";
 import {
   ChangePasswordProfileFormData,
   Login,
@@ -18,6 +18,7 @@ import { parseResetPassword, ResetPassword, User } from "@/lib/users/models/user
 import { sendPasswordResetEmail, generateResetToken } from "@/config/mail.config";
 import { signIn, signOut } from "@/lib/auth/next-auth/auth";
 import { AuthError } from "next-auth";
+import { CrudApiError } from "@/lib/errors/crud-api-error";
 
 /**
  * Server Action: Sign In via NextAuth Credentials provider.
@@ -106,9 +107,11 @@ export async function sendPasswordResetAction(
   try {
     if (!email || !email.includes("@")) {
       return {
-        error: "Invalid email",
+        title: "Invalid email",
         status: 400,
-        message: "Please provide a valid email address",
+        detail: "Please provide a valid email address",
+        instance: undefined,
+        errorCode: "INVALID_EMAIL",
       } as CrudApiError;
     }
 
@@ -120,9 +123,11 @@ export async function sendPasswordResetAction(
 
     if (!emailSent) {
       return {
-        error: "Email service unavailable",
+        title: "Email service unavailable",
         status: 503,
-        message: "Failed to send reset email. Please try again later.",
+        detail: "Failed to send reset email. Please try again later.",
+        instance: undefined,
+        errorCode: "EMAIL_SERVICE_UNAVAILABLE",
       } as CrudApiError;
     }
 
@@ -142,7 +147,13 @@ export async function sendPasswordResetAction(
 export async function resetPasswordTokenAction(data: ResetPassword): Promise<User | CrudApiError> {
   const validation = parseResetPassword(data);
   if (!validation.success) {
-    return { status: 400, message: validation.error.message, error: "Bad Request" } as CrudApiError;
+    return {
+      status: 400,
+      detail: validation.error.message,
+      title: "Bad Request",
+      instance: undefined,
+      errorCode: "VALIDATION_ERROR",
+    } as CrudApiError;
   }
 
   try {
@@ -162,7 +173,13 @@ export async function changePasswordProfileAction(
 ): Promise<User | CrudApiError> {
   const validation = parseChangePasswordProfile(data);
   if (!validation.success) {
-    return { status: 400, message: validation.error.message, error: "Bad Request" } as CrudApiError;
+    return {
+      status: 400,
+      detail: validation.error.message,
+      title: "Bad Request",
+      instance: undefined,
+      errorCode: "VALIDATION_ERROR",
+    } as CrudApiError;
   }
 
   try {

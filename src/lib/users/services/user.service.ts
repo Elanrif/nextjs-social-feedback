@@ -10,12 +10,9 @@ import {
   UserSearchFilter,
 } from "@lib/users/models/user.model";
 import { getLogger } from "@config/logger.config";
-import {
-  CrudApiError,
-  crudApiErrorResponse,
-  Result,
-} from "@/lib/shared/helpers/crud-api-error.server";
+import { crudApiErrorResponse } from "@/lib/errors/crud-api-error.server";
 import { validateId, validationError } from "@/utils/utils.server";
+import { CrudApiError, Result } from "@/lib/errors/crud-api-error";
 
 /**
  * ⚠️ Never trust the client input

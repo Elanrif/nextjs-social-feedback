@@ -28,7 +28,7 @@ export function useUsers() {
     queryKey: userKeys.list(),
     queryFn: async () => {
       const res = await fetchAllUsers();
-      if (!res.ok) throw new Error(res.error.message);
+      if (!res.ok) throw new Error(res.error.detail);
       return res.data;
     },
   });
@@ -40,7 +40,7 @@ export function useUser(id: number) {
     queryKey: userKeys.detail(id),
     queryFn: async () => {
       const res = await fetchUserById(id);
-      if (!res.ok) throw new Error(res.error.message);
+      if (!res.ok) throw new Error(res.error.detail);
       return res.data;
     },
     enabled: !!id,
@@ -53,7 +53,7 @@ export function useSearchUsers(filters: UserSearchFilter) {
     queryKey: userKeys.search(filters),
     queryFn: async () => {
       const res = await searchUsersFilter(filters);
-      if (!res.ok) throw new Error(res.error.message);
+      if (!res.ok) throw new Error(res.error.detail);
       return res.data;
     },
     enabled: Object.values(filters).some((v) => v !== undefined && v !== ""),
@@ -98,7 +98,7 @@ export function useDeleteUser() {
   return useMutation({
     mutationFn: async (id: number) => {
       const res = await deleteUser(id);
-      if (!res.ok) throw new Error(res.error.message);
+      if (!res.ok) throw new Error(res.error.detail);
       return res.data;
     },
     onSuccess: (_, id) => {

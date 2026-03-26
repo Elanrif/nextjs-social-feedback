@@ -1,7 +1,7 @@
 import { searchUsersFilter } from "@lib/users/services/user.service";
 import { NextRequest, NextResponse } from "next/server";
 import { getLogger } from "@config/logger.config";
-import { crudApiErrorResponse } from "@/lib/shared/helpers/crud-api-error.server";
+import { crudApiErrorResponse } from "@/lib/errors/crud-api-error.server";
 
 const logger = getLogger("server");
 
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     const errMsg = crudApiErrorResponse(error, "searchUsersFilter");
     const status = errMsg.status || 500;
-    logger.error({ status, message: errMsg.message }, "Error during users search");
+    logger.error({ status, message: errMsg.detail }, "Error during users search");
     return NextResponse.json({ ok: false, error: errMsg }, { status });
   }
 }

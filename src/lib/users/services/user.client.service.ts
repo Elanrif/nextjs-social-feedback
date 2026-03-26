@@ -2,7 +2,7 @@ import { AxiosResponse } from "axios";
 import { proxyEnvironment } from "@config/proxy-api.config";
 import { User, UserUpdate, UserSearchFilter } from "@lib/users/models/user.model";
 import { frontendHttp } from "@config/axios/frontend-http.config";
-import { CrudApiError, Result } from "@/lib/shared/helpers/crud-api-error";
+import { CrudApiError, Result } from "@/lib/errors/crud-api-error";
 
 /**
  * ⚠️ NO Logging and error Handling is needed here as the proxy API routes will handle logging.

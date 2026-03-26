@@ -12,6 +12,7 @@ import { ProfileUserFormData, ProfileUserSchema } from "@/lib/auth/models/auth.m
 import { editProfileAction } from "@/lib/auth/actions/auth";
 import { Field } from "@/components/ui/form/field";
 import { FormError } from "@/components/ui/form/form-error";
+import { isCrudError } from "@/lib/errors/crud-api-error";
 
 const { MY_ACCOUNT } = ROUTES;
 
@@ -43,9 +44,9 @@ export function ProfileEditForm({ loadedUser }: { loadedUser: User }) {
     setLoading(true);
     try {
       const response = await editProfileAction(data);
-      if ("error" in response) {
-        setError(response.error.message || "Erreur lors de la mise à jour");
-        toast.error(response.error.message || "Erreur lors de la mise à jour");
+      if (isCrudError(response)) {
+        setError(response.detail || "Erreur lors de la mise à jour");
+        toast.error(response.detail || "Erreur lors de la mise à jour");
         return;
       }
       toast.success("Profil mis à jour avec succès !");

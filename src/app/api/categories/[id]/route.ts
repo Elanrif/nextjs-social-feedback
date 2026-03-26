@@ -6,8 +6,8 @@ import {
 } from "@/lib/categories/services/category.service";
 import { CategoryUpdate } from "@/lib/categories/models/category.model";
 import { getLogger } from "@config/logger.config";
-import { crudApiErrorResponse } from "@/lib/shared/helpers/crud-api-error.server";
 import { getSession } from "@/lib/auth/next-auth/next-auth.service";
+import { crudApiErrorResponse } from "@/lib/errors/crud-api-error.server";
 
 const logger = getLogger("server");
 
@@ -75,7 +75,7 @@ export async function GET(request: NextRequest, { params }: { params: Params }) 
         {
           categoryId,
           status: response.error.status,
-          message: response.error.message,
+          detail: response.error.detail,
         },
         "Category not found",
       );
@@ -90,7 +90,7 @@ export async function GET(request: NextRequest, { params }: { params: Params }) 
   } catch (error) {
     const errMsg = crudApiErrorResponse(error, "fetchCategory");
     const status = errMsg.status || 500;
-    logger.error({ status, message: errMsg.message }, "Error during category fetching");
+    logger.error({ status, message: errMsg.detail }, "Error during category fetching");
     return NextResponse.json(errMsg, { status });
   }
 }
@@ -154,7 +154,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Params }
         {
           categoryId,
           status: response.error.status,
-          message: response.error.message,
+          detail: response.error.detail,
         },
         "Failed to update category",
       );
@@ -170,7 +170,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Params }
   } catch (error) {
     const errMsg = crudApiErrorResponse(error, "updateCategory");
     const status = errMsg.status || 500;
-    logger.error({ status, message: errMsg.message }, "Error during category update");
+    logger.error({ status, message: errMsg.detail }, "Error during category update");
     return NextResponse.json(errMsg, { status });
   }
 }
@@ -232,7 +232,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Params 
         {
           categoryId,
           status: result.error.status,
-          message: result.error.message,
+          detail: result.error.detail,
         },
         "Failed to delete category",
       );
@@ -248,7 +248,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Params 
   } catch (error) {
     const errMsg = crudApiErrorResponse(error, "deleteCategory");
     const status = errMsg.status || 500;
-    logger.error({ status, message: errMsg.message }, "Error during category deletion");
+    logger.error({ status, message: errMsg.detail }, "Error during category deletion");
     return NextResponse.json(errMsg, { status });
   }
 }

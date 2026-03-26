@@ -3,7 +3,7 @@ import "server-only";
 import { NextRequest } from "next/server";
 import type { ZodError } from "zod";
 import { getLogger } from "@/config/logger.config";
-import type { CrudApiError, Result } from "@/lib/shared/helpers/crud-api-error";
+import { CrudApiError, Result } from "@/lib/errors/crud-api-error";
 
 const logger = getLogger("server");
 
@@ -19,8 +19,10 @@ export function validateId(id: number): Result<never, CrudApiError> | null {
       ok: false,
       error: {
         status: 400,
-        message: "Invalid user ID",
-        error: "Bad Request",
+        detail: "Invalid user ID",
+        title: "Bad Request",
+        instance: undefined,
+        errorCode: "INVALID_ID",
       },
     };
   }
@@ -40,9 +42,10 @@ export function validationError(
     ok: false,
     error: {
       status: 400,
-      message,
-      error: "Bad Request",
-      details: issues,
+      detail: message,
+      title: "Bad Request",
+      instance: undefined,
+      errorCode: "VALIDATION_ERROR",
     },
   };
 }

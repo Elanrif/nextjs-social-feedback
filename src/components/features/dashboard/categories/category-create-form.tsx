@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ROUTES } from "@/utils/routes";
 import { CategoryFormData, categorySchema } from "@/lib/categories/models/category.model";
-import { isCrudError } from "@/lib/shared/helpers/crud-api-error";
 import {
   ArrowLeft,
   Tag,
@@ -54,12 +53,12 @@ export function CategoryCreateForm() {
     setApiError(null);
     try {
       const res = await createCategory(data);
-      if (isCrudError(res)) {
-        setApiError(res.message);
+      if (!res.ok) {
+        setApiError(res.error.detail);
         return;
       }
       toast.success("Catégorie créée avec succès");
-      router.push(`${DASHBOARD}${CATEGORIES}/${res.id}`);
+      router.push(`${DASHBOARD}${CATEGORIES}/${res.data.id}`);
     } catch (error: any) {
       setApiError(error?.message || "Erreur inattendue lors de la création");
     } finally {

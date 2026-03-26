@@ -21,6 +21,7 @@ import { ROUTES } from "@/utils/routes";
 import { Field } from "@/components/ui/form/field";
 import { icDarkPwd } from "@/components/ui/form/input-class";
 import { cn } from "@/utils/utils";
+import { isCrudError } from "@/lib/errors/crud-api-error";
 
 function ResetPasswordContent() {
   const searchParams = useSearchParams();
@@ -72,8 +73,8 @@ function ResetPasswordContent() {
         email,
         newPassword: password,
       });
-      if ("error" in res) {
-        setError(res.message || "Échec de la réinitialisation");
+      if (isCrudError(res)) {
+        setError(res.detail || "Échec de la réinitialisation");
         return;
       }
       setSuccess(true);

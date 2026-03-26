@@ -6,8 +6,8 @@ import {
   parseProductCreate,
 } from "@/lib/products/models/product.model";
 import { getLogger } from "@config/logger.config";
-import { crudApiErrorResponse } from "@/lib/shared/helpers/crud-api-error.server";
 import { getSession } from "@/lib/auth/next-auth/next-auth.service";
+import { crudApiErrorResponse } from "@/lib/errors/crud-api-error.server";
 import { validationError } from "@/utils/utils.server";
 
 const logger = getLogger("server");
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     const errMsg = crudApiErrorResponse(error, "fetchProducts");
     const status = errMsg.status || 500;
-    logger.error({ status, message: errMsg.message }, "Error during product fetching");
+    logger.error({ status, message: errMsg.detail }, "Error during product fetching");
     return NextResponse.json({ ok: false, error: errMsg }, { status });
   }
 }
@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     const errMsg = crudApiErrorResponse(error, "createProduct");
     const status = errMsg.status || 500;
-    logger.error({ status, message: errMsg.message }, "Error during product creation");
+    logger.error({ status, message: errMsg.detail }, "Error during product creation");
     return NextResponse.json({ ok: false, error: errMsg }, { status });
   }
 }

@@ -4,11 +4,7 @@ import { AxiosResponse } from "axios";
 import apiClient, { Config } from "@config/api.config";
 import environment from "@config/environment.config";
 import { getLogger } from "@config/logger.config";
-import {
-  CrudApiError,
-  crudApiErrorResponse,
-  Result,
-} from "@/lib/shared/helpers/crud-api-error.server";
+import { crudApiErrorResponse } from "@/lib/errors/crud-api-error.server";
 import {
   Product,
   ProductCreate,
@@ -19,6 +15,7 @@ import {
   parseProductUpdate,
 } from "@/lib/products/models/product.model";
 import { validateId, validationError } from "@/utils/utils.server";
+import { CrudApiError, Result } from "@/lib/errors/crud-api-error";
 
 /**
  * ⚠️ Never trust the client input

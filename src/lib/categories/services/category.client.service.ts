@@ -1,18 +1,8 @@
 import { AxiosResponse } from "axios";
 import { frontendHttp } from "@config/axios/frontend-http.config";
 import { proxyEnvironment } from "@config/proxy-api.config";
-import { CrudApiError } from "@/lib/shared/helpers/crud-api-error";
 import { Category, CategoryCreate, CategoryUpdate } from "@/lib/categories/models/category.model";
-
-/**
- * ⚠️ NO Logging and error Handling is needed here as the proxy API routes will handle logging.
- * Category client service for handling category operations.
- * This service interacts with the proxy API endpoints for category management.
- *
- * ℹ️ Pattern: returns T | CrudApiError union instead of Result<T, E>.
- * Callers use the `isCrudError()` type guard to distinguish success from error.
- * Contrast with user/product services which use the Result<T, E> discriminated union.
- */
+import { CrudApiError, Result } from "@/lib/errors/crud-api-error";
 
 const {
   api: {
@@ -23,8 +13,8 @@ const {
 /**
  * Fetch all categories (client-side)
  */
-export async function fetchCategories(): Promise<Category[] | CrudApiError> {
-  const res = await frontendHttp().get<unknown, AxiosResponse<Category[] | CrudApiError>>(
+export async function fetchCategories(): Promise<Result<Category[], CrudApiError>> {
+  const res = await frontendHttp().get<unknown, AxiosResponse<Result<Category[], CrudApiError>>>(
     CATEGORIES_URL,
   );
   return res.data;
@@ -33,8 +23,8 @@ export async function fetchCategories(): Promise<Category[] | CrudApiError> {
 /**
  * Fetch a single category by ID (client-side)
  */
-export async function fetchCategory(id: number): Promise<Category | CrudApiError> {
-  const res = await frontendHttp().get<unknown, AxiosResponse<Category | CrudApiError>>(
+export async function fetchCategory(id: number): Promise<Result<Category, CrudApiError>> {
+  const res = await frontendHttp().get<unknown, AxiosResponse<Result<Category, CrudApiError>>>(
     `${CATEGORIES_URL}/${id}`,
   );
   return res.data;
@@ -43,8 +33,10 @@ export async function fetchCategory(id: number): Promise<Category | CrudApiError
 /**
  * Create a new category (client-side)
  */
-export async function createCategory(category: CategoryCreate): Promise<Category | CrudApiError> {
-  const res = await frontendHttp().post<unknown, AxiosResponse<Category | CrudApiError>>(
+export async function createCategory(
+  category: CategoryCreate,
+): Promise<Result<Category, CrudApiError>> {
+  const res = await frontendHttp().post<unknown, AxiosResponse<Result<Category, CrudApiError>>>(
     CATEGORIES_URL,
     category,
   );
@@ -57,8 +49,8 @@ export async function createCategory(category: CategoryCreate): Promise<Category
 export async function updateCategory(
   id: number,
   category: CategoryUpdate,
-): Promise<Category | CrudApiError> {
-  const res = await frontendHttp().patch<unknown, AxiosResponse<Category | CrudApiError>>(
+): Promise<Result<Category, CrudApiError>> {
+  const res = await frontendHttp().patch<unknown, AxiosResponse<Result<Category, CrudApiError>>>(
     `${CATEGORIES_URL}/${id}`,
     category,
   );
@@ -68,10 +60,12 @@ export async function updateCategory(
 /**
  * Delete a category (client-side)
  */
-export async function deleteCategory(id: number): Promise<{ success: boolean } | CrudApiError> {
+export async function deleteCategory(
+  id: number,
+): Promise<Result<{ success: boolean }, CrudApiError>> {
   const res = await frontendHttp().delete<
     unknown,
-    AxiosResponse<{ success: boolean } | CrudApiError>
+    AxiosResponse<Result<{ success: boolean }, CrudApiError>>
   >(`${CATEGORIES_URL}/${id}`);
   return res.data;
 }

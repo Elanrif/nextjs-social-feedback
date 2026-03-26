@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { deleteCategory } from "@/lib/categories/services/category.client.service";
-import { isCrudError } from "@/lib/categories/hooks/use-categories";
 import { DataTable, DataTableColumn } from "@/components/features/dashboard/data-table";
 import { ConfirmModal } from "@/components/features/dashboard/confirm-modal";
 import { toast } from "react-toastify";
@@ -10,6 +9,7 @@ import { Category } from "@/lib/categories/models/category.model";
 import { ROUTES } from "@/utils/routes";
 import { Eye, Pencil, Trash2, Tag, Plus } from "lucide-react";
 import LoadingPage from "@components/features/loading-page";
+import { isCrudError } from "@/lib/errors/crud-api-error";
 
 const { DASHBOARD, CATEGORIES } = ROUTES;
 
@@ -41,7 +41,7 @@ export function CategoryList({ initialCategories }: { initialCategories: Categor
     try {
       const res = await deleteCategory(deleteId);
       if (isCrudError(res)) {
-        setDeleteError(res.message ?? "Erreur lors de la suppression");
+        setDeleteError(res.detail ?? "Erreur lors de la suppression");
       } else {
         setModalOpen(false);
         setDeleteId(null);

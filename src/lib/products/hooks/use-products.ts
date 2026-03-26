@@ -30,7 +30,7 @@ export function useProducts(filters?: ProductFiltersParams) {
     queryKey: productKeys.list(filters),
     queryFn: async () => {
       const res = await fetchProducts(filters);
-      if (!res.ok) throw new Error(res.error.message);
+      if (!res.ok) throw new Error(res.error.detail);
       return res.data;
     },
   });
@@ -42,7 +42,7 @@ export function useProduct(id: number) {
     queryKey: productKeys.detail(id),
     queryFn: async () => {
       const res = await fetchProduct(id);
-      if (!res.ok) throw new Error(res.error.message);
+      if (!res.ok) throw new Error(res.error.detail);
       return res.data;
     },
     enabled: !!id,
@@ -57,7 +57,7 @@ export function useCreateProduct() {
   return useMutation({
     mutationFn: async (data: ProductCreate) => {
       const res = await createProduct(data);
-      if (!res.ok) throw new Error(res.error.message);
+      if (!res.ok) throw new Error(res.error.detail);
       return res.data;
     },
     onSuccess: () => {
@@ -74,7 +74,7 @@ export function useUpdateProduct() {
   return useMutation({
     mutationFn: async ({ id, data }: { id: number; data: ProductUpdate }) => {
       const res = await updateProduct(id, data);
-      if (!res.ok) throw new Error(res.error.message);
+      if (!res.ok) throw new Error(res.error.detail);
       return res.data;
     },
     onSuccess: (_, { id }) => {
@@ -94,7 +94,7 @@ export function useDeleteProduct() {
   return useMutation({
     mutationFn: async (id: number) => {
       const res = await deleteProduct(id);
-      if (!res.ok) throw new Error(res.error.message);
+      if (!res.ok) throw new Error(res.error.detail);
       return res.data;
     },
     onSuccess: (_, id) => {

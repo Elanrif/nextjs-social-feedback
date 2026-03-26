@@ -1,7 +1,7 @@
 import environment from "@config/environment.config";
 import { InternalAxiosRequestConfig } from "axios";
-import { ApiError } from "@/lib/shared/helpers/crud-api-error";
 import { getLogger } from "@config/logger.config";
+import { ApiError } from "@/lib/errors/crud-api-error";
 
 const { api: apiConfig } = environment;
 const logger = getLogger();

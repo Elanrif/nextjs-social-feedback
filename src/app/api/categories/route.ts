@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { CategoryCreate } from "@/lib/categories/models/category.model";
 import { getLogger } from "@config/logger.config";
-import { crudApiErrorResponse } from "@/lib/shared/helpers/crud-api-error.server";
+import { crudApiErrorResponse } from "@/lib/errors/crud-api-error.server";
 import { createCategory, fetchCategories } from "@/lib/categories/services/category.service";
 import { getSession } from "@/lib/auth/next-auth/next-auth.service";
 
@@ -9,13 +9,6 @@ const logger = getLogger("server");
 
 export const dynamic = "force-dynamic";
 
-/**
- * GET /api/categories
- * Fetch all product categories
- *
- * ℹ️ Pattern: returns unwrapped T | CrudApiError (contrast with /api/users which returns Result<T,E>)
- * The client service uses an `isCrudError()` type guard to distinguish success from error.
- */
 export async function GET(request: NextRequest) {
   const reqHeaders = new Headers(request.headers);
   const config = { headers: reqHeaders };
@@ -35,7 +28,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     const errMsg = crudApiErrorResponse(error, "fetchCategories");
     const status = errMsg.status || 500;
-    logger.error({ status, message: errMsg.message }, "Error during category fetching");
+    logger.error({ status, message: errMsg.detail }, "Error during category fetching");
     return NextResponse.json(errMsg, { status });
   }
 }
@@ -104,7 +97,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     const errMsg = crudApiErrorResponse(error, "createCategory");
     const status = errMsg.status || 500;
-    logger.error({ status, message: errMsg.message }, "Error during category creation");
+    logger.error({ status, message: errMsg.detail }, "Error during category creation");
     return NextResponse.json(errMsg, { status });
   }
 }

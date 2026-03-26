@@ -2,7 +2,7 @@ import { fetchAllUsers, createUser } from "@lib/users/services/user.service";
 import { NextRequest, NextResponse } from "next/server";
 import { parseUserCreate } from "@/lib/users/models/user.model";
 import { getLogger } from "@config/logger.config";
-import { crudApiErrorResponse } from "@/lib/shared/helpers/crud-api-error.server";
+import { crudApiErrorResponse } from "@/lib/errors/crud-api-error.server";
 import { validationError } from "@/utils/utils.server";
 
 const logger = getLogger("server");
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     const errMsg = crudApiErrorResponse(error, "fetchAllUser");
     const status = errMsg.status || 500;
-    logger.error({ status, message: errMsg.message }, "Error during user fetching");
+    logger.error({ status, message: errMsg.detail }, "Error during user fetching");
     return NextResponse.json({ ok: false, error: errMsg }, { status });
   }
 }
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     const errMsg = crudApiErrorResponse(error, "createUser");
     const status = errMsg.status || 500;
-    logger.error({ status, message: errMsg.message }, "Error during user creation");
+    logger.error({ status, message: errMsg.detail }, "Error during user creation");
     return NextResponse.json({ ok: false, error: errMsg }, { status });
   }
 }

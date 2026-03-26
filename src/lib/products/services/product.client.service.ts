@@ -1,7 +1,6 @@
 import { AxiosResponse } from "axios";
 import { frontendHttp } from "@config/axios/frontend-http.config";
 import { proxyEnvironment } from "@config/proxy-api.config";
-import { CrudApiError, Result } from "@/lib/shared/helpers/crud-api-error";
 import {
   Product,
   ProductCreate,
@@ -9,6 +8,7 @@ import {
   ProductFiltersParams,
   PageProduct,
 } from "@/lib/products/models/product.model";
+import { CrudApiError, Result } from "@/lib/errors/crud-api-error";
 
 function buildProductsUrl(baseUrl: string, filters?: ProductFiltersParams): string {
   if (!filters || Object.keys(filters).length === 0) return baseUrl;
