@@ -3,7 +3,8 @@ import "server-only";
 import { NextRequest } from "next/server";
 import type { ZodError } from "zod";
 import { getLogger } from "@/config/logger.config";
-import { CrudApiError, Result } from "@/lib/errors/crud-api-error";
+import { ApiError } from "@/shared/errors/api-error";
+import { Result } from "@/shared/models/response.model";
 
 const logger = getLogger("server");
 
@@ -13,7 +14,7 @@ export function ensureRequestID(req: NextRequest): string {
 }
 
 /** Returns a structured 400 result when an ID param is not a positive integer. */
-export function validateId(id: number): Result<never, CrudApiError> | null {
+export function validateId(id: number): Result<never, ApiError> | null {
   if (!Number.isInteger(id) || id <= 0) {
     return {
       ok: false,
@@ -36,7 +37,7 @@ export function validateId(id: number): Result<never, CrudApiError> | null {
 export function validationError(
   issues: ZodError["issues"],
   message: string,
-): Result<never, CrudApiError> {
+): Result<never, ApiError> {
   logger.warn({ errors: issues }, message);
   return {
     ok: false,

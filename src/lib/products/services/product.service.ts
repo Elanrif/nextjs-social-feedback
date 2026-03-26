@@ -4,7 +4,6 @@ import { AxiosResponse } from "axios";
 import apiClient, { Config } from "@config/api.config";
 import environment from "@config/environment.config";
 import { getLogger } from "@config/logger.config";
-import { crudApiErrorResponse } from "@/lib/errors/crud-api-error.server";
 import {
   Product,
   ProductCreate,
@@ -15,7 +14,9 @@ import {
   parseProductUpdate,
 } from "@/lib/products/models/product.model";
 import { validateId, validationError } from "@/utils/utils.server";
-import { CrudApiError, Result } from "@/lib/errors/crud-api-error";
+import { Result } from "@/shared/models/response.model";
+import { ApiError } from "@/shared/errors/api-error";
+import { ApiErrorResponse } from "@/shared/errors/api-error.server";
 
 /**
  * ⚠️ Never trust the client input
@@ -64,7 +65,7 @@ export function buildProductsUrl(baseUrl: string, filters?: ProductFiltersParams
 export async function fetchProducts(
   config: Config,
   filters?: ProductFiltersParams,
-): Promise<Result<PageProduct<Product[]>, CrudApiError>> {
+): Promise<Result<PageProduct<Product[]>, ApiError>> {
   try {
     const url = buildProductsUrl(PRODUCTS_URL, filters);
 
@@ -78,7 +79,7 @@ export async function fetchProducts(
     logger.error({ filters }, "Failed to fetch products");
     return {
       ok: false,
-      error: crudApiErrorResponse(error, "fetchProducts"),
+      error: ApiErrorResponse(error, "fetchProducts"),
     };
   }
 }
@@ -89,7 +90,7 @@ export async function fetchProducts(
 export async function fetchProductById(
   config: Config,
   id: number,
-): Promise<Result<Product, CrudApiError>> {
+): Promise<Result<Product, ApiError>> {
   const idError = validateId(id);
   if (idError) return idError;
 
@@ -103,7 +104,7 @@ export async function fetchProductById(
     logger.error({ id }, "Failed to fetch product");
     return {
       ok: false,
-      error: crudApiErrorResponse(error, "fetchProductById"),
+      error: ApiErrorResponse(error, "fetchProductById"),
     };
   }
 }
@@ -114,7 +115,7 @@ export async function fetchProductById(
 export async function createProduct(
   config: Config,
   product: ProductCreate,
-): Promise<Result<Product, CrudApiError>> {
+): Promise<Result<Product, ApiError>> {
   /**
    * ⚠️ Never trust the client input
    * ❌ Someone can bypass the form
@@ -135,7 +136,7 @@ export async function createProduct(
     logger.error({ productName: product.name }, "Failed to create product");
     return {
       ok: false,
-      error: crudApiErrorResponse(error, "createProduct"),
+      error: ApiErrorResponse(error, "createProduct"),
     };
   }
 }
@@ -147,7 +148,7 @@ export async function updateProduct(
   config: Config,
   id: number,
   product: ProductUpdate,
-): Promise<Result<Product, CrudApiError>> {
+): Promise<Result<Product, ApiError>> {
   /**
    * ⚠️ Never trust the client input
    * ❌ Someone can bypass the form
@@ -171,7 +172,7 @@ export async function updateProduct(
     logger.error({ id }, "Failed to update product");
     return {
       ok: false,
-      error: crudApiErrorResponse(error, "updateProduct"),
+      error: ApiErrorResponse(error, "updateProduct"),
     };
   }
 }
@@ -182,7 +183,7 @@ export async function updateProduct(
 export async function deleteProduct(
   config: Config,
   id: number,
-): Promise<Result<{ success: boolean }, CrudApiError>> {
+): Promise<Result<{ success: boolean }, ApiError>> {
   const idError = validateId(id);
   if (idError) return idError;
 
@@ -194,7 +195,7 @@ export async function deleteProduct(
     logger.error({ id }, "Failed to delete product");
     return {
       ok: false,
-      error: crudApiErrorResponse(error, "deleteProduct"),
+      error: ApiErrorResponse(error, "deleteProduct"),
     };
   }
 }

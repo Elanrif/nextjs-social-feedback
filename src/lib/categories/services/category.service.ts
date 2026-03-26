@@ -4,7 +4,6 @@ import { AxiosResponse } from "axios";
 import apiClient, { Config } from "@config/api.config";
 import environment from "@config/environment.config";
 import { getLogger } from "@config/logger.config";
-import { crudApiErrorResponse } from "@/lib/errors/crud-api-error.server";
 import {
   Category,
   CategoryCreate,
@@ -13,7 +12,8 @@ import {
   parseCategoryUpdate,
 } from "@lib/categories/models/category.model";
 import { validateId, validationError } from "@/utils/utils.server";
-import { CrudApiError, Result } from "@/lib/errors/crud-api-error";
+import { ApiError } from "@/shared/errors/api-error";
+import { ApiErrorResponse } from "@/shared/errors/api-error.server";
 
 /**
  * ⚠️ Never trust the client input
@@ -33,43 +33,34 @@ const logger = getLogger("server");
 /**
  * Fetch all categories
  */
-export async function fetchCategories(config: Config): Promise<Result<Category[], CrudApiError>> {
+export async function fetchCategories(config: Config): Promise<Category[] | ApiError> {
   try {
     const res = await apiClient(true, config).get<unknown, AxiosResponse<Category[]>>(
       CATEGORIES_URL,
     );
     logger.debug({ count: res.data.length }, "Categories fetched");
-    return { ok: true, data: res.data };
+    return res.data;
   } catch (error) {
     logger.error("Failed to fetch categories");
-    return {
-      ok: false,
-      error: crudApiErrorResponse(error, "fetchCategories"),
-    };
+    return ApiErrorResponse(error, "fetchCategories");
   }
 }
 
 /**
  * Fetch a single category by ID
  */
-export async function fetchCategory(
-  config: Config,
-  id: number,
-): Promise<Result<Category, CrudApiError>> {
-  const idError = validateId(id);
-  if (idError) return idError;
+export async function fetchCategory(config: Config, id: number): Promise<Category | ApiError> {
+  const idCheck = validateId(id);
+  if (idCheck && !idCheck.ok) return idCheck.error;
 
   try {
     const res = await apiClient(true, config).get<unknown, AxiosResponse<Category>>(
       `${CATEGORIES_URL}/${id}`,
     );
-    return { ok: true, data: res.data };
+    return res.data;
   } catch (error) {
     logger.error({ id }, "Failed to fetch category");
-    return {
-      ok: false,
-      error: crudApiErrorResponse(error, "fetchCategory"),
-    };
+    return ApiErrorResponse(error, "fetchCategory");
   }
 }
 
@@ -79,9 +70,12 @@ export async function fetchCategory(
 export async function createCategory(
   config: Config,
   category: CategoryCreate,
-): Promise<Result<Category, CrudApiError>> {
+): Promise<Category | ApiError> {
   const parse = parseCategoryCreate(category);
-  if (!parse.success) return validationError(parse.error.issues, "Invalid category data");
+  if (!parse.success) {
+    const err = validationError(parse.error.issues, "Invalid category data");
+    if (!err.ok) return err.error;
+  }
 
   try {
     const res = await apiClient(false, config).post<unknown, AxiosResponse<Category>>(
@@ -89,13 +83,10 @@ export async function createCategory(
       parse.data,
     );
     logger.info({ id: res.data.id, name: res.data.name }, "Category created successfully");
-    return { ok: true, data: res.data };
+    return res.data;
   } catch (error) {
     logger.error({ categoryName: category.name }, "Failed to create category");
-    return {
-      ok: false,
-      error: crudApiErrorResponse(error, "createCategory"),
-    };
+    return ApiErrorResponse(error, "createCategory");
   }
 }
 
@@ -106,12 +97,15 @@ export async function updateCategory(
   config: Config,
   id: number,
   category: CategoryUpdate,
-): Promise<Result<Category, CrudApiError>> {
-  const idError = validateId(id);
-  if (idError) return idError;
+): Promise<Category | ApiError> {
+  const idCheck = validateId(id);
+  if (idCheck && !idCheck.ok) return idCheck.error;
 
   const parse = parseCategoryUpdate(category);
-  if (!parse.success) return validationError(parse.error.issues, "Invalid category data");
+  if (!parse.success) {
+    const err = validationError(parse.error.issues, "Invalid category data");
+    if (!err.ok) return err.error;
+  }
 
   try {
     const res = await apiClient(false, config).patch<unknown, AxiosResponse<Category>>(
@@ -119,13 +113,10 @@ export async function updateCategory(
       parse.data,
     );
     logger.info({ id, name: res.data.name }, "Category updated successfully");
-    return { ok: true, data: res.data };
+    return res.data;
   } catch (error) {
     logger.error({ id }, "Failed to update category");
-    return {
-      ok: false,
-      error: crudApiErrorResponse(error, "updateCategory"),
-    };
+    return ApiErrorResponse(error, "updateCategory");
   }
 }
 
@@ -135,19 +126,16 @@ export async function updateCategory(
 export async function deleteCategory(
   config: Config,
   id: number,
-): Promise<Result<{ success: boolean }, CrudApiError>> {
-  const idError = validateId(id);
-  if (idError) return idError;
+): Promise<{ success: boolean } | ApiError> {
+  const idCheck = validateId(id);
+  if (idCheck && !idCheck.ok) return idCheck.error;
 
   try {
     await apiClient(false, config).delete(`${CATEGORIES_URL}/${id}`);
     logger.info({ id }, "Category deleted successfully");
-    return { ok: true, data: { success: true } };
+    return { success: true };
   } catch (error) {
     logger.error({ id }, "Failed to delete category");
-    return {
-      ok: false,
-      error: crudApiErrorResponse(error, "deleteCategory"),
-    };
+    return ApiErrorResponse(error, "deleteCategory");
   }
 }

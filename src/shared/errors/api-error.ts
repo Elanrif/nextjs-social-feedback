@@ -4,7 +4,7 @@
  */
 
 /** Error shape returned by the Spring Boot API (RFC 7807 Problem Details). */
-export type CrudApiError = {
+export type ApiError = {
   detail: string;
   instance?: string;
   status: number;
@@ -12,19 +12,16 @@ export type CrudApiError = {
   errorCode: string;
 };
 
-/** Discriminated union for API responses — use `res.ok` to narrow. */
-export type Result<T, E> = { ok: true; data: T } | { ok: false; error: E };
-
 /**
- * Type guard for the `T | CrudApiError` union pattern.
+ * Type guard for the `T | ApiError` union pattern.
  * Use instead of `"error" in res` — narrows the type correctly.
  *
  * @example
  * const res = await fetchCategories();
- * if (isCrudError(res)) { console.error(res.detail); return; }
+ * if (isApiError(res)) { console.error(res.detail); return; }
  * // res is Category[] here
  */
-export function isCrudError(value: unknown): value is CrudApiError {
+export function isApiError(value: unknown): value is ApiError {
   return (
     typeof value === "object" &&
     value !== null &&
@@ -37,7 +34,7 @@ export function isCrudError(value: unknown): value is CrudApiError {
 /**
  * Error class for programmatic API errors (e.g. thrown in interceptors).
  */
-export class ApiError extends Error {
+export class ApiError_ extends Error {
   public status: number;
   public title: string;
   public instance?: string;

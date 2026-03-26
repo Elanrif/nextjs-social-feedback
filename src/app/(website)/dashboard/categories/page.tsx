@@ -1,6 +1,7 @@
 import { CategoryList } from "@/components/features/dashboard/categories/category-list";
 import { Category } from "@/lib/categories/models/category.model";
 import { fetchCategories } from "@/lib/categories/services/category.service";
+import { isApiError } from "@/shared/errors/api-error";
 import { headers } from "next/headers";
 
 export const metadata = {
@@ -22,8 +23,8 @@ export default async function Page() {
   const config = { headers: reqHeaders };
   const res = await fetchCategories(config);
   let initialCategory: Category[] = [];
-  if (res.ok) {
-    initialCategory = res.data || [];
+  if (!isApiError(res)) {
+    initialCategory = res || [];
   }
   return <CategoryList initialCategories={initialCategory} />;
 }

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Field } from "@/components/ui/form/field";
 import { FormError } from "@/components/ui/form/form-error";
+import { isApiError } from "@/shared/errors/api-error";
 
 const { DASHBOARD, CATEGORIES } = ROUTES;
 
@@ -53,12 +54,12 @@ export function CategoryCreateForm() {
     setApiError(null);
     try {
       const res = await createCategory(data);
-      if (!res.ok) {
-        setApiError(res.error.detail);
+      if (isApiError(res)) {
+        setApiError(res.detail);
         return;
       }
       toast.success("Catégorie créée avec succès");
-      router.push(`${DASHBOARD}${CATEGORIES}/${res.data.id}`);
+      router.push(`${DASHBOARD}${CATEGORIES}/${res.id}`);
     } catch (error: any) {
       setApiError(error?.message || "Erreur inattendue lors de la création");
     } finally {

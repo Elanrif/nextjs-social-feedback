@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getLogger } from "@config/logger.config";
 import { fetchUserById, updateUser, deleteUser } from "@/lib/users/services/user.service";
 import { parseUserUpdate } from "@/lib/users/models/user.model";
-import { crudApiErrorResponse } from "@/lib/errors/crud-api-error.server";
 import { validationError } from "@/utils/utils.server";
+import { ApiErrorResponse } from "@/shared/errors/api-error.server";
 
 const logger = getLogger("server");
 
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       status: 200,
     });
   } catch (error) {
-    const errMsg = crudApiErrorResponse(error, "fetchUserById");
+    const errMsg = ApiErrorResponse(error, "fetchUserById");
     const status = errMsg.status || 500;
     logger.error({ status, message: errMsg.detail }, "Error during user fetching");
     return NextResponse.json({ ok: false, error: errMsg }, { status });
@@ -71,7 +71,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       status: 200,
     });
   } catch (error) {
-    const errMsg = crudApiErrorResponse(error, "updateUser");
+    const errMsg = ApiErrorResponse(error, "updateUser");
     const status = errMsg.status || 500;
     logger.error({ status, message: errMsg.detail }, "Error during user update");
     return NextResponse.json({ ok: false, error: errMsg }, { status });
@@ -104,7 +104,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       status: 200,
     });
   } catch (error) {
-    const errMsg = crudApiErrorResponse(error, "deleteUser");
+    const errMsg = ApiErrorResponse(error, "deleteUser");
     const status = errMsg.status || 500;
     logger.error({ status, message: errMsg.detail }, "Error during user deletion");
     return NextResponse.json({ ok: false, error: errMsg }, { status });

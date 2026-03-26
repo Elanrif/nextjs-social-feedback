@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { auth } from "@/lib/auth/api/auth";
 import { cn } from "@/utils/utils";
+import { isApiError } from "@/shared/errors/api-error";
 
 export const metadata = {
   title: "Dashboard",
@@ -41,7 +42,7 @@ export default async function DashboardPage() {
   ]);
 
   const products = productsRes.ok ? productsRes.data.content || [] : [];
-  const categories = categoriesRes.ok ? categoriesRes.data : [];
+  const categories = isApiError(categoriesRes) ? [] : categoriesRes;
   const users = usersRes.ok ? usersRes.data : [];
 
   const totalProducts = products.length;
@@ -84,7 +85,7 @@ export default async function DashboardPage() {
           </div>
           <div className="hidden md:flex flex-col items-center gap-2">
             <div
-              className="h-16 w-16 rounded-2xl bg-gradient-to-br from-blue-400 to-indigo-600 flex
+              className="h-16 w-16 rounded-2xl bg-linear-to-br from-blue-400 to-indigo-600 flex
                 items-center justify-center text-white text-xl font-bold shadow-lg ring-2
                 ring-white/10"
             >
@@ -285,7 +286,7 @@ export default async function DashboardPage() {
                     transition-colors"
                 >
                   <div
-                    className="h-7 w-7 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500
+                    className="h-7 w-7 rounded-full bg-linear-to-br from-emerald-400 to-teal-500
                       flex items-center justify-center text-white text-xs font-semibold shrink-0"
                   >
                     {u.firstName?.slice(0, 1).toUpperCase() || u.email?.slice(0, 1).toUpperCase()}
@@ -350,7 +351,7 @@ export default async function DashboardPage() {
             <Link
               key={href}
               href={href}
-              className={`group flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r ${color}
+              className={`group flex items-center gap-4 p-4 rounded-2xl bg-linear-to-r ${color}
               ${hover} text-white shadow-sm hover:shadow-md transition-all duration-200
               hover:-translate-y-0.5`}
             >

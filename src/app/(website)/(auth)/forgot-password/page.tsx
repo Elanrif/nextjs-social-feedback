@@ -20,7 +20,7 @@ import { ROUTES } from "@/utils/routes";
 import { Field } from "@/components/ui/form/field";
 import { icDark } from "@/components/ui/form/input-class";
 import { cn } from "@/utils/utils";
-import { isCrudError } from "@/lib/errors/crud-api-error";
+import { isApiError } from "@/shared/errors/api-error";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -46,7 +46,7 @@ export default function ForgotPasswordPage() {
       }
 
       const result = await sendPasswordResetAction(email);
-      if (isCrudError(result)) {
+      if (isApiError(result)) {
         setError(result.detail || "Failed to send reset email");
       } else {
         setSubmitted(true);

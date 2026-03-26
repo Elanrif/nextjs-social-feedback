@@ -10,9 +10,10 @@ import {
   UserSearchFilter,
 } from "@lib/users/models/user.model";
 import { getLogger } from "@config/logger.config";
-import { crudApiErrorResponse } from "@/lib/errors/crud-api-error.server";
 import { validateId, validationError } from "@/utils/utils.server";
-import { CrudApiError, Result } from "@/lib/errors/crud-api-error";
+import { Result } from "@/shared/models/response.model";
+import { ApiError } from "@/shared/errors/api-error";
+import { ApiErrorResponse } from "@/shared/errors/api-error.server";
 
 /**
  * ⚠️ Never trust the client input
@@ -29,7 +30,7 @@ const {
 
 const logger = getLogger("server");
 
-export async function fetchAllUsers(config: Config): Promise<Result<User[], CrudApiError>> {
+export async function fetchAllUsers(config: Config): Promise<Result<User[], ApiError>> {
   try {
     const res = await apiClient(true, config).get<User[]>(usersUrl);
     logger.info({ count: res.data.length }, "Fetched users");
@@ -38,7 +39,7 @@ export async function fetchAllUsers(config: Config): Promise<Result<User[], Crud
     logger.error({ context: "fetchAllUsers" }, "Error fetching users");
     return {
       ok: false,
-      error: crudApiErrorResponse(error, "fetchAllUsers"),
+      error: ApiErrorResponse(error, "fetchAllUsers"),
     };
   }
 }
@@ -49,7 +50,7 @@ export async function fetchAllUsers(config: Config): Promise<Result<User[], Crud
 export async function createUser(
   config: Config,
   user: Omit<User, "id">,
-): Promise<Result<User, CrudApiError>> {
+): Promise<Result<User, ApiError>> {
   const parse = parseUserCreate(user);
   if (!parse.success) return validationError(parse.error.issues, "Invalid user data");
 
@@ -62,15 +63,12 @@ export async function createUser(
     logger.error({ context: "createUser" }, "Failed to create user");
     return {
       ok: false,
-      error: crudApiErrorResponse(error, "createUser"),
+      error: ApiErrorResponse(error, "createUser"),
     };
   }
 }
 
-export async function fetchUserById(
-  id: number,
-  config: Config,
-): Promise<Result<User, CrudApiError>> {
+export async function fetchUserById(id: number, config: Config): Promise<Result<User, ApiError>> {
   const idError = validateId(id);
   if (idError) return idError;
 
@@ -81,7 +79,7 @@ export async function fetchUserById(
     logger.error({ id }, "Failed to fetch user");
     return {
       ok: false,
-      error: crudApiErrorResponse(error, "fetchUserById"),
+      error: ApiErrorResponse(error, "fetchUserById"),
     };
   }
 }
@@ -89,7 +87,7 @@ export async function fetchUserById(
 export async function searchUsersFilter(
   filters: UserSearchFilter,
   config: Config,
-): Promise<Result<User[], CrudApiError>> {
+): Promise<Result<User[], ApiError>> {
   const params = new URLSearchParams();
   if (filters.email) params.set("email", filters.email);
   if (filters.firstName) params.set("firstName", filters.firstName);
@@ -106,7 +104,7 @@ export async function searchUsersFilter(
     logger.error({ filters }, "Failed to search users");
     return {
       ok: false,
-      error: crudApiErrorResponse(error, "searchUsersFilter"),
+      error: ApiErrorResponse(error, "searchUsersFilter"),
     };
   }
 }
@@ -115,7 +113,7 @@ export async function updateUser(
   id: number,
   user: UserUpdateFormData,
   config: Config,
-): Promise<Result<User, CrudApiError>> {
+): Promise<Result<User, ApiError>> {
   const idError = validateId(id);
   if (idError) return idError;
 
@@ -130,7 +128,7 @@ export async function updateUser(
     logger.error({ id }, "Failed to update user");
     return {
       ok: false,
-      error: crudApiErrorResponse(error, "updateUser"),
+      error: ApiErrorResponse(error, "updateUser"),
     };
   }
 }
@@ -141,7 +139,7 @@ export async function updateUser(
 export async function deleteUser(
   id: number,
   config: Config,
-): Promise<Result<{ success: boolean }, CrudApiError>> {
+): Promise<Result<{ success: boolean }, ApiError>> {
   const idError = validateId(id);
   if (idError) return idError;
 
@@ -153,7 +151,7 @@ export async function deleteUser(
     logger.error({ id }, "Failed to delete user");
     return {
       ok: false,
-      error: crudApiErrorResponse(error, "deleteUser"),
+      error: ApiErrorResponse(error, "deleteUser"),
     };
   }
 }

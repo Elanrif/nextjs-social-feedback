@@ -12,7 +12,7 @@ import ValidationItem from "@/components/ui/validation-item";
 import { Field } from "@/components/ui/form/field";
 import { FormError } from "@/components/ui/form/form-error";
 import { icDark, icDarkPwd } from "@/components/ui/form/input-class";
-import { isCrudError } from "@/lib/errors/crud-api-error";
+import { isApiError } from "@/shared/errors/api-error";
 
 export function SignUpForm() {
   const router = useRouter();
@@ -63,7 +63,7 @@ export function SignUpForm() {
         password: data.password,
         confirmPassword: data.confirmPassword,
       });
-      if (isCrudError(result)) {
+      if (isApiError(result)) {
         setError(result.detail || "Échec de la création du compte");
         setLoading(false);
         return;

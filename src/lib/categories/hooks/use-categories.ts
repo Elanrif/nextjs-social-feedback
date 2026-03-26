@@ -9,6 +9,7 @@ import {
   deleteCategory,
 } from "@/lib/categories/services/category.client.service";
 import type { CategoryCreate, CategoryUpdate } from "@/lib/categories/models/category.model";
+import { isApiError } from "@/shared/errors/api-error";
 
 // ─── Query keys ───────────────────────────────────────────────────────────────
 
@@ -26,7 +27,7 @@ export function useCategories() {
     queryKey: categoryKeys.list(),
     queryFn: async () => {
       const res = await fetchCategories();
-      if (!res.ok) throw new Error(res.error.detail);
+      if (isApiError(res)) throw new Error(res.detail);
       return res;
     },
   });
@@ -38,7 +39,7 @@ export function useCategory(id: number) {
     queryKey: categoryKeys.detail(id),
     queryFn: async () => {
       const res = await fetchCategory(id);
-      if (!res.ok) throw new Error(res.error.detail);
+      if (isApiError(res)) throw new Error(res.detail);
       return res;
     },
     enabled: !!id,
@@ -53,7 +54,7 @@ export function useCreateCategory() {
   return useMutation({
     mutationFn: async (data: CategoryCreate) => {
       const res = await createCategory(data);
-      if (!res.ok) throw new Error(res.error.detail);
+      if (isApiError(res)) throw new Error(res.detail);
       return res;
     },
     onSuccess: () => {
@@ -70,7 +71,7 @@ export function useUpdateCategory() {
   return useMutation({
     mutationFn: async ({ id, data }: { id: number; data: CategoryUpdate }) => {
       const res = await updateCategory(id, data);
-      if (!res.ok) throw new Error(res.error.detail);
+      if (isApiError(res)) throw new Error(res.detail);
       return res;
     },
     onSuccess: (_, { id }) => {
@@ -90,7 +91,7 @@ export function useDeleteCategory() {
   return useMutation({
     mutationFn: async (id: number) => {
       const res = await deleteCategory(id);
-      if (!res.ok) throw new Error(res.error.detail);
+      if (isApiError(res)) throw new Error(res.detail);
       return res;
     },
     onSuccess: (_, id) => {

@@ -2,7 +2,7 @@ import { AxiosResponse } from "axios";
 import { frontendHttp } from "@config/axios/frontend-http.config";
 import { proxyEnvironment } from "@config/proxy-api.config";
 import { Category, CategoryCreate, CategoryUpdate } from "@/lib/categories/models/category.model";
-import { CrudApiError, Result } from "@/lib/errors/crud-api-error";
+import { ApiError } from "@/shared/errors/api-error";
 
 const {
   api: {
@@ -13,8 +13,8 @@ const {
 /**
  * Fetch all categories (client-side)
  */
-export async function fetchCategories(): Promise<Result<Category[], CrudApiError>> {
-  const res = await frontendHttp().get<unknown, AxiosResponse<Result<Category[], CrudApiError>>>(
+export async function fetchCategories(): Promise<Category[] | ApiError> {
+  const res = await frontendHttp().get<unknown, AxiosResponse<Category[] | ApiError>>(
     CATEGORIES_URL,
   );
   return res.data;
@@ -23,8 +23,8 @@ export async function fetchCategories(): Promise<Result<Category[], CrudApiError
 /**
  * Fetch a single category by ID (client-side)
  */
-export async function fetchCategory(id: number): Promise<Result<Category, CrudApiError>> {
-  const res = await frontendHttp().get<unknown, AxiosResponse<Result<Category, CrudApiError>>>(
+export async function fetchCategory(id: number): Promise<Category | ApiError> {
+  const res = await frontendHttp().get<unknown, AxiosResponse<Category | ApiError>>(
     `${CATEGORIES_URL}/${id}`,
   );
   return res.data;
@@ -33,10 +33,8 @@ export async function fetchCategory(id: number): Promise<Result<Category, CrudAp
 /**
  * Create a new category (client-side)
  */
-export async function createCategory(
-  category: CategoryCreate,
-): Promise<Result<Category, CrudApiError>> {
-  const res = await frontendHttp().post<unknown, AxiosResponse<Result<Category, CrudApiError>>>(
+export async function createCategory(category: CategoryCreate): Promise<Category | ApiError> {
+  const res = await frontendHttp().post<unknown, AxiosResponse<Category | ApiError>>(
     CATEGORIES_URL,
     category,
   );
@@ -49,8 +47,8 @@ export async function createCategory(
 export async function updateCategory(
   id: number,
   category: CategoryUpdate,
-): Promise<Result<Category, CrudApiError>> {
-  const res = await frontendHttp().patch<unknown, AxiosResponse<Result<Category, CrudApiError>>>(
+): Promise<Category | ApiError> {
+  const res = await frontendHttp().patch<unknown, AxiosResponse<Category | ApiError>>(
     `${CATEGORIES_URL}/${id}`,
     category,
   );
@@ -60,12 +58,9 @@ export async function updateCategory(
 /**
  * Delete a category (client-side)
  */
-export async function deleteCategory(
-  id: number,
-): Promise<Result<{ success: boolean }, CrudApiError>> {
-  const res = await frontendHttp().delete<
-    unknown,
-    AxiosResponse<Result<{ success: boolean }, CrudApiError>>
-  >(`${CATEGORIES_URL}/${id}`);
+export async function deleteCategory(id: number): Promise<{ success: boolean } | ApiError> {
+  const res = await frontendHttp().delete<unknown, AxiosResponse<{ success: boolean } | ApiError>>(
+    `${CATEGORIES_URL}/${id}`,
+  );
   return res.data;
 }

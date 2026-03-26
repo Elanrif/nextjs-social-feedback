@@ -14,3 +14,6 @@ export interface Pager<T> {
   count: number;
   results: T;
 }
+
+/** Discriminated union for API responses — use `res.ok` to narrow. */
+export type Result<T, E> = { ok: true; data: T } | { ok: false; error: E };

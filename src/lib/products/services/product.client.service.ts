@@ -8,7 +8,8 @@ import {
   ProductFiltersParams,
   PageProduct,
 } from "@/lib/products/models/product.model";
-import { CrudApiError, Result } from "@/lib/errors/crud-api-error";
+import { ApiError } from "@/shared/errors/api-error";
+import { Result } from "@/shared/models/response.model";
 
 function buildProductsUrl(baseUrl: string, filters?: ProductFiltersParams): string {
   if (!filters || Object.keys(filters).length === 0) return baseUrl;
@@ -42,12 +43,12 @@ const {
  */
 export async function fetchProducts(
   filters?: ProductFiltersParams,
-): Promise<Result<PageProduct<Product[]>, CrudApiError>> {
+): Promise<Result<PageProduct<Product[]>, ApiError>> {
   const url = buildProductsUrl(PRODUCTS_URL, filters);
 
   const res = await frontendHttp().get<
     unknown,
-    AxiosResponse<Result<PageProduct<Product[]>, CrudApiError>>
+    AxiosResponse<Result<PageProduct<Product[]>, ApiError>>
   >(url);
   return res.data;
 }
@@ -55,8 +56,8 @@ export async function fetchProducts(
 /**
  * Fetch a single product by ID (client-side)
  */
-export async function fetchProduct(id: number): Promise<Result<Product, CrudApiError>> {
-  const res = await frontendHttp().get<unknown, AxiosResponse<Result<Product, CrudApiError>>>(
+export async function fetchProduct(id: number): Promise<Result<Product, ApiError>> {
+  const res = await frontendHttp().get<unknown, AxiosResponse<Result<Product, ApiError>>>(
     `${PRODUCTS_URL}/${id}`,
   );
   return res.data;
@@ -65,10 +66,8 @@ export async function fetchProduct(id: number): Promise<Result<Product, CrudApiE
 /**
  * Create a new product (client-side)
  */
-export async function createProduct(
-  product: ProductCreate,
-): Promise<Result<Product, CrudApiError>> {
-  const res = await frontendHttp().post<unknown, AxiosResponse<Result<Product, CrudApiError>>>(
+export async function createProduct(product: ProductCreate): Promise<Result<Product, ApiError>> {
+  const res = await frontendHttp().post<unknown, AxiosResponse<Result<Product, ApiError>>>(
     PRODUCTS_URL,
     product,
   );
@@ -82,8 +81,8 @@ export async function createProduct(
 export async function updateProduct(
   id: number,
   product: ProductUpdate,
-): Promise<Result<Product, CrudApiError>> {
-  const res = await frontendHttp().patch<unknown, AxiosResponse<Result<Product, CrudApiError>>>(
+): Promise<Result<Product, ApiError>> {
+  const res = await frontendHttp().patch<unknown, AxiosResponse<Result<Product, ApiError>>>(
     `${PRODUCTS_URL}/${id}`,
     product,
   );
@@ -94,12 +93,10 @@ export async function updateProduct(
 /**
  * Delete a product (client-side)
  */
-export async function deleteProduct(
-  id: number,
-): Promise<Result<{ success: boolean }, CrudApiError>> {
+export async function deleteProduct(id: number): Promise<Result<{ success: boolean }, ApiError>> {
   const res = await frontendHttp().delete<
     unknown,
-    AxiosResponse<Result<{ success: boolean }, CrudApiError>>
+    AxiosResponse<Result<{ success: boolean }, ApiError>>
   >(`${PRODUCTS_URL}/${id}`);
   return res.data;
 }

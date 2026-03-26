@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { CategoryEditForm } from "@/components/features/dashboard/categories/category-edit-form";
 import { fetchCategory } from "@/lib/categories/services/category.service";
 import { headers } from "next/headers";
+import { isApiError } from "@/shared/errors/api-error";
 
 export const metadata = {
   title: "Edit Category",
@@ -17,7 +18,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const config = { headers: reqHeaders };
 
   const res = await fetchCategory(config, Number(id));
-  if (!res.ok) notFound();
+  if (isApiError(res)) notFound();
 
-  return <CategoryEditForm category={res.data} />;
+  return <CategoryEditForm category={res} />;
 }

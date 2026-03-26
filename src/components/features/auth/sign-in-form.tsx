@@ -12,7 +12,7 @@ import { authClient } from "@/lib/auth/api/auth.client";
 import { Field } from "@/components/ui/form/field";
 import { FormError } from "@/components/ui/form/form-error";
 import { icDark, icDarkPwd } from "@/components/ui/form/input-class";
-import { isCrudError } from "@/lib/errors/crud-api-error";
+import { isApiError } from "@/shared/errors/api-error";
 
 export function SignInForm() {
   const router = useRouter();
@@ -43,7 +43,7 @@ export function SignInForm() {
         email: data.email,
         password: data.password,
       });
-      if (isCrudError(result)) {
+      if (isApiError(result)) {
         setApiError(result.detail || "Une erreur est survenue.");
         setLoading(false);
         return;

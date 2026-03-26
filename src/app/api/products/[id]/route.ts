@@ -7,8 +7,8 @@ import {
 import { ProductUpdate, parseProductUpdate } from "@/lib/products/models/product.model";
 import { getLogger } from "@config/logger.config";
 import { getSession } from "@/lib/auth/next-auth/next-auth.service";
-import { crudApiErrorResponse } from "@/lib/errors/crud-api-error.server";
 import { validationError } from "@/utils/utils.server";
+import { ApiErrorResponse } from "@/shared/errors/api-error.server";
 
 const logger = getLogger("server");
 
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest, { params }: { params: Params }) 
       status: 200,
     });
   } catch (error) {
-    const errMsg = crudApiErrorResponse(error, "fetchProduct");
+    const errMsg = ApiErrorResponse(error, "fetchProduct");
     const status = errMsg.status || 500;
     logger.error({ status, message: errMsg.detail }, "Error during product fetching");
     return NextResponse.json({ ok: false, error: errMsg }, { status });
@@ -128,7 +128,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Params }
       status: 200,
     });
   } catch (error) {
-    const errMsg = crudApiErrorResponse(error, "updateProduct");
+    const errMsg = ApiErrorResponse(error, "updateProduct");
     const status = errMsg.status || 500;
     logger.error({ status, message: errMsg.detail }, "Error during product update");
     return NextResponse.json({ ok: false, error: errMsg }, { status });
@@ -203,7 +203,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Params 
       status: 200,
     });
   } catch (error) {
-    const errMsg = crudApiErrorResponse(error, "deleteProduct");
+    const errMsg = ApiErrorResponse(error, "deleteProduct");
     const status = errMsg.status || 500;
     logger.error({ status, message: errMsg.detail }, "Error during product deletion");
     return NextResponse.json({ ok: false, error: errMsg }, { status });

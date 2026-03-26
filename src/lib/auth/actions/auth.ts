@@ -6,7 +6,6 @@ import {
   editProfile,
   resetPassword,
 } from "@/lib/auth/auth.service";
-import { crudApiErrorResponse } from "@/lib/errors/crud-api-error.server";
 import {
   ChangePasswordProfileFormData,
   Login,
@@ -17,17 +16,15 @@ import {
 import { parseResetPassword, ResetPassword, User } from "@/lib/users/models/user.model";
 import { sendPasswordResetEmail, generateResetToken } from "@/config/mail.config";
 import { signIn, signOut } from "@/lib/auth/next-auth/auth";
-import { AuthError } from "next-auth";
-import { CrudApiError } from "@/lib/errors/crud-api-error";
+import { ApiErrorResponse } from "@/shared/errors/api-error.server";
+import { ApiError } from "@/shared/errors/api-error";
 
 /**
  * Server Action: Sign In via NextAuth Credentials provider.
  * Returns an empty object on success (session cookie is set by NextAuth).
  * Returns CrudApiError on failure.
  */
-export async function signInAction(
-  credentials: Login,
-): Promise<Record<string, never> | CrudApiError> {
+export async function signInAction(credentials: Login): Promise<Record<string, never> | ApiError> {
   try {
     await signIn("credentials", {
       email: credentials.email,
@@ -36,14 +33,8 @@ export async function signInAction(
     });
     return {};
   } catch (error) {
-    if (error instanceof AuthError) {
-      return {
-        error: "UNAUTHORIZED",
-        status: 401,
-        message: "Email ou mot de passe incorrect",
-      } as unknown as CrudApiError;
-    }
-    return crudApiErrorResponse(error, "signInAction");
+    const errMsg = ApiErrorResponse(error, "signIn action");
+    return errMsg;
   }
 }
 
@@ -51,9 +42,7 @@ export async function signInAction(
  * Server Action: Sign Up
  * Registers via Keycloak Admin API then creates a NextAuth session.
  */
-export async function signUpAction(
-  userData: Registrer,
-): Promise<Record<string, never> | CrudApiError> {
+export async function signUpAction(userData: Registrer): Promise<Record<string, never> | ApiError> {
   try {
     const res = await restSignUp(userData);
     if (!res.ok) return res.error;
@@ -67,14 +56,8 @@ export async function signUpAction(
 
     return {};
   } catch (error) {
-    if (error instanceof AuthError) {
-      return {
-        error: "UNAUTHORIZED",
-        status: 401,
-        message: "Inscription réussie mais connexion échouée. Veuillez vous connecter.",
-      } as unknown as CrudApiError;
-    }
-    return crudApiErrorResponse(error, "signUpAction");
+    const errMsg = ApiErrorResponse(error, "signUp action");
+    return errMsg;
   }
 }
 
@@ -88,13 +71,14 @@ export async function signOutAction() {
 /**
  * Server Action: Edit Profile
  */
-export async function editProfileAction(data: ProfileUserFormData): Promise<User | CrudApiError> {
+export async function editProfileAction(data: ProfileUserFormData): Promise<User | ApiError> {
   try {
     const res = await editProfile(data);
     if (!res.ok) return res.error;
     return res.data;
   } catch (error: any) {
-    return crudApiErrorResponse(error, "editProfile action");
+    const errMsg = ApiErrorResponse(error, "editProfile action");
+    return errMsg;
   }
 }
 
@@ -103,7 +87,7 @@ export async function editProfileAction(data: ProfileUserFormData): Promise<User
  */
 export async function sendPasswordResetAction(
   email: string,
-): Promise<{ success: boolean; message: string } | CrudApiError> {
+): Promise<{ success: boolean; message: string } | ApiError> {
   try {
     if (!email || !email.includes("@")) {
       return {
@@ -112,7 +96,7 @@ export async function sendPasswordResetAction(
         detail: "Please provide a valid email address",
         instance: undefined,
         errorCode: "INVALID_EMAIL",
-      } as CrudApiError;
+      } as ApiError;
     }
 
     const { resetToken, code } = generateResetToken();
@@ -128,7 +112,7 @@ export async function sendPasswordResetAction(
         detail: "Failed to send reset email. Please try again later.",
         instance: undefined,
         errorCode: "EMAIL_SERVICE_UNAVAILABLE",
-      } as CrudApiError;
+      } as ApiError;
     }
 
     return {
@@ -137,14 +121,15 @@ export async function sendPasswordResetAction(
         "If an account exists with this email, you will receive password reset instructions.",
     };
   } catch (error: any) {
-    return crudApiErrorResponse(error, "sendPasswordReset action");
+    const errMsg = ApiErrorResponse(error, "sendPasswordReset action");
+    return errMsg;
   }
 }
 
 /**
  * Server Action: Reset Password via token
  */
-export async function resetPasswordTokenAction(data: ResetPassword): Promise<User | CrudApiError> {
+export async function resetPasswordTokenAction(data: ResetPassword): Promise<User | ApiError> {
   const validation = parseResetPassword(data);
   if (!validation.success) {
     return {
@@ -153,7 +138,7 @@ export async function resetPasswordTokenAction(data: ResetPassword): Promise<Use
       title: "Bad Request",
       instance: undefined,
       errorCode: "VALIDATION_ERROR",
-    } as CrudApiError;
+    } as ApiError;
   }
 
   try {
@@ -161,7 +146,8 @@ export async function resetPasswordTokenAction(data: ResetPassword): Promise<Use
     if (!res.ok) return res.error;
     return res.data;
   } catch (error) {
-    return crudApiErrorResponse(error, "resetPassword action");
+    const errMsg = ApiErrorResponse(error, "error resetPassword action");
+    return errMsg;
   }
 }
 
@@ -170,7 +156,7 @@ export async function resetPasswordTokenAction(data: ResetPassword): Promise<Use
  */
 export async function changePasswordProfileAction(
   data: ChangePasswordProfileFormData,
-): Promise<User | CrudApiError> {
+): Promise<User | ApiError> {
   const validation = parseChangePasswordProfile(data);
   if (!validation.success) {
     return {
@@ -179,7 +165,7 @@ export async function changePasswordProfileAction(
       title: "Bad Request",
       instance: undefined,
       errorCode: "VALIDATION_ERROR",
-    } as CrudApiError;
+    } as ApiError;
   }
 
   try {
@@ -187,6 +173,7 @@ export async function changePasswordProfileAction(
     if (!res.ok) return res.error;
     return res.data;
   } catch (error) {
-    return crudApiErrorResponse(error, "changePasswordProfile action");
+    const errMsg = ApiErrorResponse(error, "error changePasswordProfile action");
+    return errMsg;
   }
 }

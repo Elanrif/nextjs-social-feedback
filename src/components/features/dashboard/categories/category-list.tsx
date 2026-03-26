@@ -9,7 +9,7 @@ import { Category } from "@/lib/categories/models/category.model";
 import { ROUTES } from "@/utils/routes";
 import { Eye, Pencil, Trash2, Tag, Plus } from "lucide-react";
 import LoadingPage from "@components/features/loading-page";
-import { isCrudError } from "@/lib/errors/crud-api-error";
+import { isApiError } from "@/shared/errors/api-error";
 
 const { DASHBOARD, CATEGORIES } = ROUTES;
 
@@ -40,7 +40,7 @@ export function CategoryList({ initialCategories }: { initialCategories: Categor
     setDeleteError(null);
     try {
       const res = await deleteCategory(deleteId);
-      if (isCrudError(res)) {
+      if (isApiError(res)) {
         setDeleteError(res.detail ?? "Erreur lors de la suppression");
       } else {
         setModalOpen(false);
