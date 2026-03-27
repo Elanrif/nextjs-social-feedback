@@ -21,6 +21,7 @@ export const getSession = cache(async (): Promise<Result<AuthPayload, ApiError>>
         status: 401,
         detail: "No active NextAuth session",
         errorCode: "Unauthorized",
+        instance: undefined,
       } as ApiError;
 
       logger.warn("No active NextAuth session");
@@ -60,6 +61,7 @@ export const getCurrentUser = cache(async (): Promise<Result<CurrentUser, ApiErr
       status: 401,
       detail: "No active NextAuth session",
       errorCode: "Unauthorized",
+      instance: undefined,
     } as ApiError;
 
     logger.warn("getCurrentUser: no valid session");

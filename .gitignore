@@ -30,9 +30,8 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# local env files, /.env* will ignore both .env and .env* located to the root of project(/)
-#/.env*
-.env*.local
+# environment files
+.env*
 
 # vercel
 .vercel

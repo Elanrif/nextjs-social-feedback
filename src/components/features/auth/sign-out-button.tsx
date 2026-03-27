@@ -22,13 +22,10 @@ export function SignOutButton({
 }: SignOutButtonProps) {
   const [loading, setLoading] = useState(false);
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
     setLoading(true);
-    authClient.signOut();
-    setTimeout(() => {
-      if (onSignOut) onSignOut();
-      window.location.href = redirectTo;
-    }, 800);
+    if (onSignOut) onSignOut();
+    await authClient.signOut(redirectTo);
   };
 
   const variantStyles = {

@@ -95,7 +95,7 @@ export function Header() {
               if (session && session.ok && !error) {
                 return (
                   <>
-                    {session.data.user.role === "admin" ? (
+                    {session.data.user.role === "ADMIN" ? (
                       <Link
                         href={DASHBOARD}
                         className={cn(
@@ -193,30 +193,46 @@ export function Header() {
           ))}
 
           <div className="pt-2 pb-1 flex gap-2">
-            <Link
-              href={SIGN_IN}
-              className={cn(
-                `flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs
-                font-medium text-gray-700`,
-                "borderborder-gray-200 hover:bg-gray-50 transition-colors",
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <LogIn className="w-3.5 h-3.5" />
-              Connexion
-            </Link>
-            <Link
-              href={SIGN_UP}
-              className={cn(
-                "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs",
-                "font-semibold text-white bg-linear-to-r from-green-500 to-emerald-600 shadow-sm",
-                "transition-all",
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <UserPlus className="w-3.5 h-3.5" />
-              S&apos;inscrire
-            </Link>
+            {session?.ok && session.data ? (
+              <div className="flex-1">
+                <SignOutButton
+                  className="w-full"
+                  variant="destructive"
+                  onSignOut={() => {
+                    invalidate();
+                    setIsMobileMenuOpen(false);
+                  }}
+                />
+              </div>
+            ) : (
+              <>
+                <Link
+                  href={SIGN_IN}
+                  className={cn(
+                    `flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs
+                      font-medium text-gray-700`,
+                    "border border-gray-200 hover:bg-gray-50 transition-colors",
+                  )}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  Connexion
+                </Link>
+                <Link
+                  href={SIGN_UP}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs",
+                    `font-semibold text-white bg-linear-to-r from-green-500 to-emerald-600
+                      shadow-sm`,
+                    "transition-all",
+                  )}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  S&apos;inscrire
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

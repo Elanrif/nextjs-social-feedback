@@ -1,7 +1,6 @@
 "use client";
 
-import { signOut } from "next-auth/react";
-import { signInAction, signUpAction } from "@/lib/auth/actions/auth";
+import { signInAction, signUpAction, signOutAction } from "@/lib/auth/actions/auth";
 import type { Login, Registrer } from "@/lib/auth/models/auth.model";
 
 export const authClient = {
@@ -16,7 +15,8 @@ export const authClient = {
   },
 
   signOut: async (redirectTo?: string) => {
-    await signOut({ redirectTo: redirectTo ?? "/" });
+    await signOutAction();
+    window.location.href = redirectTo ?? "/";
   },
 
   useSession: () => {

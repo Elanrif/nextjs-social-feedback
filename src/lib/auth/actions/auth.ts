@@ -16,6 +16,7 @@ import {
 import { parseResetPassword, ResetPassword, User } from "@/lib/users/models/user.model";
 import { sendPasswordResetEmail, generateResetToken } from "@/config/mail.config";
 import { signIn, signOut } from "@/lib/auth/next-auth/auth";
+import { AuthError } from "next-auth";
 import { ApiErrorResponse } from "@/shared/errors/api-error.server";
 import { ApiError } from "@/shared/errors/api-error";
 
@@ -33,8 +34,12 @@ export async function signInAction(credentials: Login): Promise<Record<string, n
     });
     return {};
   } catch (error) {
-    const errMsg = ApiErrorResponse(error, "signIn action");
-    return errMsg;
+    // Re-throw Next.js redirect errors so navigation works correctly.
+    // Only catch real auth failures (wrong password, etc.).
+    if (error instanceof AuthError) {
+      return ApiErrorResponse(error, "signIn action");
+    }
+    throw error;
   }
 }
 
@@ -56,8 +61,10 @@ export async function signUpAction(userData: Registrer): Promise<Record<string, 
 
     return {};
   } catch (error) {
-    const errMsg = ApiErrorResponse(error, "signUp action");
-    return errMsg;
+    if (error instanceof AuthError) {
+      return ApiErrorResponse(error, "signUp action");
+    }
+    throw error;
   }
 }
 
