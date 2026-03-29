@@ -14,12 +14,14 @@ import { FormError } from "@/components/ui/form/form-error";
 import { isApiError } from "@/shared/errors/api-error";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { useImageDraft } from "@/lib/cloudinary/hooks/use-image-draft";
-import { User } from "@/lib/users/models/user.model";
+import { useSession } from "next-auth/react";
 
 const { MY_ACCOUNT } = ROUTES;
 
-export function ProfileEditForm({ user }: { user: User }) {
+export function ProfileEditForm() {
   const router = useRouter();
+  const { data: session, update } = useSession();
+  const user = session?.user;
   const {
     register,
     handleSubmit,
@@ -61,6 +63,13 @@ export function ProfileEditForm({ user }: { user: User }) {
         return;
       }
       avatar.clearDraft();
+      await update({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+        avatarUrl: avatar.url || undefined,
+      });
       toast.success("Profil mis à jour avec succès !");
       router.push(MY_ACCOUNT);
     } catch (error_: any) {

@@ -13,9 +13,11 @@ import { Field } from "@/components/ui/form/field";
 import { FormError } from "@/components/ui/form/form-error";
 import { icDark, icDarkPwd } from "@/components/ui/form/input-class";
 import { isApiError } from "@/shared/errors/api-error";
+import { useSession } from "next-auth/react";
 
 export function SignUpForm() {
   const router = useRouter();
+  const { update } = useSession();
   const {
     register,
     handleSubmit,
@@ -68,6 +70,10 @@ export function SignUpForm() {
         setLoading(false);
         return;
       }
+
+      // Same as sign-in: Server Action updated cookies, force client session refresh.
+      await update();
+
       router.push("/dashboard");
       router.refresh();
       // loading reste true pendant la navigation

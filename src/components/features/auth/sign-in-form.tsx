@@ -8,14 +8,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginFormData, LoginSchema } from "@/lib/auth/models/auth.model";
 import Link from "next/link";
 import { ROUTES } from "@/utils/routes";
-import { authClient } from "@/lib/auth/api/auth.client";
+import { signInAction } from "@/lib/auth/actions/auth";
 import { Field } from "@/components/ui/form/field";
 import { FormError } from "@/components/ui/form/form-error";
 import { icDark, icDarkPwd } from "@/components/ui/form/input-class";
 import { isApiError } from "@/shared/errors/api-error";
+import { useSession } from "next-auth/react";
 
 export function SignInForm() {
   const router = useRouter();
+  const { update } = useSession();
   const {
     register,
     handleSubmit,
@@ -39,7 +41,7 @@ export function SignInForm() {
     setLoading(true);
     setApiError(null);
     try {
-      const result = await authClient.signIn.email({
+      const result = await signInAction({
         email: data.email,
         password: data.password,
       });
@@ -48,7 +50,13 @@ export function SignInForm() {
         setLoading(false);
         return;
       }
+
+      // Server Action signIn sets the cookie, but the client SessionProvider
+      // doesn't automatically know it changed. Force a re-fetch of /api/auth/session.
+      await update();
+
       router.push("/dashboard");
+      router.refresh();
       // isLoading reste true pendant la navigation
     } catch (error: any) {
       setApiError(error?.message || "Une erreur est survenue.");

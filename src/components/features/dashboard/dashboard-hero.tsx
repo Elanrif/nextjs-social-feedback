@@ -2,9 +2,10 @@
 
 import { Activity } from "lucide-react";
 import Image from "next/image";
-import { User } from "@/lib/users/models/user.model";
 
-export function DashboardHero({ user }: { user: User }) {
+type HeroUser = { firstName?: string | null; email?: string | null; avatarUrl?: string | null };
+
+export function DashboardHero({ user }: { user: HeroUser }) {
   const initials =
     user?.firstName?.slice(0, 2).toUpperCase() || user?.email?.slice(0, 2).toUpperCase() || "AD";
 

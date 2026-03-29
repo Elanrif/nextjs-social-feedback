@@ -11,30 +11,23 @@ import {
   ShieldCheck,
   User,
   CheckCircle2,
-  XCircle,
-  Calendar,
   Hash,
 } from "lucide-react";
 import { UserRole } from "@/lib/users/models/user.model";
-import { useAuthUser } from "@/lib/auth/context/auth.user.context";
+import { useSession } from "next-auth/react";
 
 const { MY_ACCOUNT, EDIT_PROFILE } = ROUTES;
 
 export function ProfileDetail() {
-  const user = useAuthUser();
+  const { data: session } = useSession();
+  const user = session?.user;
+
+  if (!user) return null;
 
   const initials =
     user.firstName?.slice(0, 1).toUpperCase() + (user.lastName?.slice(0, 1).toUpperCase() || "");
 
   const fullName = [user.firstName, user.lastName].filter(Boolean).join(" ") || "—";
-
-  const memberSince = user.createdAt
-    ? new Date(user.createdAt).toLocaleDateString("fr-FR", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : null;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -50,7 +43,6 @@ export function ProfileDetail() {
         />
 
         <div className="relative flex items-center gap-6">
-          {/* Avatar */}
           <div className="shrink-0">
             <div
               className="h-20 w-20 rounded-2xl bg-linear-to-br from-indigo-400 to-blue-600 flex
@@ -93,29 +85,14 @@ export function ProfileDetail() {
               </span>
             </div>
             <p className="text-slate-400 text-sm mt-1 truncate">{user.email}</p>
-            {memberSince && (
-              <div className="flex items-center gap-1.5 mt-2 text-slate-500 text-xs">
-                <Calendar className="w-3.5 h-3.5" />
-                <span>Membre depuis {memberSince}</span>
-              </div>
-            )}
           </div>
 
-          {/* Status badge */}
           <div
-            className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs
-              font-semibold ${
-                user.isActive
-                  ? "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30"
-                  : "bg-red-500/20 text-red-300 ring-1 ring-red-400/30"
-              }`}
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs
+              font-semibold bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30"
           >
-            {user.isActive ? (
-              <CheckCircle2 className="w-3.5 h-3.5" />
-            ) : (
-              <XCircle className="w-3.5 h-3.5" />
-            )}
-            {user.isActive ? "Actif" : "Inactif"}
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            Actif
           </div>
         </div>
       </div>
@@ -172,30 +149,6 @@ export function ProfileDetail() {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Status full-width card (mobile shows this instead of hero badge) */}
-      <div
-        className={`md:hidden flex items-center gap-3 rounded-2xl border p-5 shadow-sm ${
-          user.isActive ? "bg-emerald-50 border-emerald-100" : "bg-red-50 border-red-100"
-        }`}
-      >
-        {user.isActive ? (
-          <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-        ) : (
-          <XCircle className="w-5 h-5 text-red-600 shrink-0" />
-        )}
-        <div>
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-            Statut du compte
-          </p>
-          <p
-            className={`text-sm font-semibold mt-0.5
-              ${user.isActive ? "text-emerald-700" : "text-red-700"}`}
-          >
-            {user.isActive ? "Compte actif" : "Compte inactif"}
-          </p>
-        </div>
       </div>
 
       {/* Actions */}

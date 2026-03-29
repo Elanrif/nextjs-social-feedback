@@ -12,7 +12,6 @@ import {
   SidebarRail,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { User as UserType } from "@/lib/users/models/user.model";
 import { ROUTES } from "@/utils/routes";
 import { NavMainUser } from "./nav-main-user";
 import { AccountBrand } from "./features/account-brand";
@@ -52,10 +51,7 @@ const data = {
   ],
 };
 
-export function UserSidebar({
-  user,
-  ...props
-}: React.ComponentProps<typeof Sidebar> & { user: UserType }) {
+export function UserSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props} className="bg-white border-r border-gray-350">
       <SidebarHeader className="bg-white">
@@ -71,7 +67,7 @@ export function UserSidebar({
       <SidebarSeparator className="bg-purple-300 mx-0" />
 
       <SidebarFooter className="bg-white">
-        <NavUser user={user} variant="light" />
+        <NavUser variant="light" />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

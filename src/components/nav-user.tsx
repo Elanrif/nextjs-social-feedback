@@ -26,56 +26,89 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { User, UserRole } from "@/lib/users/models/user.model";
-import { useSession } from "@/hooks/use.session";
+import { Skeleton } from "@/components/ui/skeleton";
+import { UserRole } from "@/lib/users/models/user.model";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ROUTES } from "@/utils/routes";
 import { SignOutButton } from "./features/auth/sign-out-button";
 
-function getInitials(user: User) {
-  return ((user.firstName?.slice(0, 1) ?? "") + (user.lastName?.slice(0, 1) ?? "")).toUpperCase();
-}
-
-function renderAccountMenuItem(user: User, pathname?: string | null) {
-  if (!user) return null;
-  if (pathname?.startsWith("/account") && user.role !== UserRole.ADMIN) return null;
-
-  let target = user.role === UserRole.ADMIN ? ROUTES.DASHBOARD : ROUTES.MY_ACCOUNT;
-  let label = user.role === UserRole.ADMIN ? "Admin dashboard" : "Mon espace";
-
-  if (pathname?.startsWith("/dashboard")) {
-    target = ROUTES.MY_ACCOUNT;
-    label = "Mon profil";
-  } else if (pathname?.startsWith("/account") && user.role === UserRole.ADMIN) {
-    target = ROUTES.DASHBOARD;
-    label = "Dashboard";
-  }
+function NavUserLoadingSkeleton({ variant }: { variant: "dark" | "light" }) {
+  const isDark = variant === "dark";
 
   return (
-    <DropdownMenuItem asChild>
-      <Link href={target} className="flex items-center gap-2 cursor-pointer">
-        {target === ROUTES.DASHBOARD ? (
-          <LayoutDashboard className="w-4 h-4" />
-        ) : (
-          <UserIcon className="w-4 h-4" />
-        )}
-        {label}
-      </Link>
-    </DropdownMenuItem>
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuButton
+          size="lg"
+          disabled
+          aria-disabled
+          className={
+            isDark
+              ? "h-12 rounded-xl bg-white/5 border border-white/8 transition-all"
+              : "h-12 rounded-xl bg-gray-50 border border-gray-200 transition-all"
+          }
+        >
+          <Skeleton
+            className={
+              isDark ? "h-7 w-7 rounded-lg bg-white/10" : "h-7 w-7 rounded-lg bg-slate-200"
+            }
+          />
+          <div className="grid flex-1 text-left text-sm leading-tight min-w-0 gap-1">
+            <Skeleton className={isDark ? "h-3 w-28 bg-white/10" : "h-3 w-28 bg-slate-200"} />
+            <Skeleton className={isDark ? "h-2.5 w-36 bg-white/10" : "h-2.5 w-36 bg-slate-200"} />
+          </div>
+          <Skeleton
+            className={isDark ? "ml-auto h-4 w-4 bg-white/10" : "ml-auto h-4 w-4 bg-slate-200"}
+          />
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    </SidebarMenu>
   );
 }
 
-export function NavUser({ user, variant = "dark" }: { user: User; variant?: "dark" | "light" }) {
-  const { session, error, invalidate } = useSession();
+export function NavUser({ variant = "dark" }: { variant?: "dark" | "light" }) {
+  const { data: session, status } = useSession();
   const { isMobile } = useSidebar();
   const pathname = usePathname();
 
-  if (!user || !session) return null;
+  if (status === "loading") return <NavUserLoadingSkeleton variant={variant} />;
+  if (!session?.user) return null;
 
-  const initials = getInitials(user);
-
+  const u = session.user;
+  const initials = (
+    (u.firstName?.slice(0, 1) ?? "") + (u.lastName?.slice(0, 1) ?? "")
+  ).toUpperCase();
   const isDark = variant === "dark";
+
+  function renderAccountMenuItem() {
+    if (pathname?.startsWith("/account") && u.role !== UserRole.ADMIN) return null;
+
+    let target = u.role === UserRole.ADMIN ? ROUTES.DASHBOARD : ROUTES.MY_ACCOUNT;
+    let label = u.role === UserRole.ADMIN ? "Admin dashboard" : "Mon espace";
+
+    if (pathname?.startsWith("/dashboard")) {
+      target = ROUTES.MY_ACCOUNT;
+      label = "Mon profil";
+    } else if (pathname?.startsWith("/account") && u.role === UserRole.ADMIN) {
+      target = ROUTES.DASHBOARD;
+      label = "Dashboard";
+    }
+
+    return (
+      <DropdownMenuItem asChild>
+        <Link href={target} className="flex items-center gap-2 cursor-pointer">
+          {target === ROUTES.DASHBOARD ? (
+            <LayoutDashboard className="w-4 h-4" />
+          ) : (
+            <UserIcon className="w-4 h-4" />
+          )}
+          {label}
+        </Link>
+      </DropdownMenuItem>
+    );
+  }
 
   return (
     <SidebarMenu>
@@ -93,7 +126,7 @@ export function NavUser({ user, variant = "dark" }: { user: User; variant?: "dar
               }
             >
               <Avatar className="h-7 w-7 rounded-lg shrink-0">
-                <AvatarImage src={user.avatar} alt={user.firstName} />
+                <AvatarImage src={u.avatarUrl} alt={u.firstName} />
                 <AvatarFallback
                   className={
                     isDark
@@ -101,10 +134,10 @@ export function NavUser({ user, variant = "dark" }: { user: User; variant?: "dar
                       : "rounded-lg bg-indigo-100 text-indigo-600 text-xs font-semibold"
                   }
                 >
-                  {user.avatarUrl ? (
+                  {u.avatarUrl ? (
                     <Image
-                      src={user.avatarUrl}
-                      alt={`Avatar de ${user.firstName || user.email}`}
+                      src={u.avatarUrl}
+                      alt={`Avatar de ${u.firstName || u.email}`}
                       width={80}
                       height={80}
                       className="h-full w-full object-cover"
@@ -128,7 +161,7 @@ export function NavUser({ user, variant = "dark" }: { user: User; variant?: "dar
                       : "truncate text-xs font-semibold text-gray-800"
                   }
                 >
-                  {user.firstName} {user.lastName}
+                  {u.firstName} {u.lastName}
                 </span>
                 <span
                   className={
@@ -137,7 +170,7 @@ export function NavUser({ user, variant = "dark" }: { user: User; variant?: "dar
                       : "truncate text-[10px] text-gray-400"
                   }
                 >
-                  {user.email}
+                  {u.email}
                 </span>
               </div>
               <ChevronsUpDown
@@ -157,17 +190,16 @@ export function NavUser({ user, variant = "dark" }: { user: User; variant?: "dar
             align="end"
             sideOffset={8}
           >
-            {/* User info header */}
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-3 px-3 py-3">
                 <Avatar className="h-9 w-9 rounded-xl">
-                  <AvatarImage src={user.avatar} alt={user.firstName} />
+                  <AvatarImage src={u.avatarUrl} alt={u.firstName} />
                   <AvatarFallback className="rounded-xl bg-emerald-100 text-emerald-700 text-sm
                     font-semibold">
-                    {user.avatarUrl ? (
+                    {u.avatarUrl ? (
                       <Image
-                        src={user.avatarUrl}
-                        alt={`Avatar de ${user.firstName || user.email}`}
+                        src={u.avatarUrl}
+                        alt={`Avatar de ${u.firstName || u.email}`}
                         width={80}
                         height={80}
                         className="h-full w-full object-cover rounded-full"
@@ -185,16 +217,16 @@ export function NavUser({ user, variant = "dark" }: { user: User; variant?: "dar
                 </Avatar>
                 <div className="grid flex-1 text-left leading-tight min-w-0">
                   <span className="truncate text-sm font-semibold text-gray-900">
-                    {user.firstName} {user.lastName}
+                    {u.firstName} {u.lastName}
                   </span>
-                  <span className="truncate text-xs text-gray-400">{user.email}</span>
+                  <span className="truncate text-xs text-gray-400">{u.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuGroup>{renderAccountMenuItem(user, pathname)}</DropdownMenuGroup>
+            <DropdownMenuGroup>{renderAccountMenuItem()}</DropdownMenuGroup>
 
             <DropdownMenuSeparator />
 
@@ -216,13 +248,10 @@ export function NavUser({ user, variant = "dark" }: { user: User; variant?: "dar
             <DropdownMenuSeparator />
 
             <DropdownMenuItem className="p-0" asChild>
-              {session && !error && (
-                <SignOutButton
-                  variant="destructive"
-                  className="w-full flex justify-center items-center rounded-lg"
-                  onSignOut={invalidate}
-                />
-              )}
+              <SignOutButton
+                variant="destructive"
+                className="w-full flex justify-center items-center rounded-lg"
+              />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

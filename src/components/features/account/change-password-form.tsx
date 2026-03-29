@@ -14,16 +14,15 @@ import {
   ChangePasswordProfileFormData,
   ChangePasswordProfileSchema,
 } from "@/lib/auth/models/auth.model";
-import { useAuthUser } from "@/lib/auth/context/auth.user.context";
-import { changePasswordProfileAction } from "@/lib/auth/actions/auth";
-import { authClient } from "@/lib/auth/api/auth.client";
+import { useSession } from "next-auth/react";
+import { changePasswordProfileAction , signOutAction } from "@/lib/auth/actions/auth";
 import { isApiError } from "@/shared/errors/api-error";
 
 const { MY_ACCOUNT } = ROUTES;
 
 export function ChangePasswordForm() {
   const router = useRouter();
-  const { user } = useAuthUser();
+  const { data: session } = useSession();
 
   const {
     register,
@@ -33,7 +32,7 @@ export function ChangePasswordForm() {
   } = useForm<ChangePasswordProfileFormData>({
     resolver: zodResolver(ChangePasswordProfileSchema) as any,
     defaultValues: {
-      email: user?.email || "",
+      email: session?.user?.email || "",
       oldPassword: "",
       newPassword: "",
       confirmPassword: "",
@@ -242,18 +241,16 @@ export function ChangePasswordForm() {
               disabled={loading}
               className="text-xs text-orange-600 hover:text-orange-700 font-medium
                 underline-offset-2 hover:underline transition-colors"
-              onClick={() => {
+              onClick={async () => {
                 setLoading(true);
-                authClient
-                  .signOut()
-                  .then(() => {
-                    router.push(ROUTES.FORGOT_PASSWORD);
-                    setLoading(false);
-                  })
-                  .catch((error_) => {
-                    toast.error("Erreur lors de la déconnexion");
-                    setLoading(false);
-                  });
+                try {
+                  await signOutAction();
+                  router.push(ROUTES.FORGOT_PASSWORD);
+                } catch {
+                  toast.error("Erreur lors de la déconnexion");
+                } finally {
+                  setLoading(false);
+                }
               }}
             >
               Mot de passe oublié ?

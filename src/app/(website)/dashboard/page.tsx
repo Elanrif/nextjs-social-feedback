@@ -15,7 +15,7 @@ import {
   XCircle,
   ShieldCheck,
 } from "lucide-react";
-import { auth } from "@/lib/auth/api/auth";
+import { auth } from "@/lib/auth/next-auth/auth";
 import { cn } from "@/utils/utils";
 import { isApiError } from "@/shared/errors/api-error";
 import { DashboardHero } from "@/components/features/dashboard/dashboard-hero";
@@ -26,11 +26,9 @@ export const metadata = {
 };
 
 export default async function DashboardPage() {
-  const response = await auth.api.getCurrentUser();
-  if (!response.ok || !response.data) {
-    redirect("/sign-in?callbackUrl=/dashboard");
-  }
-  const { user } = response.data;
+  const session = await auth();
+  if (!session?.user) redirect("/sign-in?callbackUrl=/dashboard");
+  const user = session.user;
 
   const reqHeaders = await headers();
   const config = { headers: reqHeaders };

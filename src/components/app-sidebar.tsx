@@ -14,7 +14,6 @@ import {
   SidebarRail,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { User } from "@/lib/users/models/user.model";
 import { ROUTES } from "@/utils/routes";
 
 const { DASHBOARD, PRODUCTS, CATEGORIES, USERS } = ROUTES;
@@ -61,10 +60,7 @@ const data = {
 
 const sidebarBg = "bg-slate-950 text-white";
 
-export function AppSidebar({
-  user,
-  ...props
-}: React.ComponentProps<typeof Sidebar> & { user: User }) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props} className={sidebarBg}>
       <SidebarHeader className={sidebarBg}>
@@ -80,7 +76,7 @@ export function AppSidebar({
       <SidebarSeparator className="bg-white/5 mx-3" />
 
       <SidebarFooter className={sidebarBg}>
-        <NavUser user={user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

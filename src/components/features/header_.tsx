@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { SignOutButton } from "@/components/features/auth/sign-out-button";
 import { ROUTES } from "@/utils/routes";
-import { useSession } from "@/hooks/use.session";
+import { useSession } from "next-auth/react";
 import Logo from "./logo";
 import { Mail, LayoutDashboard, LogIn, UserPlus, Menu, X, UserCheck } from "lucide-react";
 import { cn } from "@/utils/utils";
@@ -25,7 +25,9 @@ const { SIGN_IN, SIGN_UP, DASHBOARD } = ROUTES;
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { session, isLoading, error, invalidate } = useSession();
+  const { data: session, status } = useSession();
+  const isLoading = status === "loading";
+  const isAuthenticated = !!session?.user;
 
   const navLinkClass = isScrolled
     ? "text-gray-600 hover:text-gray-900 hover:bg-gray-100/70"
@@ -63,10 +65,8 @@ export function Header() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-14 items-center justify-between gap-8">
-          {/* ── Left: Logo ── */}
           <Logo variant={isScrolled ? "dark" : "light"} />
 
-          {/* ── Center: Nav ── */}
           <nav className="hidden md:flex items-center gap-0.5 flex-1 justify-center">
             {navLinks.map((link) => (
               <Link
@@ -81,7 +81,6 @@ export function Header() {
             ))}
           </nav>
 
-          {/* ── Right: Auth ── */}
           <div className="hidden md:flex items-center gap-2 shrink-0">
             {(() => {
               if (isLoading) {
@@ -92,10 +91,10 @@ export function Header() {
                   </>
                 );
               }
-              if (session && session.ok && !error) {
+              if (isAuthenticated) {
                 return (
                   <>
-                    {session.data.user.role === "ADMIN" ? (
+                    {session.user.role === "ADMIN" ? (
                       <Link
                         href={DASHBOARD}
                         className={cn(
@@ -120,7 +119,7 @@ export function Header() {
                         Mon compte
                       </Link>
                     )}
-                    <SignOutButton variant="destructive" onSignOut={invalidate} />
+                    <SignOutButton variant="destructive" />
                   </>
                 );
               }
@@ -155,7 +154,6 @@ export function Header() {
             })()}
           </div>
 
-          {/* ── Mobile: Burger ── */}
           <button
             className={`md:hidden p-1.5 rounded-lg transition-colors ${burgerClass}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -166,7 +164,7 @@ export function Header() {
         </div>
       </div>
 
-      {/* ── Mobile Menu ── */}
+      {/* Mobile Menu */}
       <div
         className={`md:hidden overflow-hidden transition-all duration-300 ${
           isMobileMenuOpen
@@ -193,15 +191,12 @@ export function Header() {
           ))}
 
           <div className="pt-2 pb-1 flex gap-2">
-            {session?.ok && session.data ? (
+            {isAuthenticated ? (
               <div className="flex-1">
                 <SignOutButton
                   className="w-full"
                   variant="destructive"
-                  onSignOut={() => {
-                    invalidate();
-                    setIsMobileMenuOpen(false);
-                  }}
+                  onSignOut={() => setIsMobileMenuOpen(false)}
                 />
               </div>
             ) : (

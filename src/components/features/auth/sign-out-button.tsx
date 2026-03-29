@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ROUTES } from "@/utils/routes";
-import { authClient } from "@/lib/auth/api/auth.client";
+import { signOutAction } from "@/lib/auth/actions/auth";
 import LoadingPage from "@/components/features/loading-page";
 
 interface SignOutButtonProps {
@@ -25,7 +25,8 @@ export function SignOutButton({
   const handleSignOut = async () => {
     setLoading(true);
     if (onSignOut) onSignOut();
-    await authClient.signOut(redirectTo);
+    await signOutAction();
+    window.location.href = redirectTo ?? "/";
   };
 
   const variantStyles = {

@@ -9,7 +9,7 @@ import type { User } from "@/lib/users/models/user.model";
 import { Eye, Pencil, Trash2, Users, Plus, ShieldCheck } from "lucide-react";
 import LoadingPage from "@components/features/loading-page";
 import { useUsers, useDeleteUser } from "@/lib/users/hooks/use-users";
-import { useAuthUser } from "@/lib/auth/context/auth.user.context";
+import { useSession } from "next-auth/react";
 
 const { DASHBOARD, USERS } = ROUTES;
 
@@ -18,9 +18,9 @@ export function UserList() {
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
-  const { id: currentUserId } = useAuthUser();
+  const { data: session } = useSession();
   const { data: users = [], isLoading } = useUsers();
-  const filteredUsers = users.filter((u) => u.id !== currentUserId);
+  const filteredUsers = users.filter((u) => u.email !== session?.user?.email);
   const { mutate: remove, isPending: deleteLoading } = useDeleteUser();
 
   const handleDelete = () => {

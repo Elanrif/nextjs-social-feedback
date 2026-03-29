@@ -1,14 +1,12 @@
-import { auth } from "@/lib/auth/api/auth";
+import { auth } from "@/lib/auth/next-auth/auth";
 import { ROUTES } from "@/utils/routes";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import {
   Mail,
-  Calendar,
   Shield,
   CheckCircle2,
-  AlertCircle,
   ChevronRight,
   KeyRound,
   User,
@@ -23,25 +21,12 @@ export const metadata = {
 };
 
 export default async function AccountPage() {
-  const response = await auth.api.getCurrentUser();
-
-  if (!response.ok || !response.data) {
-    redirect("/sign-in?callbackUrl=/account");
-  }
-  const { session, user } = response.data;
+  const session = await auth();
+  if (!session?.user) redirect("/sign-in?callbackUrl=/account");
+  const user = session.user;
 
   const initials =
     user.firstName?.slice(0, 2).toUpperCase() || user.email?.slice(0, 2).toUpperCase() || "U";
-
-  const memberSince = user.createdAt
-    ? new Date(user.createdAt).toLocaleDateString("fr-FR", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : "—";
-
-  const sessionExpires = "N/A";
 
   return (
     <div className="min-h-screen p-6 space-y-6 max-w-7xl mx-auto">
@@ -57,7 +42,6 @@ export default async function AccountPage() {
         />
 
         <div className="relative flex items-center gap-6">
-          {/* Avatar */}
           <div className="relative shrink-0">
             <div className="h-20 w-20 rounded-2xl shadow-lg ring-2 ring-white/10 overflow-hidden">
               {user.avatarUrl ? (
@@ -78,17 +62,8 @@ export default async function AccountPage() {
                 </div>
               )}
             </div>
-            {user.emailVerified && (
-              <div
-                className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-emerald-500 flex
-                  items-center justify-center ring-2 ring-slate-900"
-              >
-                <CheckCircle2 className="w-3 h-3 text-white" />
-              </div>
-            )}
           </div>
 
-          {/* Info */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-2xl font-bold text-white truncate">
@@ -107,13 +82,8 @@ export default async function AccountPage() {
               </span>
             </div>
             <p className="text-slate-400 text-sm mt-1 truncate">{user.email}</p>
-            <div className="flex items-center gap-1 mt-2 text-slate-500 text-xs">
-              <Calendar className="w-3.5 h-3.5" />
-              <span>Membre depuis {memberSince}</span>
-            </div>
           </div>
 
-          {/* Edit button */}
           <Link
             href={ROUTES.EDIT_PROFILE}
             className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10
@@ -141,7 +111,7 @@ export default async function AccountPage() {
                 <Clock className="w-3.5 h-3.5 shrink-0" />
                 <span>Expire le</span>
               </div>
-              <span className="text-xs font-medium text-gray-700 text-right">{sessionExpires}</span>
+              <span className="text-xs font-medium text-gray-700 text-right">N/A</span>
             </div>
             <div className="h-px bg-gray-50" />
             <div className="flex items-start justify-between gap-2">
@@ -156,39 +126,24 @@ export default async function AccountPage() {
           </div>
         </div>
 
-        {/* Email Verification */}
+        {/* Email */}
         <div className="rounded-2xl border border-gray-100 bg-white shadow-sm p-6 space-y-4">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-lg bg-violet-50">
               <Mail className="w-4 h-4 text-violet-600" />
             </div>
-            <h2 className="text-sm font-semibold text-gray-800">Vérification</h2>
+            <h2 className="text-sm font-semibold text-gray-800">Adresse e-mail</h2>
           </div>
 
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-gray-500">Adresse e-mail</p>
-              <p className="text-sm font-medium text-gray-800 mt-0.5 truncate max-w-45">
-                {user.email}
-              </p>
+            <p className="text-sm font-medium text-gray-800 truncate max-w-45">{user.email}</p>
+            <div
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50
+                text-emerald-700 text-xs font-semibold"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              Vérifié
             </div>
-            {user.emailVerified ? (
-              <div
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50
-                  text-emerald-700 text-xs font-semibold"
-              >
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                Vérifié
-              </div>
-            ) : (
-              <div
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50
-                  text-amber-700 text-xs font-semibold"
-              >
-                <AlertCircle className="w-3.5 h-3.5" />
-                Non vérifié
-              </div>
-            )}
           </div>
         </div>
       </div>
