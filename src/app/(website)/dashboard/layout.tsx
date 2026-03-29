@@ -4,7 +4,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { Bell, Sparkles } from "lucide-react";
 import { redirect } from "next/navigation";
 import { DashboardBreadcrumb } from "@/components/features/dashboard/dashboard-breadcrumb";
-import { auth } from "@/lib/auth/next-auth/auth";
+import { auth } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 

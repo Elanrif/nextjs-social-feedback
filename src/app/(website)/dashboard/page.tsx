@@ -15,7 +15,7 @@ import {
   XCircle,
   ShieldCheck,
 } from "lucide-react";
-import { auth } from "@/lib/auth/next-auth/auth";
+import { auth } from "@/lib/auth";
 import { cn } from "@/utils/utils";
 import { isApiError } from "@/shared/errors/api-error";
 import { DashboardHero } from "@/components/features/dashboard/dashboard-hero";

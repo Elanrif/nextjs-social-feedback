@@ -4,7 +4,7 @@ import { UserSidebar } from "@/components/user-sidebar";
 import { redirect } from "next/navigation";
 import { Bell, Sparkles } from "lucide-react";
 import { AccountBreadcrumb } from "@/components/features/account/account-breadcrumb";
-import { auth } from "@/lib/auth/next-auth/auth";
+import { auth } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 

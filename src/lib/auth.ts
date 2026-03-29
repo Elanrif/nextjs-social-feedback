@@ -1,50 +1,115 @@
-import { NextRequest, NextResponse } from "next/server";
+import "server-only";
 
-// Demo token for testing purposes
-export const DEMO_TOKEN = "demo-bearer-token-123";
+import NextAuth, { type DefaultSession } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import { getLogger } from "@/config/logger.config";
+import { LoginSchema } from "@/lib/auth/models/auth.model";
+import { signIn as restSignIn } from "@/lib/auth/auth.service";
 
-/**
- * Validates the Bearer token from the Authorization header
- * @param request - The incoming request
- * @returns null if valid, or a NextResponse with error if invalid
- */
-export function validateBearerToken(request: NextRequest): NextResponse | null {
-  const authHeader = request.headers.get("authorization");
+const logger = getLogger("server");
 
-  if (!authHeader) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Authorization header is missing",
-        message: "Please provide a Bearer token in the Authorization header",
-      },
-      { status: 401 },
-    );
+// ─── Type augmentation ───────────────────────────────────────────────────────
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      role: string;
+      firstName: string;
+      lastName: string;
+      phoneNumber: string;
+      avatarUrl?: string;
+      access_token?: string;
+      refresh_token?: string;
+    } & DefaultSession["user"];
   }
 
-  if (!authHeader.startsWith("Bearer ")) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Invalid authorization format",
-        message: "Authorization header must start with 'Bearer '",
-      },
-      { status: 401 },
-    );
+  interface User {
+    role: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    avatarUrl?: string;
+    access_token?: string;
+    refresh_token?: string;
   }
-
-  const token = authHeader.slice(7); // Remove "Bearer " prefix
-
-  if (token !== DEMO_TOKEN) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Invalid token",
-        message: "The provided Bearer token is invalid",
-      },
-      { status: 403 },
-    );
-  }
-
-  return null; // Token is valid
 }
+
+// ─── NextAuth config ──────────────────────────────────────────────────────────
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  providers: [
+    Credentials({
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const parsed = LoginSchema.safeParse(credentials);
+        if (!parsed.success) return null;
+
+        const result = await restSignIn({
+          email: parsed.data.email,
+          password: parsed.data.password,
+        });
+        if (!result.ok) {
+          logger.warn({ email: parsed.data.email }, "Auth provider signIn failed");
+          return null;
+        }
+
+        const { user: u, access_token, refresh_token } = result.data;
+
+        return {
+          id: u.id,
+          email: u.email,
+          name: `${u.firstName} ${u.lastName}`,
+          role: u.role,
+          firstName: u.firstName,
+          lastName: u.lastName,
+          phoneNumber: u.phoneNumber,
+          avatarUrl: u.avatarUrl,
+          access_token,
+          refresh_token,
+        };
+      },
+    }),
+  ],
+
+  callbacks: {
+    jwt({ token, user, trigger, session }) {
+      if (trigger === "update" && session) {
+        return { ...token, ...session };
+      }
+      if (user) {
+        token.role = user.role;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
+        token.phoneNumber = user.phoneNumber;
+        token.avatarUrl = user.avatarUrl;
+        token.access_token = user.access_token;
+        token.refresh_token = user.refresh_token;
+      }
+      return token;
+    },
+    session({ session, token }) {
+      session.user.id = token.sub ?? "";
+      session.user.role = token.role as string;
+      session.user.firstName = token.firstName as string;
+      session.user.lastName = token.lastName as string;
+      session.user.phoneNumber = token.phoneNumber as string;
+      session.user.avatarUrl = token.avatarUrl as string | undefined;
+      session.user.access_token = token.access_token as string | undefined;
+      session.user.refresh_token = token.refresh_token as string | undefined;
+      return session;
+    },
+  },
+
+  pages: {
+    signIn: "/sign-in",
+    error: "/sign-in",
+  },
+
+  session: {
+    strategy: "jwt",
+    maxAge: 7 * 24 * 60 * 60, // 7 jours
+  },
+});

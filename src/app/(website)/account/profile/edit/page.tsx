@@ -1,5 +1,5 @@
 import { ProfileEditForm } from "@/components/features/account/profile/profile-edit-form";
-import { auth } from "@/lib/auth/next-auth/auth";
+import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export const metadata = {

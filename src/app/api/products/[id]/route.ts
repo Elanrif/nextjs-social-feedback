@@ -6,7 +6,7 @@ import {
 } from "@/lib/products/services/product.service";
 import { ProductUpdate, parseProductUpdate } from "@/lib/products/models/product.model";
 import { getLogger } from "@config/logger.config";
-import { getSession } from "@/lib/auth/next-auth/next-auth.service";
+import { auth } from "@/lib/auth";
 import { validationError } from "@/utils/utils.server";
 import { ApiErrorResponse } from "@/shared/errors/api-error.server";
 
@@ -55,9 +55,9 @@ export async function PATCH(request: NextRequest, { params }: { params: Params }
   const productId = Number.parseInt(id, 10);
 
   // User authentication and role verification
-  const session = await getSession();
+  const session = await auth();
 
-  if (!session.ok) {
+  if (!session?.user) {
     const err = {
       error: "Unauthorized",
       status: 401,
@@ -73,7 +73,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Params }
     return NextResponse.json({ ok: false, error: err }, { status: err.status });
   }
 
-  if (session.data?.user?.role !== "ADMIN") {
+  if (session.user.role !== "ADMIN") {
     const err = {
       status: 403,
       message: "You do not have permission to perform this action",
@@ -105,7 +105,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Params }
   }
 
   const reqHeaders = new Headers(request.headers);
-  const config = { headers: reqHeaders, access_token: session.data?.access_token };
+  const config = { headers: reqHeaders, access_token: session.user.access_token };
 
   try {
     const response = await updateProduct(config, productId, parsed.data as ProductUpdate);
@@ -144,9 +144,9 @@ export async function DELETE(request: NextRequest, { params }: { params: Params 
   const productId = Number.parseInt(id, 10);
 
   // User authentication and role verification
-  const session = await getSession();
+  const session = await auth();
 
-  if (!session.ok) {
+  if (!session?.user) {
     const err = {
       error: "Unauthorized",
       status: 401,
@@ -162,7 +162,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Params 
     return NextResponse.json({ ok: false, error: err }, { status: err.status });
   }
 
-  if (session.data?.user?.role !== "ADMIN") {
+  if (session.user.role !== "ADMIN") {
     const err = {
       status: 403,
       message: "You do not have permission to perform this action",
@@ -178,7 +178,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Params 
   }
 
   const reqHeaders = new Headers(request.headers);
-  const config = { headers: reqHeaders, access_token: session.data?.access_token };
+  const config = { headers: reqHeaders, access_token: session.user.access_token };
 
   try {
     const response = await deleteProduct(config, productId);

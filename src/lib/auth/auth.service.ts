@@ -30,7 +30,12 @@ const {
   api: {
     rest: {
       endpoints: {
-        auth: { editProfile: editProfileUrl, changeProfilePasswordUrl: changeProfilePasswordUrl },
+        auth: {
+          editProfile: editProfileUrl,
+          changeProfilePasswordUrl: changeProfilePasswordUrl,
+          refreshTokenUrl,
+          logoutUrl,
+        },
         register: registerUrl,
         login: loginUrl,
         resetPassword: resetPasswordUrl,
@@ -39,6 +44,19 @@ const {
   },
 } = environment;
 const logger = getLogger("server");
+
+const missingTokenError = (detail: string): Result<never, ApiError> => {
+  return {
+    ok: false,
+    error: {
+      status: 400,
+      detail,
+      title: "Bad Request",
+      instance: undefined,
+      errorCode: "VALIDATION_ERROR",
+    },
+  };
+};
 
 /**
  * Sign in a user with email and password
@@ -89,6 +107,59 @@ export async function signUp(
     return {
       ok: false,
       error: ApiErrorResponse(error, "signUp"),
+    };
+  }
+}
+
+/**
+ * Refresh access token using a refresh token
+ */
+export async function refreshToken(
+  refresh_token: string,
+  config?: Config,
+): Promise<Result<AuthPayload, ApiError>> {
+  if (!refresh_token) return missingTokenError("Missing refresh token");
+
+  try {
+    // Backend validation expects `refreshToken` (camelCase) for Keycloak endpoints.
+    // Keep `refresh_token` as fallback for backward compatibility.
+    const body = { refreshToken: refresh_token, refresh_token };
+    const { data } = await apiClient(true, config).post<any, AxiosResponse<AuthPayload>>(
+      refreshTokenUrl,
+      body,
+    );
+    logger.info("Token refreshed successfully");
+    return { ok: true, data };
+  } catch (error) {
+    logger.error("Failed to refresh token");
+    return {
+      ok: false,
+      error: ApiErrorResponse(error, "refreshToken"),
+    };
+  }
+}
+
+/**
+ * Logout user from backend
+ *
+ * Depending on backend implementation, logout can be performed with:
+ * - Authorization header (access token)
+ * - or refresh token in the body
+ */
+export async function logout(
+  params: { refresh_token?: string } = {},
+  config?: Config,
+): Promise<Result<Record<string, never>, ApiError>> {
+  try {
+    const client = apiClient(false, config);
+    await client.post(logoutUrl, params);
+    logger.info("Logged out successfully");
+    return { ok: true, data: {} };
+  } catch (error) {
+    logger.warn("Failed to logout");
+    return {
+      ok: false,
+      error: ApiErrorResponse(error, "logout"),
     };
   }
 }

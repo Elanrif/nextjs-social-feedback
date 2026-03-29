@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ROUTES } from "@/utils/routes";
-import { signOutAction } from "@/lib/auth/actions/auth";
+import { logoutAction } from "@/lib/auth/actions/auth";
 import LoadingPage from "@/components/features/loading-page";
 
 interface SignOutButtonProps {
@@ -25,7 +25,7 @@ export function SignOutButton({
   const handleSignOut = async () => {
     setLoading(true);
     if (onSignOut) onSignOut();
-    await signOutAction();
+    await logoutAction();
     window.location.href = redirectTo ?? "/";
   };
 

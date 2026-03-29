@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { CategoryCreate } from "@/lib/categories/models/category.model";
 import { getLogger } from "@config/logger.config";
 import { createCategory, fetchCategories } from "@/lib/categories/services/category.service";
-import { getSession } from "@/lib/auth/next-auth/next-auth.service";
+import { auth } from "@/lib/auth";
 import { ApiErrorResponse } from "@/shared/errors/api-error.server";
 import { isApiError } from "@/shared/errors/api-error";
 
@@ -36,9 +36,9 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   // User authentication and role verification
-  const session = await getSession();
+  const session = await auth();
 
-  if (!session.ok) {
+  if (!session?.user) {
     const err = {
       error: "Unauthorized",
       status: 401,
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  if (session.data?.user?.role !== "ADMIN") {
+  if (session.user.role !== "ADMIN") {
     const err = {
       status: 403,
       message: "You do not have permission to perform this action",
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
   const body = (await request.json()) as CategoryCreate;
 
   const reqHeaders = new Headers(request.headers);
-  const config = { headers: reqHeaders, access_token: session.data?.access_token };
+  const config = { headers: reqHeaders, access_token: session.user.access_token };
 
   try {
     const response = await createCategory(config, body);

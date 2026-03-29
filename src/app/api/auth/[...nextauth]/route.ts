@@ -1,4 +1,4 @@
-import { handlers } from "@/lib/auth/next-auth/auth";
+import { handlers } from "@/lib/auth";
 
 /**
  * NextAuth v5 catch-all route.

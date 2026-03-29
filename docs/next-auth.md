@@ -3,9 +3,7 @@
 ## Fichier source unique
 
 ```
-src/lib/auth/next-auth/
-├── auth.ts               # Configuration NextAuth — source de vérité
-└── next-auth.service.ts  # getSession() pour les API routes
+src/lib/auth.ts               # Configuration NextAuth — source de vérité
 ```
 
 Tout part de `auth.ts` :
@@ -25,7 +23,7 @@ Gère automatiquement : `GET /api/auth/session`, `POST /api/auth/signin`, `POST 
 
 ```ts
 // app/api/auth/[...nextauth]/route.ts
-import { handlers } from "@/lib/auth/next-auth/auth";
+import { handlers } from "@/lib/auth";
 export const { GET, POST } = handlers;
 ```
 
@@ -35,7 +33,7 @@ Fonction serveur pour lire la session courante. Lit et déchiffre le cookie JWT 
 Utilisable dans : RSC, Server Actions, API Routes, Middleware.
 
 ```ts
-import { auth } from "@/lib/auth/next-auth/auth";
+import { auth } from "@/lib/auth";
 
 const session = await auth();
 session?.user.firstName; // string
@@ -48,7 +46,7 @@ session?.user.id; // string (JWT sub)
 Fonction serveur pour créer une session. Utilisée dans les Server Actions.
 
 ```ts
-import { signIn } from "@/lib/auth/next-auth/auth";
+import { signIn } from "@/lib/auth";
 
 await signIn("credentials", { email, password, redirect: false });
 ```
@@ -58,7 +56,7 @@ await signIn("credentials", { email, password, redirect: false });
 Fonction serveur pour détruire la session (supprime le cookie JWT).
 
 ```ts
-import { signOut } from "@/lib/auth/next-auth/auth";
+import { signOut } from "@/lib/auth";
 
 await signOut({ redirect: false });
 ```
@@ -116,18 +114,12 @@ Wrapper React qui expose la session à tous les Client Components via `useSessio
 ```tsx
 // app/layout.tsx — root layout (Server Component async)
 import { SessionProvider } from "next-auth/react";
-import { auth } from "@/lib/auth/next-auth/auth";
+import { auth } from "@/lib/auth";
 
 export default async function RootLayout({ children }) {
   const session = await auth(); // lit le cookie côté serveur
 
-  return (
-    <SessionProvider session={session}>
-      {" "}
-      // hydrate le client immédiatement
-      {children}
-    </SessionProvider>
-  );
+  return <SessionProvider session={session}>{children}</SessionProvider>;
 }
 ```
 
@@ -194,7 +186,7 @@ jwt({ token, trigger, session }) {
 ### Server Component / RSC
 
 ```ts
-import { auth } from "@/lib/auth/next-auth/auth";
+import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 const session = await auth();
@@ -207,7 +199,7 @@ const user = session.user; // accès direct, pas de hook
 
 ```ts
 "use server";
-import { auth } from "@/lib/auth/next-auth/auth";
+import { auth } from "@/lib/auth";
 
 export async function myAction() {
   const session = await auth();
@@ -220,17 +212,15 @@ export async function myAction() {
 ### API Route
 
 ```ts
-import { getSession } from "@/lib/auth/next-auth/next-auth.service";
+import { auth } from "@/lib/auth";
 
 export async function GET() {
-  const session = await getSession();
-  if (!session.ok) return NextResponse.json(session, { status: 401 });
+  const session = await auth();
+  if (!session?.user) return NextResponse.json({ status: 401 }, { status: 401 });
 
-  // session.data.access_token pour authentifier les appels backend
+  // session.user.access_token pour authentifier les appels backend
 }
 ```
-
-`getSession()` est wrappé avec `cache()` React — appelé plusieurs fois dans la même requête, il ne déchiffre qu'une fois.
 
 ### Client Component
 
@@ -251,8 +241,8 @@ export function MyComponent() {
 ### Middleware (Edge)
 
 ```ts
-// src/middleware.ts
-import { auth } from "@/lib/auth/next-auth/auth";
+// src/proxy.ts (renommé middleware.ts si Next.js ne détecte pas proxy.ts)
+import { auth } from "@/lib/auth";
 
 export default auth(function middleware(req) {
   const isAuthenticated = !!req.auth; // req.auth = session NextAuth
@@ -314,7 +304,7 @@ export default auth(function middleware(req) {
 | `import { useSession } from "next-auth/react"` dans un Server Component | `await auth()`                                            |
 | `getServerSession(authOptions)`                                         | `await auth()` (v5, plus besoin de passer authOptions)    |
 | `getSession()` de `next-auth/react` côté serveur                        | `await auth()` (évite un call HTTP inutile vers soi-même) |
-| `import { auth } from "next-auth/react"`                                | `import { auth } from "@/lib/auth/next-auth/auth"`        |
+| `import { auth } from "next-auth/react"`                                | `import { auth } from "@/lib/auth"`                       |
 | Wrapper `useSession` dans un hook custom                                | Utiliser `useSession` directement                         |
 
 ---
@@ -323,8 +313,7 @@ export default auth(function middleware(req) {
 
 ```ts
 // Serveur (RSC, Server Action, API Route, Middleware)
-import { auth, signIn, signOut } from "@/lib/auth/next-auth/auth";
-import { getSession } from "@/lib/auth/next-auth/next-auth.service"; // API Routes uniquement
+import { auth, signIn, signOut } from "@/lib/auth";
 
 // Client (Client Component)
 import { useSession } from "next-auth/react";

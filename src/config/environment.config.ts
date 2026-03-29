@@ -24,6 +24,8 @@ const environment = {
           baseUrl: `${BACKEND_BASE_V1}/auth`,
           editProfile: `${BACKEND_BASE_V1}/auth/edit-profile`,
           changeProfilePasswordUrl: `${BACKEND_BASE_V1}/auth/change-password-profile`,
+          refreshTokenUrl: `${BACKEND_BASE_V1}/keycloak/refresh-token`,
+          logoutUrl: `${BACKEND_BASE_V1}/keycloak/logout`,
         },
       },
     },

@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth/next-auth/auth";
+import { auth } from "@/lib/auth";
 import { ROUTES } from "@/utils/routes";
 import { redirect } from "next/navigation";
 import Link from "next/link";
