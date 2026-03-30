@@ -7,11 +7,13 @@ import { useUpdatePost } from "@/lib/posts/hooks/use-posts";
 import { toast } from "react-toastify";
 import { ROUTES } from "@/utils/routes";
 import { Post, PostFormData, postSchema } from "@/lib/posts/models/post.model";
-import { ArrowLeft, Pencil, FileText, Save, ImageIcon, Heart, AlignLeft } from "lucide-react";
+import { ArrowLeft, Pencil, FileText, Save, Heart, AlignLeft } from "lucide-react";
 import { icLight } from "@/components/ui/form/input-class";
 import { SectionTitle } from "@/components/ui/form/section-title";
 import { Field } from "@/components/ui/form/field";
 import { FormError } from "@/components/ui/form/form-error";
+import { ImageUpload } from "@/components/ui/image-upload";
+import { useImageDraft } from "@/lib/cloudinary/hooks/use-image-draft";
 
 const { DASHBOARD, POSTS } = ROUTES;
 
@@ -34,16 +36,22 @@ export function PostEditForm({ loadedPost }: { loadedPost: Post }) {
   const [apiError, setApiError] = useState<string | null>(null);
   const { mutate: update, isPending: loading } = useUpdatePost();
 
+  const image = useImageDraft({
+    storageKey: `post:${loadedPost.id}:image`,
+    initialUrl: loadedPost?.imageUrl,
+  });
+
   const onSubmit = (data: PostFormData) => {
     setApiError(null);
     update(
       {
         id: Number(loadedPost.id),
-        data: { ...data, likes: Number(data.likes) },
+        data: { ...data, likes: Number(data.likes), imageUrl: image.url || data.imageUrl },
       },
       {
         onSuccess: (post) => {
           toast.success("Post modifié avec succès");
+          image.clearDraft();
           router.push(`${DASHBOARD}${POSTS}/${post?.id}`);
         },
         onError: (err) => {
@@ -87,13 +95,16 @@ export function PostEditForm({ loadedPost }: { loadedPost: Post }) {
                 className={icLight}
               />
             </Field>
-            <Field
-              variant="light"
-              label="URL de l'image"
-              error={errors.imageUrl?.message}
-              icon={<ImageIcon className="w-4 h-4" />}
-            >
-              <input {...register("imageUrl")} placeholder="https://..." className={icLight} />
+            <Field variant="light" label="Image du post" required={false}>
+              <div className="pt-1">
+                <ImageUpload
+                  value={image.url}
+                  publicId={image.publicId}
+                  onChange={image.handleChange}
+                  onRemove={image.handleRemove}
+                  variant="light"
+                />
+              </div>
             </Field>
           </div>
 

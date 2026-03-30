@@ -76,7 +76,10 @@ export async function createPostAction(data: PostCreate): Promise<Result<Post, A
 
   const config = { headers: await headers(), access_token: session.user.access_token };
   try {
-    const res = await createPost(config, validation.data);
+    const res = await createPost(config, {
+      ...validation.data,
+      authorId: Number(session.user.id),
+    });
 
     return res;
   } catch (error: any) {
