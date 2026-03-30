@@ -178,21 +178,36 @@ src/app/(dashboard)/dashboard/{entity}/
 
 ## Authentification
 
+NextAuth v5 (Credentials provider, stratégie JWT).
+
 ```
+src/lib/auth.ts                        # NextAuth config — handlers, auth, signIn, signOut (server-only)
 src/lib/auth/
-├── api/
-│   ├── auth.ts           # Façade serveur (import dans Server Components/Actions)
-│   └── auth.client.ts    # Façade client (import dans Client Components)
-├── actions/auth.ts        # Server Actions (changePassword, etc.)
-├── context/auth.user.context.tsx   # AuthUserProvider + useAuthUser()
-├── jose/jose.service.ts   # JWT encode/decode (serveur)
-└── models/auth.model.ts   # Types + Zod schemas auth
+├── models/
+│   └── auth.model.ts                  # Types + Zod schemas auth
+├── actions/auth.ts                    # Server Actions (signInAction, signUpAction, signOutAction, refreshTokenAction, editProfileAction, etc.)
+├── auth.service.ts                    # Service serveur (appels REST backend — signIn, signUp, refreshToken, logout, editProfile, etc.)
+├── auth.client.service.ts             # Service client (appels proxy API routes — signIn, signUp, changeUserPassword)
+└── hooks/use-auth.ts                  # React Query hooks (useSignIn, useSignUp, useChangePassword)
 ```
 
-**Règle impérative** :
+**Règles impératives** :
 
-- `import { auth } from "@/lib/auth/api/auth"` → serveur uniquement
-- `import { authClient } from "@/lib/auth/api/auth.client"` → client uniquement
+```ts
+// ✅ Serveur (RSC, Server Action, API Route, Middleware)
+import { auth, signIn, signOut, handlers } from "@/lib/auth";
+const session = await auth();
+// session?.user.access_token | session?.user.role | session?.user.refresh_token
+
+// ✅ Client — appels HTTP vers les proxy API routes
+import { signIn, signUp, changeUserPassword } from "@/lib/auth/auth.client.service";
+
+// ✅ Client — React Query hooks
+import { useSignIn, useSignUp, useChangePassword } from "@/lib/auth/hooks/use-auth";
+
+// ✅ Client — session Next.js
+import { useSession } from "next-auth/react";
+```
 
 ---
 

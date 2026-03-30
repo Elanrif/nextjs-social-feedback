@@ -10,7 +10,8 @@ Intégration via **next-cloudinary** (library officielle) + **Server Action** po
 
 ## 1. Créer un compte Cloudinary
 
-Aller sur [https://cloudinary.com](https://cloudinary.com) → **Sign Up** (plan gratuit suffisant).
+- Aller sur [https://cloudinary.com](https://cloudinary.com) → **Sign Up** (plan gratuit suffisant).
+- Mon espace cloudinary [https://console.cloudinary.com/app/elanrif](https://console.cloudinary.com/app/c-7832452c47b2cd3fe0191cc8eb7b75/assets/media_library/folders/home?view_mode=mosaic) → **Dashboard** (Gestion media).
 
 ---
 
