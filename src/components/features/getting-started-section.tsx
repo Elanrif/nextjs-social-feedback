@@ -32,11 +32,11 @@ const steps = [
 const commands = [
   {
     prompt: "$",
-    text: "git clone https://github.com/Elanrif/kickstart-nextjs-starter-kit.git",
+    text: "git clone https://github.com/Elanrif/kickstart-nextjs-social-feedback.git",
   },
   {
     prompt: "$",
-    text: "cd kickstart-nextjs-starter-kit",
+    text: "cd kickstart-nextjs-social-feedback",
   },
   { prompt: "$", text: "npm install" },
   {

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { HomeIcon, LayoutGrid, Tag, Package, Users } from "lucide-react";
+import { HomeIcon, LayoutGrid, Tag, Package, Users, MessageSquare, FileText } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import { ROUTES } from "@/utils/routes";
 
-const { DASHBOARD, PRODUCTS, CATEGORIES, USERS } = ROUTES;
+const { DASHBOARD, PRODUCTS, CATEGORIES, USERS, COMMENTS, POSTS } = ROUTES;
 
 const data = {
   teams: [
@@ -52,6 +52,16 @@ const data = {
           title: "Utilisateurs",
           url: `${DASHBOARD}${USERS}`,
           icon: Users,
+        },
+        {
+          title: "Posts",
+          url: `${DASHBOARD}${POSTS}`,
+          icon: FileText,
+        },
+        {
+          title: "Commentaires",
+          url: `${DASHBOARD}${COMMENTS}`,
+          icon: MessageSquare,
         },
       ],
     },

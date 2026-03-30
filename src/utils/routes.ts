@@ -9,6 +9,8 @@ export const ROUTES = {
   CATEGORIES: "/categories",
   PRODUCTS: "/products",
   USERS: "/users",
+  COMMENTS: "/comments",
+  POSTS: "/posts",
   FAQ: "/faq",
   SIGN_IN: "/sign-in",
   SIGN_UP: "/sign-up",

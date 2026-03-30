@@ -12,7 +12,7 @@ const footerSections = {
     },
     {
       label: "Examples",
-      href: "https://github.com/Elanrif/kickstart-nextjs-starter-kit/tree/main/examples",
+      href: "https://github.com/Elanrif/kickstart-nextjs-social-feedback/tree/main/examples",
     },
   ],
   resources: [
@@ -36,7 +36,7 @@ const footerSections = {
   community: [
     {
       label: "GitHub",
-      href: "https://github.com/Elanrif/kickstart-nextjs-starter-kit",
+      href: "https://github.com/Elanrif/kickstart-nextjs-social-feedback",
     },
     {
       label: "Discord",
@@ -48,13 +48,13 @@ const footerSections = {
     },
     {
       label: "Discussions",
-      href: "https://github.com/Elanrif/kickstart-nextjs-starter-kit/discussions",
+      href: "https://github.com/Elanrif/kickstart-nextjs-social-feedback/discussions",
     },
   ],
   legal: [
     {
       label: "MIT License",
-      href: "https://github.com/Elanrif/kickstart-nextjs-starter-kit/blob/main/LICENSE",
+      href: "https://github.com/Elanrif/kickstart-nextjs-social-feedback/blob/main/LICENSE",
     },
     { label: "Privacy", href: "/privacy" },
     { label: "Terms", href: "/terms" },
@@ -125,7 +125,7 @@ export function Footer() {
               {[
                 {
                   icon: <Github className="w-5 h-5" />,
-                  href: "https://github.com/Elanrif/kickstart-nextjs-starter-kit",
+                  href: "https://github.com/Elanrif/kickstart-nextjs-social-feedback",
                   label: "GitHub",
                 },
                 {

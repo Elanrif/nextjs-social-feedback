@@ -100,7 +100,7 @@ export default function Hero() {
               asChild
             >
               <a
-                href="https://github.com/Elanrif/kickstart-nextjs-starter-kit"
+                href="https://github.com/Elanrif/kickstart-nextjs-social-feedback"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center"
