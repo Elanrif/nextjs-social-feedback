@@ -1,23 +1,21 @@
 import { redirect } from "next/navigation";
-import { fetchProducts } from "@/lib/products/services/product.service";
-import { fetchCategories } from "@/lib/categories/services/category.service";
 import { fetchAllUsers } from "@/lib/users/services/user.service";
+import { fetchPosts } from "@/lib/posts/services/post.service";
+import { fetchComments } from "@/lib/comments/services/comment.service";
 import { headers } from "next/headers";
 import Link from "next/link";
 import {
-  Package,
-  Tag,
+  MessageSquare,
+  FileText,
   Users,
   TrendingUp,
   ArrowRight,
   Plus,
   CheckCircle2,
-  XCircle,
   ShieldCheck,
 } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { cn } from "@/utils/utils";
-import { isApiError } from "@/shared/errors/api-error";
 import { DashboardHero } from "@/components/features/dashboard/dashboard-hero";
 
 export const metadata = {
@@ -31,27 +29,25 @@ export default async function DashboardPage() {
   const user = session.user;
 
   const reqHeaders = await headers();
-  const config = { headers: reqHeaders };
+  const config = { headers: reqHeaders, access_token: user.access_token };
 
-  const [productsRes, categoriesRes, usersRes] = await Promise.all([
-    fetchProducts(config),
-    fetchCategories(config),
+  const [usersRes, postsRes, commentsRes] = await Promise.all([
     fetchAllUsers(config),
+    fetchPosts({ size: 100 }, config),
+    fetchComments({ size: 100 }, config),
   ]);
 
-  const products = productsRes.ok ? productsRes.data.content || [] : [];
-  const categories = isApiError(categoriesRes) ? [] : categoriesRes;
   const users = usersRes.ok ? usersRes.data : [];
+  const postData = postsRes.ok ? postsRes.data.content : [];
+  const commentData = commentsRes.ok ? commentsRes.data.content : [];
 
-  const totalProducts = products.length;
-  const totalCategories = categories.length;
   const totalUsers = users.length;
-  const activeProducts = products.filter((p) => p.isActive).length;
-  const activeRate = totalProducts > 0 ? Math.round((activeProducts / totalProducts) * 100) : 0;
+  const totalPosts = postData.length;
+  const totalComments = commentData.length;
 
-  const recentProducts = products.slice(0, 5);
-  const recentCategories = categories.slice(0, 5);
   const recentUsers = users.slice(0, 5);
+  const recentPosts = postData.slice(0, 5);
+  const recentComments = commentData.slice(0, 5);
 
   return (
     <div className="min-h-screen p-6 space-y-8">
@@ -72,24 +68,24 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           {
-            label: "Produits",
-            value: totalProducts,
-            sub: `${activeProducts} actifs`,
-            icon: Package,
+            label: "Posts",
+            value: totalPosts,
+            sub: "articles créés",
+            icon: FileText,
             color: "text-blue-600",
             bg: "bg-blue-50",
             border: "border-blue-100",
-            href: "/dashboard/products",
+            href: "/dashboard/posts",
           },
           {
-            label: "Catégories",
-            value: totalCategories,
-            sub: "organisées",
-            icon: Tag,
+            label: "Commentaires",
+            value: totalComments,
+            sub: "discussions actives",
+            icon: MessageSquare,
             color: "text-violet-600",
             bg: "bg-violet-50",
             border: "border-violet-100",
-            href: "/dashboard/categories",
+            href: "/dashboard/comments",
           },
           {
             label: "Utilisateurs",
@@ -102,14 +98,14 @@ export default async function DashboardPage() {
             href: "/dashboard/users",
           },
           {
-            label: "Taux actif",
-            value: `${activeRate}%`,
-            sub: "des produits",
+            label: "Engagements",
+            value: totalPosts + totalComments,
+            sub: "interactions",
             icon: TrendingUp,
             color: "text-orange-600",
             bg: "bg-orange-50",
             border: "border-orange-100",
-            href: "/dashboard/products",
+            href: "/dashboard/posts",
           },
         ].map(({ label, value, sub, icon: Icon, color, bg, border, href }) => (
           <Link
@@ -140,15 +136,15 @@ export default async function DashboardPage() {
 
       {/* Recent Items */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Products */}
+        {/* Recent Posts */}
         <div className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
             <div className="flex items-center gap-2">
-              <Package className="w-4 h-4 text-blue-500" />
-              <h2 className="text-sm font-semibold text-gray-800">Produits récents</h2>
+              <FileText className="w-4 h-4 text-blue-500" />
+              <h2 className="text-sm font-semibold text-gray-800">Posts récents</h2>
             </div>
             <Link
-              href="/dashboard/products"
+              href="/dashboard/posts"
               className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center
                 gap-1"
             >
@@ -156,45 +152,38 @@ export default async function DashboardPage() {
             </Link>
           </div>
           <div className="divide-y divide-gray-50">
-            {recentProducts.length > 0 ? (
-              recentProducts.map((product) => (
+            {recentPosts.length > 0 ? (
+              recentPosts.map((post) => (
                 <Link
-                  key={product.id}
-                  href={`/dashboard/products/${product.id}`}
+                  key={post.id}
+                  href={`/dashboard/posts/${post.id}`}
                   className="flex items-center justify-between px-5 py-3 hover:bg-gray-50/80
                     transition-colors"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
+                    <p className="text-sm font-medium text-gray-900 truncate">{post.title}</p>
                     <p className="text-xs text-gray-400">
-                      {new Intl.NumberFormat("fr-FR", {
-                        style: "currency",
-                        currency: "EUR",
-                      }).format(product.price)}
+                      Par {post.author?.firstName || post.author?.email || "Anonyme"}
                     </p>
                   </div>
-                  {product.isActive ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 ml-2" />
-                  ) : (
-                    <XCircle className="w-4 h-4 text-gray-300 shrink-0 ml-2" />
-                  )}
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 ml-2" />
                 </Link>
               ))
             ) : (
-              <p className="text-sm text-gray-400 text-center py-8">Aucun produit</p>
+              <p className="text-sm text-gray-400 text-center py-8">Aucun post</p>
             )}
           </div>
         </div>
 
-        {/* Recent Categories */}
+        {/* Recent Comments */}
         <div className="rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-50">
             <div className="flex items-center gap-2">
-              <Tag className="w-4 h-4 text-violet-500" />
-              <h2 className="text-sm font-semibold text-gray-800">Catégories récentes</h2>
+              <MessageSquare className="w-4 h-4 text-violet-500" />
+              <h2 className="text-sm font-semibold text-gray-800">Commentaires récents</h2>
             </div>
             <Link
-              href="/dashboard/categories"
+              href="/dashboard/comments"
               className="text-xs text-violet-600 hover:text-violet-700 font-medium flex items-center
                 gap-1"
             >
@@ -202,33 +191,27 @@ export default async function DashboardPage() {
             </Link>
           </div>
           <div className="divide-y divide-gray-50">
-            {recentCategories.length > 0 ? (
-              recentCategories.map((category) => (
+            {recentComments.length > 0 ? (
+              recentComments.map((comment) => (
                 <Link
-                  key={category.id}
-                  href={`/dashboard/categories/${category.id}`}
+                  key={comment.id}
+                  href={`/dashboard/posts/${comment.postId}`}
                   className="flex items-center justify-between px-5 py-3 hover:bg-gray-50/80
                     transition-colors"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-gray-900 truncate">{category.name}</p>
-                    <p className="text-xs text-gray-400 truncate">
-                      {category.description || "Aucune description"}
+                    <p className="text-sm font-medium text-gray-900 truncate line-clamp-2">
+                      {comment.content}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      Par {comment.author?.firstName || comment.author?.email || "Anonyme"}
                     </p>
                   </div>
-                  <span
-                    className={`ml-2 shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${
-                      category.isActive
-                        ? "bg-violet-100 text-violet-700"
-                        : "bg-gray-100 text-gray-500"
-                      }`}
-                  >
-                    {category.isActive ? "Active" : "Inactive"}
-                  </span>
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 ml-2" />
                 </Link>
               ))
             ) : (
-              <p className="text-sm text-gray-400 text-center py-8">Aucune catégorie</p>
+              <p className="text-sm text-gray-400 text-center py-8">Aucun commentaire</p>
             )}
           </div>
         </div>
@@ -296,26 +279,26 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             {
-              href: "/dashboard/products/create",
-              icon: Package,
-              label: "Nouveau produit",
-              desc: "Ajouter au catalogue",
+              href: "/dashboard/posts/create",
+              icon: FileText,
+              label: "Nouveau post",
+              desc: "Publier un article",
               color: "from-blue-500 to-blue-600",
               hover: "hover:from-blue-600 hover:to-blue-700",
             },
             {
-              href: "/dashboard/categories/create",
-              icon: Tag,
-              label: "Nouvelle catégorie",
-              desc: "Organiser les produits",
+              href: "/dashboard/comments",
+              icon: MessageSquare,
+              label: "Voir commentaires",
+              desc: "Gérer les discussions",
               color: "from-violet-500 to-violet-600",
               hover: "hover:from-violet-600 hover:to-violet-700",
             },
             {
-              href: "/dashboard/users/create",
+              href: "/dashboard/users",
               icon: Users,
-              label: "Nouvel utilisateur",
-              desc: "Ajouter un membre",
+              label: "Gérer utilisateurs",
+              desc: "Ajouter ou éditer",
               color: "from-emerald-500 to-emerald-600",
               hover: "hover:from-emerald-600 hover:to-emerald-700",
             },

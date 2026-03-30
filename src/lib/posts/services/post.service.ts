@@ -98,7 +98,7 @@ export async function createPost(
   if (!parse.success) return validationError(parse.error.issues, "Invalid post data");
 
   try {
-    const res = await apiClient(true, config).post<unknown, AxiosResponse<Post>>(
+    const res = await apiClient(false, config).post<unknown, AxiosResponse<Post>>(
       POSTS_URL,
       parse.data,
     );
@@ -134,7 +134,7 @@ export async function updatePost(
   if (!parse.success) return validationError(parse.error.issues, "Invalid post data");
 
   try {
-    const res = await apiClient(true, config).patch<unknown, AxiosResponse<Post>>(
+    const res = await apiClient(false, config).patch<unknown, AxiosResponse<Post>>(
       `${POSTS_URL}/${id}`,
       parse.data,
     );
@@ -161,7 +161,7 @@ export async function deletePost(
   if (idError) return idError;
 
   try {
-    await apiClient(true, config).delete(`${POSTS_URL}/${id}`);
+    await apiClient(false, config).delete(`${POSTS_URL}/${id}`);
     logger.info({ id }, "Post deleted successfully");
     return { ok: true, data: { success: true } };
   } catch (error) {

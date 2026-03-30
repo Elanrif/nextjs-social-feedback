@@ -15,6 +15,10 @@ import {
 import { ApiErrorResponse } from "@/shared/errors/api-error.server";
 import { ApiError } from "@/shared/errors/api-error";
 import { Result } from "@/shared/models/response.model";
+import { auth } from "@/lib/auth";
+import { getLogger } from "@/config/logger.config";
+
+const logger = getLogger("server");
 
 /**
  * Server Action: Create a new comment
@@ -35,18 +39,34 @@ export async function createCommentAction(data: CommentCreate): Promise<Result<C
     };
   }
 
+  const session = await auth();
+
+  if (!session?.user) {
+    const err = {
+      status: 401,
+      detail: "You must be logged in",
+      title: "Unauthorized",
+      instance: undefined,
+      errorCode: "UNAUTHORIZED",
+    };
+    logger.warn(
+      {
+        status: err.status,
+        message: err.detail,
+      },
+      "Unauthorized",
+    );
+    return {
+      ok: false,
+      error: err,
+    };
+  }
+
+  const config = { headers: await headers(), access_token: session.user.access_token };
   try {
-    const config = { headers: await headers() };
     const res = await createComment(config, validation.data);
 
-    if (!res.ok) {
-      return res;
-    }
-
-    return {
-      ok: true,
-      data: res.data,
-    };
+    return res;
   } catch (error: any) {
     const errMsg = ApiErrorResponse(error, "createComment action");
     return {
@@ -64,18 +84,34 @@ export async function updateCommentAction(
   id: number,
   data: CommentUpdate,
 ): Promise<Result<Comment, ApiError>> {
+  const session = await auth();
+
+  if (!session?.user) {
+    const err = {
+      status: 401,
+      detail: "You must be logged in",
+      title: "Unauthorized",
+      instance: undefined,
+      errorCode: "UNAUTHORIZED",
+    };
+    logger.warn(
+      {
+        status: err.status,
+        message: err.detail,
+      },
+      "Unauthorized",
+    );
+    return {
+      ok: false,
+      error: err,
+    };
+  }
+
+  const config = { headers: await headers(), access_token: session.user.access_token };
   try {
-    const config = { headers: await headers() };
     const res = await updateComment(config, id, data);
 
-    if (!res.ok) {
-      return res;
-    }
-
-    return {
-      ok: true,
-      data: res.data,
-    };
+    return res;
   } catch (error: any) {
     const errMsg = ApiErrorResponse(error, "updateComment action");
     return {
@@ -92,18 +128,34 @@ export async function updateCommentAction(
 export async function deleteCommentAction(
   id: number,
 ): Promise<Result<{ success: boolean }, ApiError>> {
+  const session = await auth();
+
+  if (!session?.user) {
+    const err = {
+      status: 401,
+      detail: "You must be logged in",
+      title: "Unauthorized",
+      instance: undefined,
+      errorCode: "UNAUTHORIZED",
+    };
+    logger.warn(
+      {
+        status: err.status,
+        message: err.detail,
+      },
+      "Unauthorized",
+    );
+    return {
+      ok: false,
+      error: err,
+    };
+  }
+
+  const config = { headers: await headers(), access_token: session.user.access_token };
   try {
-    const config = { headers: await headers() };
     const res = await deleteComment(config, id);
 
-    if (!res.ok) {
-      return res;
-    }
-
-    return {
-      ok: true,
-      data: res.data,
-    };
+    return res;
   } catch (error: any) {
     const errMsg = ApiErrorResponse(error, "deleteComment action");
     return {

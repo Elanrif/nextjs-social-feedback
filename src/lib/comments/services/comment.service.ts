@@ -104,7 +104,7 @@ export async function createComment(
   if (!parse.success) return validationError(parse.error.issues, "Invalid comment data");
 
   try {
-    const res = await apiClient(true, config).post<unknown, AxiosResponse<Comment>>(
+    const res = await apiClient(false, config).post<unknown, AxiosResponse<Comment>>(
       COMMENTS_URL,
       parse.data,
     );
@@ -140,7 +140,7 @@ export async function updateComment(
   if (!parse.success) return validationError(parse.error.issues, "Invalid comment data");
 
   try {
-    const res = await apiClient(true, config).patch<unknown, AxiosResponse<Comment>>(
+    const res = await apiClient(false, config).patch<unknown, AxiosResponse<Comment>>(
       `${COMMENTS_URL}/${id}`,
       parse.data,
     );
@@ -167,7 +167,7 @@ export async function deleteComment(
   if (idError) return idError;
 
   try {
-    await apiClient(true, config).delete(`${COMMENTS_URL}/${id}`);
+    await apiClient(false, config).delete(`${COMMENTS_URL}/${id}`);
     logger.info({ id }, "Comment deleted successfully");
     return { ok: true, data: { success: true } };
   } catch (error) {

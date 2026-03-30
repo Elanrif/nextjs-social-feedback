@@ -15,8 +15,6 @@ const environment = {
       endpoints: {
         comments: `${BACKEND_BASE_V1}/comments`,
         posts: `${BACKEND_BASE_V1}/posts`,
-        categories: `${BACKEND_BASE_V1}/categories`,
-        products: `${BACKEND_BASE_V1}/products`,
         users: `${BACKEND_BASE_V1}/users`,
         login: `${BACKEND_BASE_V1}/keycloak/login`,
         register: `${BACKEND_BASE_V1}/keycloak/register`,

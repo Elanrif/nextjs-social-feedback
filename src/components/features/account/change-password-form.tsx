@@ -15,7 +15,7 @@ import {
   ChangePasswordProfileSchema,
 } from "@/lib/auth/models/auth.model";
 import { useSession } from "next-auth/react";
-import { changePasswordProfileAction , signOutAction } from "@/lib/auth/actions/auth";
+import { changePasswordProfileAction, signOutAction } from "@/lib/auth/actions/auth";
 import { isApiError } from "@/shared/errors/api-error";
 
 const { MY_ACCOUNT } = ROUTES;

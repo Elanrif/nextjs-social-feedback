@@ -6,8 +6,6 @@ export const ROUTES = {
   CHANGE_PASSWORD: "/account/settings/change-password",
   SETTINGS: "/account/settings",
   DASHBOARD: "/dashboard",
-  CATEGORIES: "/categories",
-  PRODUCTS: "/products",
   USERS: "/users",
   COMMENTS: "/comments",
   POSTS: "/posts",

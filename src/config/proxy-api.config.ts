@@ -10,8 +10,6 @@ export const proxyEnvironment = {
     endpoints: {
       comments: `/comments`,
       posts: `/posts`,
-      categories: `/categories`,
-      products: `/products`,
       login: `/auth/login`,
       signOut: `/auth/logout`,
       session: `/auth/session`,
