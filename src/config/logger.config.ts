@@ -74,7 +74,9 @@ function buildConsoleFallback(): Logger {
 
 const consoleFallback: Logger = buildConsoleFallback();
 
-let _serverLogger: Logger | undefined;
+// Persist across HMR reloads in Next.js dev — module-level vars reset on each reload
+// but `global` survives. In production there is no HMR so this is a no-op.
+const _global = global as typeof global & { __pinoLogger?: Logger };
 
 /**
  * Builds the Pino server logger (Node only).
@@ -166,5 +168,5 @@ export function getLogger(type: "client" | "server" | "default" = "default"): Lo
     }
     return consoleFallback;
   }
-  return (_serverLogger ??= buildServerLogger());
+  return (_global.__pinoLogger ??= buildServerLogger());
 }

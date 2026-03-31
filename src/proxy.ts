@@ -21,12 +21,19 @@ export default auth(function middleware(req) {
   const isPublicRoute = publicRoutePrefixes.some(
     (p) => normalized === p || normalized.startsWith(p + "/"),
   );
+  const isDashboardRoute = normalized === "/dashboard" || normalized.startsWith("/dashboard/");
 
   const isAuthenticated = !!req.auth;
+  const userRole = req.auth?.user?.role;
 
   // Not authenticated → redirect to sign-in
   if (isProtectedRoute && !isAuthenticated) {
     return NextResponse.redirect(new URL("/sign-in", req.nextUrl));
+  }
+
+  // RBAC: Only ADMIN users can access /dashboard/*
+  if (isDashboardRoute && isAuthenticated && userRole !== "ADMIN") {
+    return NextResponse.redirect(new URL("/account", req.nextUrl));
   }
 
   // Authenticated on a public route → send to account

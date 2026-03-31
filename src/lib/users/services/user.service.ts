@@ -12,8 +12,9 @@ import {
 import { getLogger } from "@config/logger.config";
 import { validateId, validationError } from "@/utils/utils.server";
 import { Result } from "@/shared/models/response.model";
-import { ApiError } from "@/shared/errors/api-error";
+import { ApiError, forbiddenApiError } from "@/shared/errors/api-error";
 import { ApiErrorResponse } from "@/shared/errors/api-error.server";
+import { auth } from "@/lib/auth";
 
 /**
  * ⚠️ Never trust the client input
@@ -51,6 +52,16 @@ export async function createUser(
   config: Config,
   user: Omit<User, "id">,
 ): Promise<Result<User, ApiError>> {
+  // Check user role (RBAC)
+  const session = await auth();
+  if (!session?.user || session.user.role !== "ADMIN") {
+    logger.warn({ context: "createUser" }, "Unauthorized: only ADMIN can create users");
+    return {
+      ok: false,
+      error: forbiddenApiError("Only ADMIN users can create new users"),
+    };
+  }
+
   const parse = parseUserCreate(user);
   if (!parse.success) return validationError(parse.error.issues, "Invalid user data");
 
@@ -117,6 +128,16 @@ export async function updateUser(
   const idError = validateId(id);
   if (idError) return idError;
 
+  // Check user role (RBAC)
+  const session = await auth();
+  if (!session?.user || session.user.role !== "ADMIN") {
+    logger.warn({ context: "updateUser" }, "Unauthorized: only ADMIN can update users");
+    return {
+      ok: false,
+      error: forbiddenApiError("Only ADMIN users can update users"),
+    };
+  }
+
   const parse = parseUserUpdate(user);
   if (!parse.success) return validationError(parse.error.issues, "Invalid user data");
 
@@ -142,6 +163,16 @@ export async function deleteUser(
 ): Promise<Result<{ success: boolean }, ApiError>> {
   const idError = validateId(id);
   if (idError) return idError;
+
+  // Check user role (RBAC)
+  const session = await auth();
+  if (!session?.user || session.user.role !== "ADMIN") {
+    logger.warn({ context: "deleteUser" }, "Unauthorized: only ADMIN can delete users");
+    return {
+      ok: false,
+      error: forbiddenApiError("Only ADMIN users can delete users"),
+    };
+  }
 
   try {
     await apiClient(true, config).delete(`${usersUrl}/${id}`);

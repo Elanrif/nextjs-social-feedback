@@ -297,6 +297,89 @@ export default auth(function middleware(req) {
 
 ---
 
+## Refresh automatique du token backend (Keycloak)
+
+### Contexte
+
+NextAuth gère la session pendant **7 jours** (cookie JWT), mais le backend Keycloak délivre des tokens de courte durée :
+
+| Token           | Durée           |
+| --------------- | --------------- |
+| `access_token`  | 300 s (5 min)   |
+| `refresh_token` | 1800 s (30 min) |
+
+Sans refresh automatique, l'`access_token` stocké dans la session serait périmé après 5 min même si l'utilisateur est actif.
+
+### Fonctionnement
+
+À chaque accès à la session (appel du `jwt` callback), NextAuth vérifie l'expiration et rafraîchit silencieusement si nécessaire :
+
+```
+jwt() callback
+  ├─ access_token valide (< 5 min écoulées)    → retourne le token tel quel
+  ├─ access_token expiré + refresh_token valide (< 30 min)
+  │    └─ appel POST /keycloak/refresh-token   → nouveaux tokens, reset des timestamps
+  ├─ access_token expiré + refresh_token expiré (> 30 min)
+  │    └─ session.error = "RefreshTokenExpired" → client doit rediriger vers /sign-in
+  └─ refresh_token absent
+       └─ session.error = "RefreshTokenMissing"
+```
+
+### Données stockées dans le JWT
+
+```ts
+token.access_token; // token backend courant
+token.refresh_token; // token de refresh Keycloak
+token.expires_in; // durée de vie access_token (secondes)
+token.refresh_expires_in; // durée de vie refresh_token (secondes)
+token.accessTokenIssuedAt; // timestamp (ms) de la dernière émission de l'access_token
+token.refreshTokenIssuedAt; // timestamp (ms) de la dernière émission du refresh_token
+token.error; // "RefreshTokenError" | "RefreshTokenMissing" | "RefreshTokenExpired" | undefined
+```
+
+### Erreurs propagées dans la session
+
+```ts
+session.error; // disponible côté client via useSession()
+```
+
+| Valeur                  | Cause                                        | Action côté client        |
+| ----------------------- | -------------------------------------------- | ------------------------- |
+| `"RefreshTokenExpired"` | refresh_token expiré (> 30 min d'inactivité) | Rediriger vers `/sign-in` |
+| `"RefreshTokenError"`   | Appel à `/keycloak/refresh-token` a échoué   | Rediriger vers `/sign-in` |
+| `"RefreshTokenMissing"` | Pas de refresh_token dans la session         | Rediriger vers `/sign-in` |
+| `undefined`             | Token valide ou refresh réussi               | Rien à faire              |
+
+### Réagir aux erreurs côté client
+
+```tsx
+"use client";
+import { useSession, signOut } from "next-auth/react";
+import { useEffect } from "react";
+
+export function TokenRefreshGuard() {
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session?.error === "RefreshTokenExpired" || session?.error === "RefreshTokenError") {
+      signOut({ callbackUrl: "/sign-in" });
+    }
+  }, [session?.error]);
+
+  return null;
+}
+```
+
+### Fichiers concernés
+
+| Fichier                        | Rôle                                                   |
+| ------------------------------ | ------------------------------------------------------ |
+| `src/lib/auth.ts`              | `jwt` callback — logique de check + refresh            |
+| `src/lib/auth/auth.service.ts` | `refreshToken()` — appel REST vers le backend          |
+| `src/config/auth.utils.ts`     | `isTokenExpired()` — calcul d'expiration via moment.js |
+
+---
+
 ## Ce qu'il ne faut jamais faire
 
 | ❌ Interdit                                                             | ✅ Correct                                                |
