@@ -55,3 +55,18 @@ export class ApiError_ extends Error {
     this.instance = instance;
   }
 }
+
+/**
+ *
+ * @param detail
+ * @returns
+ */
+export const unauthorizedApiError = (detail = "No active session"): ApiError => {
+  return {
+    title: "Unauthorized",
+    status: 401,
+    detail,
+    instance: undefined,
+    errorCode: "Unauthorized",
+  } as ApiError;
+};

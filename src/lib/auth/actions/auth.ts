@@ -21,7 +21,7 @@ import { sendPasswordResetEmail, generateResetToken } from "@/config/mail.config
 import { signIn, signOut, auth } from "@/lib/auth";
 import { AuthError } from "next-auth";
 import { ApiErrorResponse } from "@/shared/errors/api-error.server";
-import { ApiError } from "@/shared/errors/api-error";
+import { ApiError, unauthorizedApiError } from "@/shared/errors/api-error";
 import { getLogger } from "@/config/logger.config";
 
 const logger = getLogger("server");
@@ -73,16 +73,6 @@ export async function signUpAction(userData: Registrer): Promise<Record<string, 
     throw error;
   }
 }
-
-const unauthorizedApiError = (detail = "No active session"): ApiError => {
-  return {
-    title: "Unauthorized",
-    status: 401,
-    detail,
-    instance: undefined,
-    errorCode: "Unauthorized",
-  } as ApiError;
-};
 
 /**
  * Server Action: Refresh backend tokens using the refresh token.
