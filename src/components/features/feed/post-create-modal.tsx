@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useSession } from "next-auth/react";
 import { useCreatePost } from "@/lib/posts/hooks/use-posts";
 import { toast } from "react-toastify";
 import { PostFormData, postSchema } from "@/lib/posts/models/post.model";
@@ -21,6 +22,7 @@ interface PostCreateModalProps {
 }
 
 export function PostCreateModal({ open, onOpenChange }: PostCreateModalProps) {
+  const { data: session } = useSession();
   const {
     register,
     handleSubmit,
@@ -34,6 +36,7 @@ export function PostCreateModal({ open, onOpenChange }: PostCreateModalProps) {
       imageUrl: "",
       description: "",
       likes: 0,
+      authorId: session?.user?.id ? Number(session.user.id) : 0,
     },
   });
 

@@ -76,11 +76,17 @@ export function ImageUpload(props: ImageUploadProps) {
       onRemove?.();
     }
 
-    function handleUploadSuccess(result: CloudinaryUploadWidgetResults) {
+    function handleUploadSuccess(
+      result: CloudinaryUploadWidgetResults,
+      { widget }: { widget: any },
+    ) {
       if (result.event !== "success" || typeof result.info !== "object") return;
       const info = result.info as { public_id: string; secure_url: string };
-      // Restore scroll before state update — the widget remounts on value change
-      // which prevents the normal onClose cleanup from running
+      // Close the widget explicitly before updating state.
+      // When value changes (empty → preview), React unmounts the current CldUploadWidget
+      // before onClose can fire, leaving the Cloudinary overlay in the DOM and blocking
+      // all pointer events (e.g. the Save button in a modal).
+      widget?.close?.();
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
       if (publicId) deleteImageAction(publicId);
