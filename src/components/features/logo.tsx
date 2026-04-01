@@ -4,7 +4,7 @@ import Link from "next/link";
 import { cn } from "@/utils/utils";
 
 export default function Logo({
-  name = "Kickstart Next.js",
+  name = "nextjs social feedback",
   url = ROUTES.HOME,
   className = "",
   variant = "light",

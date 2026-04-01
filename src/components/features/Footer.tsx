@@ -198,7 +198,7 @@ export function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             {/* Copyright */}
             <div className="flex items-center gap-2 text-gray-400">
-              <span>© {new Date().getFullYear()} Kickstart Next.js.</span>
+              <span>© {new Date().getFullYear()} nextjs social feedback.</span>
               <span>Built with</span>
               <Heart className="w-4 h-4 text-red-400 animate-pulse" />
               <span>by passionate developers</span>

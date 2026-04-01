@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Heart, MessageCircle, Repeat2, Send, MoreHorizontal, BadgeCheck, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { CommentItem } from "./comment-item";
 import { useComments } from "@/lib/comments/hooks/use-comments";
 import type { Post } from "@/lib/posts/models/post.model";
 import { UserRole } from "@/lib/users/models/user.model";
+import { isValidImgUrl } from "@/utils/utils";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -68,11 +70,13 @@ export function PostCard({ post }: PostCardProps) {
     >
       {/* Header */}
       <div className="flex items-start gap-3">
-        {author.avatarUrl ? (
-          <img
+        {isValidImgUrl(author.avatarUrl) ? (
+          <Image
             src={author.avatarUrl}
             alt={`${author.firstName} ${author.lastName}`}
-            className="size-10 rounded-full object-cover shrink-0"
+            width={40}
+            height={40}
+            className="rounded-full object-cover shrink-0"
           />
         ) : (
           <div
@@ -102,11 +106,11 @@ export function PostCard({ post }: PostCardProps) {
       </div>
 
       {/* Content */}
-      <div className="mt-3 ml-[52px]">
+      <div className="mt-3 ml-13">
         {post.title && <p className="font-semibold text-sm mb-1">{post.title}</p>}
         <p className="text-sm leading-relaxed text-foreground/90">{post.description}</p>
 
-        {post.imageUrl && (
+        {isValidImgUrl(post.imageUrl) && (
           <>
             <button
               type="button"
@@ -114,9 +118,11 @@ export function PostCard({ post }: PostCardProps) {
               className="mt-3 w-full rounded-xl overflow-hidden border border-border block
                 cursor-zoom-in"
             >
-              <img
+              <Image
                 src={post.imageUrl}
                 alt={post.title}
+                width={600}
+                height={300}
                 className="w-full max-h-72 object-cover hover:scale-[1.02] transition-transform
                   duration-300"
               />
@@ -137,9 +143,11 @@ export function PostCard({ post }: PostCardProps) {
                 >
                   <X className="size-5" />
                 </Button>
-                <img
+                <Image
                   src={post.imageUrl}
                   alt={post.title}
+                  width={1200}
+                  height={800}
                   className="max-w-full max-h-[88vh] object-contain rounded-lg"
                 />
               </DialogContent>

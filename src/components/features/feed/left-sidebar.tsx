@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter , usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { toast } from "react-toastify";
 import { Home, Search, Plus, Heart, User, Bookmark, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -36,7 +36,7 @@ export function LeftSidebar() {
   return (
     <>
       <aside
-        className="sticky top-0 h-screen flex flex-col items-center justify-between py-6 w-[72px]
+        className="sticky top-0 h-screen flex flex-col items-center justify-between py-6 w-18
           border-r border-border shrink-0"
       >
         <nav className="flex flex-col items-center gap-1">
