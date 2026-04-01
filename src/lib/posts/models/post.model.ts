@@ -28,7 +28,7 @@ export interface PostCreate {
   imageUrl: string;
   description: string;
   likes?: number;
-  authorId?: number;
+  authorId: number;
 }
 
 /**
@@ -38,10 +38,10 @@ export type PostUpdate = Partial<PostCreate>;
 
 export const postSchema = z.object({
   title: z.string().min(1, "Le titre ne peut pas être vide"),
-  imageUrl: z.string().min(1, "L'URL de l'image ne peut pas être vide"),
+  imageUrl: z.string().optional().default(""),
   description: z.string().min(1, "La description ne peut pas être vide"),
   likes: z.coerce.number().int("Le nombre de likes doit être un nombre").optional(),
-  authorId: z.number().int().optional(),
+  authorId: z.number().int().min(1, "L'auteur est requis"),
 });
 
 export type PostFormData = z.infer<typeof postSchema>;

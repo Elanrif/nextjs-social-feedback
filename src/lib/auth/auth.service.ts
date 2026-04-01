@@ -156,9 +156,19 @@ export async function refreshToken(refresh_token: string): Promise<Result<AuthPa
 export async function logout(
   params: { refresh_token?: string } = {},
 ): Promise<Result<Record<string, never>, ApiError>> {
+  /**
+   * Check user authentication
+   */
+  const session = await auth();
+  if (!session?.user) {
+    logger.warn({ context: "logout" }, "Not logged in");
+    return { ok: false, error: unauthorizedApiError() };
+  }
+  const config: Config = { access_token: session.user.access_token };
+
   try {
-    const client = apiClient(false);
-    await client.post(logoutUrl, params);
+    console.log("Logging out with params:", params);
+    await apiClient(false, config).post(logoutUrl, params);
     logger.info("Logged out successfully");
     return { ok: true, data: {} };
   } catch (error) {

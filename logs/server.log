@@ -375,3 +375,165 @@
 {"level":30,"time":1774950902631,"pid":17488,"hostname":"ELTECH","msg":"Logged out successfully"}
 {"level":30,"time":1774950903412,"pid":17488,"hostname":"ELTECH","msg":"Nodemailer transporter ready"}
 {"level":30,"time":1774950903634,"pid":17488,"hostname":"ELTECH","count":5,"msg":"Fetched users"}
+{"level":30,"time":1775062631111,"pid":19428,"hostname":"ELTECH","msg":"Request to safe URL http://localhost:8081/api/v1/keycloak/login, skipping token interceptor"}
+{"level":50,"time":1775062631165,"pid":19428,"hostname":"ELTECH","error":"","msg":"Upstream API error"}
+{"level":50,"time":1775062631167,"pid":19428,"hostname":"ELTECH","email":"admin@gmail.com","msg":"Failed to sign in"}
+{"level":50,"time":1775062631167,"pid":19428,"hostname":"ELTECH","status":500,"detail":"Unknown Axios error","title":"Error","errorCode":"NETWORK_ERROR","msg":"[Axios Error] [signIn]"}
+{"level":40,"time":1775062631167,"pid":19428,"hostname":"ELTECH","email":"admin@gmail.com","msg":"Auth provider signIn failed"}
+{"level":30,"time":1775062633649,"pid":19428,"hostname":"ELTECH","msg":"Nodemailer transporter ready"}
+{"level":30,"time":1775062691205,"pid":19428,"hostname":"ELTECH","msg":"Request to safe URL http://localhost:8081/api/v1/keycloak/login, skipping token interceptor"}
+{"level":50,"time":1775062691220,"pid":19428,"hostname":"ELTECH","error":"","msg":"Upstream API error"}
+{"level":50,"time":1775062691221,"pid":19428,"hostname":"ELTECH","email":"admin@gmail.com","msg":"Failed to sign in"}
+{"level":50,"time":1775062691221,"pid":19428,"hostname":"ELTECH","status":500,"detail":"Unknown Axios error","title":"Error","errorCode":"NETWORK_ERROR","msg":"[Axios Error] [signIn]"}
+{"level":40,"time":1775062691221,"pid":19428,"hostname":"ELTECH","email":"admin@gmail.com","msg":"Auth provider signIn failed"}
+{"level":30,"time":1775062746524,"pid":19428,"hostname":"ELTECH","msg":"Request to safe URL http://localhost:8081/api/v1/keycloak/login, skipping token interceptor"}
+{"level":50,"time":1775062746540,"pid":19428,"hostname":"ELTECH","error":"","msg":"Upstream API error"}
+{"level":50,"time":1775062746541,"pid":19428,"hostname":"ELTECH","email":"admin@gmail.com","msg":"Failed to sign in"}
+{"level":50,"time":1775062746542,"pid":19428,"hostname":"ELTECH","status":500,"detail":"Unknown Axios error","title":"Error","errorCode":"NETWORK_ERROR","msg":"[Axios Error] [signIn]"}
+{"level":40,"time":1775062746542,"pid":19428,"hostname":"ELTECH","email":"admin@gmail.com","msg":"Auth provider signIn failed"}
+{"level":30,"time":1775062752205,"pid":19428,"hostname":"ELTECH","msg":"Request to safe URL http://localhost:8081/api/v1/keycloak/login, skipping token interceptor"}
+{"level":50,"time":1775062752218,"pid":19428,"hostname":"ELTECH","error":"","msg":"Upstream API error"}
+{"level":50,"time":1775062752219,"pid":19428,"hostname":"ELTECH","email":"admin@gmail.com","msg":"Failed to sign in"}
+{"level":50,"time":1775062752219,"pid":19428,"hostname":"ELTECH","status":500,"detail":"Unknown Axios error","title":"Error","errorCode":"NETWORK_ERROR","msg":"[Axios Error] [signIn]"}
+{"level":40,"time":1775062752219,"pid":19428,"hostname":"ELTECH","email":"admin@gmail.com","msg":"Auth provider signIn failed"}
+{"level":30,"time":1775062754388,"pid":19428,"hostname":"ELTECH","msg":"Request to safe URL http://localhost:8081/api/v1/keycloak/login, skipping token interceptor"}
+{"level":50,"time":1775062754405,"pid":19428,"hostname":"ELTECH","error":"","msg":"Upstream API error"}
+{"level":50,"time":1775062754406,"pid":19428,"hostname":"ELTECH","email":"admin@gmail.com","msg":"Failed to sign in"}
+{"level":50,"time":1775062754406,"pid":19428,"hostname":"ELTECH","status":500,"detail":"Unknown Axios error","title":"Error","errorCode":"NETWORK_ERROR","msg":"[Axios Error] [signIn]"}
+{"level":40,"time":1775062754406,"pid":19428,"hostname":"ELTECH","email":"admin@gmail.com","msg":"Auth provider signIn failed"}
+{"level":30,"time":1775062759522,"pid":19428,"hostname":"ELTECH","msg":"Request to safe URL http://localhost:8081/api/v1/keycloak/login, skipping token interceptor"}
+{"level":50,"time":1775062761193,"pid":19428,"hostname":"ELTECH","error":"Request failed with status code 400","detail":"Invalid email or password","instance":"/api/v1/keycloak/login","status":400,"title":"Bad request","errorCode":"BAD_REQUEST","msg":"Upstream API error"}
+{"level":50,"time":1775062761194,"pid":19428,"hostname":"ELTECH","email":"admin@gmail.com","msg":"Failed to sign in"}
+{"level":40,"time":1775062761194,"pid":19428,"hostname":"ELTECH","detail":"Invalid email or password","instance":"/api/v1/keycloak/login","status":400,"title":"Bad request","errorCode":"BAD_REQUEST","msg":"[Axios Error] [signIn]"}
+{"level":40,"time":1775062761194,"pid":19428,"hostname":"ELTECH","email":"admin@gmail.com","msg":"Auth provider signIn failed"}
+{"level":30,"time":1775062765202,"pid":19428,"hostname":"ELTECH","msg":"Request to safe URL http://localhost:8081/api/v1/keycloak/login, skipping token interceptor"}
+{"level":30,"time":1775062765838,"pid":19428,"hostname":"ELTECH","access_token":"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJKdXZ3YXFoX0ZDanpHTTVEZnpzdUxkZS12UEdOV0d0WXJJR0ZOQ3FzekRRIn0.eyJleHAiOjE3NzUwNjMwNjUsImlhdCI6MTc3NTA2Mjc2NSwianRpIjoiMGYxZWYxOTEtNTE4NS00Zjg4LWE4NTUtZTI0OGRkYTYzODhmIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9raWNrc3RhcnQtcmVhbG0iLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNjdjOGI4OTEtYjIxYy00M2E0LTg4MWYtOWJmYjA1OGQyMzYxIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoia2lja3N0YXJ0LWNsaWVudCIsInNlc3Npb25fc3RhdGUiOiJkZjc1Y2M0MS1mMzdhLTRlM2UtYTFhNC0wZDc0NjYyOTZmYjMiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1raWNrc3RhcnQtcmVhbG0iLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVVNFUiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsInNpZCI6ImRmNzVjYzQxLWYzN2EtNGUzZS1hMWE0LTBkNzQ2NjI5NmZiMyIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiQWRtaW4gQWRtaW4iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSJ9.BJfdrxSDIqUVk-iVCy5k4i3B1rvYzIEGoB8OY9xsxKs919Vzxu7hgG7PUCecYjHpUi2leKwr5cOY5xHwK6u_S-i8DDrRPCjTeizJwt2EZ39h00dOhg-NoBExAJMqLRFZnZc_aaYKQ1mx-J3dh7LDfY01hBTNFPZ8Td4z7pUBxd9chltt7ADCogyyA1G4ZAIt-CxC0Cx8of4-LAwOlPfgOqMP1YUT4Mf8S-hhAjY-P7j4rx0wEbfa-wDnu3UV3hFm0fvOcfPPkbwJERgnyU792J5U-7z2vYGGR3RAsEvQO5AMcOWgZl-RaS-4_R-dKXNtUHk_tcOxK0GiJrBmtGVRcA","msg":"Access token"}
+{"level":30,"time":1775062779553,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775062781663,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775063200578,"pid":19428,"hostname":"ELTECH","msg":"Access token expired, attempting refresh..."}
+{"level":30,"time":1775063200839,"pid":19428,"hostname":"ELTECH","msg":"Token refreshed successfully"}
+{"level":30,"time":1775063200839,"pid":19428,"hostname":"ELTECH","msg":"Access token refreshed successfully"}
+{"level":30,"time":1775063202264,"pid":19428,"hostname":"ELTECH","msg":"Access token expired, attempting refresh..."}
+{"level":30,"time":1775063202291,"pid":19428,"hostname":"ELTECH","msg":"Access token expired, attempting refresh..."}
+{"level":30,"time":1775063202310,"pid":19428,"hostname":"ELTECH","msg":"Access token expired, attempting refresh..."}
+{"level":30,"time":1775063202356,"pid":19428,"hostname":"ELTECH","msg":"Token refreshed successfully"}
+{"level":30,"time":1775063202356,"pid":19428,"hostname":"ELTECH","msg":"Access token refreshed successfully"}
+{"level":30,"time":1775063202383,"pid":19428,"hostname":"ELTECH","msg":"Token refreshed successfully"}
+{"level":30,"time":1775063202383,"pid":19428,"hostname":"ELTECH","msg":"Access token refreshed successfully"}
+{"level":30,"time":1775063202385,"pid":19428,"hostname":"ELTECH","msg":"Token refreshed successfully"}
+{"level":30,"time":1775063202385,"pid":19428,"hostname":"ELTECH","msg":"Access token refreshed successfully"}
+{"level":30,"time":1775063202557,"pid":19428,"hostname":"ELTECH","msg":"Access token expired, attempting refresh..."}
+{"level":30,"time":1775063202563,"pid":19428,"hostname":"ELTECH","msg":"Access token expired, attempting refresh..."}
+{"level":30,"time":1775063202585,"pid":19428,"hostname":"ELTECH","msg":"Access token expired, attempting refresh..."}
+{"level":30,"time":1775063202652,"pid":19428,"hostname":"ELTECH","msg":"Token refreshed successfully"}
+{"level":30,"time":1775063202652,"pid":19428,"hostname":"ELTECH","msg":"Access token refreshed successfully"}
+{"level":30,"time":1775063202693,"pid":19428,"hostname":"ELTECH","msg":"Token refreshed successfully"}
+{"level":30,"time":1775063202693,"pid":19428,"hostname":"ELTECH","msg":"Access token refreshed successfully"}
+{"level":30,"time":1775063202708,"pid":19428,"hostname":"ELTECH","msg":"Token refreshed successfully"}
+{"level":30,"time":1775063202708,"pid":19428,"hostname":"ELTECH","msg":"Access token refreshed successfully"}
+{"level":30,"time":1775063202918,"pid":19428,"hostname":"ELTECH","msg":"Access token expired, attempting refresh..."}
+{"level":30,"time":1775063202928,"pid":19428,"hostname":"ELTECH","msg":"Access token expired, attempting refresh..."}
+{"level":30,"time":1775063202982,"pid":19428,"hostname":"ELTECH","msg":"Token refreshed successfully"}
+{"level":30,"time":1775063202982,"pid":19428,"hostname":"ELTECH","msg":"Access token refreshed successfully"}
+{"level":30,"time":1775063203027,"pid":19428,"hostname":"ELTECH","msg":"Token refreshed successfully"}
+{"level":30,"time":1775063203027,"pid":19428,"hostname":"ELTECH","msg":"Access token refreshed successfully"}
+{"level":30,"time":1775063288251,"pid":19428,"hostname":"ELTECH","msg":"Nodemailer transporter ready"}
+{"level":50,"time":1775063288369,"pid":19428,"hostname":"ELTECH","error":"Request failed with status code 400","detail":"Validation failed","instance":"/api/v1/posts","status":400,"title":"Validation error","errorCode":"VALIDATION_ERROR","errors":["imageUrl : ne doit pas être vide"],"msg":"Upstream API error"}
+{"level":50,"time":1775063288372,"pid":19428,"hostname":"ELTECH","title":"test","msg":"Failed to create post"}
+{"level":40,"time":1775063288373,"pid":19428,"hostname":"ELTECH","detail":"Validation failed","instance":"/api/v1/posts","status":400,"title":"Validation error","errorCode":"VALIDATION_ERROR","errors":["imageUrl : ne doit pas être vide"],"msg":"[Axios Error] [createPost]"}
+{"level":50,"time":1775063365080,"pid":19428,"hostname":"ELTECH","error":"","msg":"Upstream API error"}
+{"level":50,"time":1775063365081,"pid":19428,"hostname":"ELTECH","title":"test","msg":"Failed to create post"}
+{"level":50,"time":1775063365081,"pid":19428,"hostname":"ELTECH","status":500,"detail":"Unknown Axios error","title":"Error","errorCode":"NETWORK_ERROR","msg":"[Axios Error] [createPost]"}
+{"level":50,"time":1775063369316,"pid":19428,"hostname":"ELTECH","error":"Request failed with status code 404","detail":"Author not found: 1","instance":"/api/v1/posts","status":404,"title":"Resource not found","errorCode":"RESOURCE_NOT_FOUND","msg":"Upstream API error"}
+{"level":50,"time":1775063369317,"pid":19428,"hostname":"ELTECH","title":"test","msg":"Failed to create post"}
+{"level":40,"time":1775063369317,"pid":19428,"hostname":"ELTECH","detail":"Author not found: 1","instance":"/api/v1/posts","status":404,"title":"Resource not found","errorCode":"RESOURCE_NOT_FOUND","msg":"[Axios Error] [createPost]"}
+{"level":30,"time":1775063373635,"pid":19428,"hostname":"ELTECH","id":4,"title":"test","msg":"Post created successfully"}
+{"level":30,"time":1775063416705,"pid":19428,"hostname":"ELTECH","msg":"Nodemailer transporter ready"}
+{"level":30,"time":1775063419177,"pid":19428,"hostname":"ELTECH","id":4,"title":"test","msg":"Post updated successfully"}
+{"level":30,"time":1775063541172,"pid":19428,"hostname":"ELTECH","msg":"Access token expired, attempting refresh..."}
+{"level":30,"time":1775063541537,"pid":19428,"hostname":"ELTECH","msg":"Token refreshed successfully"}
+{"level":30,"time":1775063541537,"pid":19428,"hostname":"ELTECH","msg":"Access token refreshed successfully"}
+{"level":30,"time":1775063549903,"pid":19428,"hostname":"ELTECH","msg":"Nodemailer transporter ready"}
+{"level":30,"time":1775063674716,"pid":19428,"hostname":"ELTECH","msg":"Nodemailer transporter ready"}
+{"level":30,"time":1775063686401,"pid":19428,"hostname":"ELTECH","id":4,"title":"test","msg":"Post updated successfully"}
+{"level":30,"time":1775063737833,"pid":19428,"hostname":"ELTECH","id":1,"msg":"Profile updated successfully"}
+{"level":30,"time":1775063743769,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":50,"time":1775063747091,"pid":19428,"hostname":"ELTECH","error":"Not Authenticated","msg":"Outgoing request failed"}
+{"level":50,"time":1775063747092,"pid":19428,"hostname":"ELTECH","error":"Not Authenticated","msg":"Upstream API error"}
+{"level":40,"time":1775063747094,"pid":19428,"hostname":"ELTECH","msg":"Failed to logout"}
+{"level":50,"time":1775063747094,"pid":19428,"hostname":"ELTECH","status":500,"detail":"Not Authenticated","title":"Internal Error","errorCode":"INTERNAL_ERROR","msg":"[HTTP Error] [logout]"}
+{"level":30,"time":1775063748065,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775063748294,"pid":19428,"hostname":"ELTECH","msg":"Nodemailer transporter ready"}
+{"level":30,"time":1775063922084,"pid":19428,"hostname":"ELTECH","msg":"Request to safe URL http://localhost:8081/api/v1/keycloak/login, skipping token interceptor"}
+{"level":30,"time":1775063922317,"pid":19428,"hostname":"ELTECH","access_token":"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJKdXZ3YXFoX0ZDanpHTTVEZnpzdUxkZS12UEdOV0d0WXJJR0ZOQ3FzekRRIn0.eyJleHAiOjE3NzUwNjQyMjIsImlhdCI6MTc3NTA2MzkyMiwianRpIjoiMjcwMjdlMzItMzhmYS00YzM2LWFkYWEtZGQzZTg4NDEyZjJhIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9raWNrc3RhcnQtcmVhbG0iLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNjdjOGI4OTEtYjIxYy00M2E0LTg4MWYtOWJmYjA1OGQyMzYxIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoia2lja3N0YXJ0LWNsaWVudCIsInNlc3Npb25fc3RhdGUiOiI5MzI1Njg3NC0yOTA5LTQ2YTAtYTkyMi0wMDcwNTZlY2U4YmIiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1raWNrc3RhcnQtcmVhbG0iLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVVNFUiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsInNpZCI6IjkzMjU2ODc0LTI5MDktNDZhMC1hOTIyLTAwNzA1NmVjZThiYiIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiQWRtaW4gQWRtaW4iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSJ9.LWy8gtw-Y8t8zWG1vxnx2iWd-xg_q17XKlpokyl7sFIC-SFwAFgFWelQrlKcQV3M9jt4mVsWDkISFa_z55bep-w-Oynjp5JuHOwiOu90VuCfJTr26ixyvYWuGytyGNe7wVJjj2HpptK0s99pOWibJo72C1vAXV4ykHKbgK5RvHCGKakZ4Xk7UWJcUYVDNQyij07YA90xwnpyTsKYiQA3_KqNcwKoYtJ8OTDnraasiZxzhWrOFWMVQgs2vPVoA2M_ct84ccUIo_UaiI9JhuLM51_OkMjFTZ90meKxTyaD89BtZTu6DlBrWEsexvPP1VZOeDDr6hxWQ0OlzUncLfs87w","msg":"Access token"}
+{"level":30,"time":1775063923081,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775063923903,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":50,"time":1775063933988,"pid":19428,"hostname":"ELTECH","error":"Not Authenticated","msg":"Outgoing request failed"}
+{"level":50,"time":1775063933989,"pid":19428,"hostname":"ELTECH","error":"Not Authenticated","msg":"Upstream API error"}
+{"level":40,"time":1775063933989,"pid":19428,"hostname":"ELTECH","msg":"Failed to logout"}
+{"level":50,"time":1775063933989,"pid":19428,"hostname":"ELTECH","status":500,"detail":"Not Authenticated","title":"Internal Error","errorCode":"INTERNAL_ERROR","msg":"[HTTP Error] [logout]"}
+{"level":30,"time":1775063934990,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775064137345,"pid":19428,"hostname":"ELTECH","msg":"Request to safe URL http://localhost:8081/api/v1/keycloak/login, skipping token interceptor"}
+{"level":30,"time":1775064137540,"pid":19428,"hostname":"ELTECH","access_token":"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJKdXZ3YXFoX0ZDanpHTTVEZnpzdUxkZS12UEdOV0d0WXJJR0ZOQ3FzekRRIn0.eyJleHAiOjE3NzUwNjQ0MzcsImlhdCI6MTc3NTA2NDEzNywianRpIjoiNGE0ZDQ3NzAtYjc3Yi00YWExLTgxNzUtNTFhZGJlZTMyZGUwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9raWNrc3RhcnQtcmVhbG0iLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNjdjOGI4OTEtYjIxYy00M2E0LTg4MWYtOWJmYjA1OGQyMzYxIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoia2lja3N0YXJ0LWNsaWVudCIsInNlc3Npb25fc3RhdGUiOiJiMzE0YzBhYi0zYjY1LTRmY2YtOWI1Ni0zZjk2NDEyM2RkMWIiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1raWNrc3RhcnQtcmVhbG0iLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVVNFUiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsInNpZCI6ImIzMTRjMGFiLTNiNjUtNGZjZi05YjU2LTNmOTY0MTIzZGQxYiIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiQWRtaW4gQWRtaW4iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSJ9.HHdBBCOgEhFzGbljObB-3zurLCgmvjOJN1llkPK-0BtUdjkmOO0G514tNpcxvK7kYh9NIZiDjL-9PdW7fVGrxbR7XYTteDxf-4Z0MWIH-rRqJNoomcoUaATCXGreLs9JS8Hz-lbEnr5jNINo3LQo4zRfIsvAHKiwpUSo3V4rHIVq6njG8QLB-M6t0DmWHhn7sfrTkicjRcDmMagzwx5rLHdpXa5gZ0AKD5NwpEINPHyOlv1qmB18cZlQ2GVnIkm_fEqhFrWPpjPFrClWu3xAd4VquIhLGkHurF6U865MSzQpXe-1ntlhQoBPkWkrgpnhmcIotGPoN2s4pgfHwD9sBw","msg":"Access token"}
+{"level":30,"time":1775064139074,"pid":19428,"hostname":"ELTECH","msg":"Nodemailer transporter ready"}
+{"level":30,"time":1775064141178,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775064142327,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":50,"time":1775064152866,"pid":19428,"hostname":"ELTECH","error":"Not Authenticated","msg":"Outgoing request failed"}
+{"level":50,"time":1775064152866,"pid":19428,"hostname":"ELTECH","error":"Not Authenticated","msg":"Upstream API error"}
+{"level":40,"time":1775064152868,"pid":19428,"hostname":"ELTECH","msg":"Failed to logout"}
+{"level":50,"time":1775064152868,"pid":19428,"hostname":"ELTECH","status":500,"detail":"Not Authenticated","title":"Internal Error","errorCode":"INTERNAL_ERROR","msg":"[HTTP Error] [logout]"}
+{"level":30,"time":1775064153463,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775064153852,"pid":19428,"hostname":"ELTECH","msg":"Nodemailer transporter ready"}
+{"level":30,"time":1775064237142,"pid":19428,"hostname":"ELTECH","msg":"Request to safe URL http://localhost:8081/api/v1/keycloak/login, skipping token interceptor"}
+{"level":30,"time":1775064237283,"pid":19428,"hostname":"ELTECH","access_token":"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJKdXZ3YXFoX0ZDanpHTTVEZnpzdUxkZS12UEdOV0d0WXJJR0ZOQ3FzekRRIn0.eyJleHAiOjE3NzUwNjQ1MzcsImlhdCI6MTc3NTA2NDIzNywianRpIjoiZGNhYjQyZTktMDE0OS00NTFjLWE0MDktYzcyNjdhNGQzNzk4IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9raWNrc3RhcnQtcmVhbG0iLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNjdjOGI4OTEtYjIxYy00M2E0LTg4MWYtOWJmYjA1OGQyMzYxIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoia2lja3N0YXJ0LWNsaWVudCIsInNlc3Npb25fc3RhdGUiOiI5NzM2YWU1MC0wMzdiLTQyODUtOGM5MS03OGYyYWViMTE4MzYiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1raWNrc3RhcnQtcmVhbG0iLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVVNFUiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsInNpZCI6Ijk3MzZhZTUwLTAzN2ItNDI4NS04YzkxLTc4ZjJhZWIxMTgzNiIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiQWRtaW4gQWRtaW4iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSJ9.obyOGVxroVCAQy_9gae3Q1T53_aLwWidjNSJu0RKQlzySXxJtCEJatipeH1L2ey_UG4PggAPYSFrm1_HR6PF9ALzDHgkNgIBbyz3if79WrY5kOMVEG2Bz3bIQILUebNtBOdyqYN0h70O_HF8iSNA9cuXnNfonU0OQobTVvAQ-gB7cLamx97TdR1GK1vnh4tkNPTGyKb1VaPPzB7xBsdl2ECbhjR5FxpfAtP9fW0F6YY18tpCI2cfumUzmxML-OJILr5UjtpbMooeBCAg3YVEGCS8IgBKPh0Fbky7r-gdie5rzdHS4bzXekjfqjK2xNHvFwiQtybRXPb22eF4aTa0Ng","msg":"Access token"}
+{"level":30,"time":1775064239778,"pid":19428,"hostname":"ELTECH","msg":"Nodemailer transporter ready"}
+{"level":30,"time":1775064240047,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775064240830,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":50,"time":1775064244851,"pid":19428,"hostname":"ELTECH","error":"Not Authenticated","msg":"Outgoing request failed"}
+{"level":50,"time":1775064244851,"pid":19428,"hostname":"ELTECH","error":"Not Authenticated","msg":"Upstream API error"}
+{"level":40,"time":1775064244852,"pid":19428,"hostname":"ELTECH","msg":"Failed to logout"}
+{"level":50,"time":1775064244852,"pid":19428,"hostname":"ELTECH","status":500,"detail":"Not Authenticated","title":"Internal Error","errorCode":"INTERNAL_ERROR","msg":"[HTTP Error] [logout]"}
+{"level":30,"time":1775064245819,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775064245868,"pid":19428,"hostname":"ELTECH","msg":"Nodemailer transporter ready"}
+{"level":30,"time":1775064265914,"pid":19428,"hostname":"ELTECH","msg":"Request to safe URL http://localhost:8081/api/v1/keycloak/login, skipping token interceptor"}
+{"level":30,"time":1775064266061,"pid":19428,"hostname":"ELTECH","access_token":"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJKdXZ3YXFoX0ZDanpHTTVEZnpzdUxkZS12UEdOV0d0WXJJR0ZOQ3FzekRRIn0.eyJleHAiOjE3NzUwNjQ1NjYsImlhdCI6MTc3NTA2NDI2NiwianRpIjoiNjUwMGM1OGItYWFiZS00MTg0LWJhYzItY2EwMWE3MTdkNzMwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9raWNrc3RhcnQtcmVhbG0iLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNjdjOGI4OTEtYjIxYy00M2E0LTg4MWYtOWJmYjA1OGQyMzYxIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoia2lja3N0YXJ0LWNsaWVudCIsInNlc3Npb25fc3RhdGUiOiI3OGMyMmMxOS0yZjlkLTRjZDQtOWI3YS1jY2IyYTQxNzhhYmMiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1raWNrc3RhcnQtcmVhbG0iLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVVNFUiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsInNpZCI6Ijc4YzIyYzE5LTJmOWQtNGNkNC05YjdhLWNjYjJhNDE3OGFiYyIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiQWRtaW4gQWRtaW4iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSJ9.mEYSnYyqAb2UeS3VZpUbOMIpJ7dzdEPMZfXzBGh-Q5NKj_3_7f6nt_z-Dsew5pWehg_uw8IeElYKUOAG8Jum1hG1ZrIchSiFBYdonHA-q_rwq7hPj6ClKHUsiGgmNtFd1X_m02o7AeYGUGae7ET3W79LCAVw2m15s9Of66wyYNZ9yMzwurCUiFtv4LyRZy805gDsQWtF0GJPPQQHtapPsdXdDK8IA1AcZayn_oSRghFIZQNLHzljlV1kJzeQz8OmJdzjhiafbqAR0ADTbz8Bt6J8v5Rws2K-V8n9rr9CkCy3x0G6THMnEUMfbBf1nn_CC372jHiuCLvdgQ1Mv67CKg","msg":"Access token"}
+{"level":30,"time":1775064266801,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775064267410,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":50,"time":1775064276734,"pid":19428,"hostname":"ELTECH","error":"Not Authenticated","msg":"Outgoing request failed"}
+{"level":50,"time":1775064276735,"pid":19428,"hostname":"ELTECH","error":"Not Authenticated","msg":"Upstream API error"}
+{"level":40,"time":1775064276738,"pid":19428,"hostname":"ELTECH","msg":"Failed to logout"}
+{"level":50,"time":1775064276738,"pid":19428,"hostname":"ELTECH","status":500,"detail":"Not Authenticated","title":"Internal Error","errorCode":"INTERNAL_ERROR","msg":"[HTTP Error] [logout]"}
+{"level":30,"time":1775064278211,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775064461390,"pid":19428,"hostname":"ELTECH","msg":"Request to safe URL http://localhost:8081/api/v1/keycloak/login, skipping token interceptor"}
+{"level":30,"time":1775064461625,"pid":19428,"hostname":"ELTECH","access_token":"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJKdXZ3YXFoX0ZDanpHTTVEZnpzdUxkZS12UEdOV0d0WXJJR0ZOQ3FzekRRIn0.eyJleHAiOjE3NzUwNjQ3NjEsImlhdCI6MTc3NTA2NDQ2MSwianRpIjoiZTJjZDhhNmYtMjlkYy00M2I3LWFhYmEtNTgzODc1OGY2M2I4IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9raWNrc3RhcnQtcmVhbG0iLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNjdjOGI4OTEtYjIxYy00M2E0LTg4MWYtOWJmYjA1OGQyMzYxIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoia2lja3N0YXJ0LWNsaWVudCIsInNlc3Npb25fc3RhdGUiOiJjNDE2NDc5ZC1jZWMzLTQ2MTUtOWNiZS02ZDRlM2U5NjkzNWYiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1raWNrc3RhcnQtcmVhbG0iLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVVNFUiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsInNpZCI6ImM0MTY0NzlkLWNlYzMtNDYxNS05Y2JlLTZkNGUzZTk2OTM1ZiIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiQWRtaW4gQWRtaW4iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSJ9.HUiwW69FT-1OKkizz7FoNnVwa-_AbNvIhJnn__lpIkMdHMx7nhAEBpGftJvANxU4dzCA9M4nsSgMkPZ88NGHvYQ9BqRcbvapRc9sgNcKAYbQxE05IgmfV04bEwmp7MrIrl1Vbw926SgvugOcOMnlRQFKZvYeERPTm9TWKLgMJkut381uJp4pxlPDLcQSaTEHgVfOc3fwo_sGzS0AALaM4WIdzkMBU6DHEwuZ4r7tpw3hnBUe_LrvMJQViDJoc4o0PsTrVZkvt0XYDx4gPAUzPm9nLpprOzmgK3DUiTEXnc42vcTXieQAKmZ3NCV23KYWDmdmGPirVeDxhsuITCK08A","msg":"Access token"}
+{"level":30,"time":1775064465055,"pid":19428,"hostname":"ELTECH","msg":"Nodemailer transporter ready"}
+{"level":30,"time":1775064468187,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775064469454,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":50,"time":1775064499254,"pid":19428,"hostname":"ELTECH","error":"Not Authenticated","msg":"Outgoing request failed"}
+{"level":50,"time":1775064499254,"pid":19428,"hostname":"ELTECH","error":"Not Authenticated","msg":"Upstream API error"}
+{"level":40,"time":1775064499255,"pid":19428,"hostname":"ELTECH","msg":"Failed to logout"}
+{"level":50,"time":1775064499255,"pid":19428,"hostname":"ELTECH","status":500,"detail":"Not Authenticated","title":"Internal Error","errorCode":"INTERNAL_ERROR","msg":"[HTTP Error] [logout]"}
+{"level":30,"time":1775064501062,"pid":19428,"hostname":"ELTECH","msg":"Nodemailer transporter ready"}
+{"level":30,"time":1775064501456,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775065032663,"pid":19428,"hostname":"ELTECH","msg":"Request to safe URL http://localhost:8081/api/v1/keycloak/login, skipping token interceptor"}
+{"level":50,"time":1775065032837,"pid":19428,"hostname":"ELTECH","error":"Request failed with status code 400","detail":"Invalid email or password","instance":"/api/v1/keycloak/login","status":400,"title":"Bad request","errorCode":"BAD_REQUEST","msg":"Upstream API error"}
+{"level":50,"time":1775065032838,"pid":19428,"hostname":"ELTECH","email":"admin@gmail.com","msg":"Failed to sign in"}
+{"level":40,"time":1775065032839,"pid":19428,"hostname":"ELTECH","detail":"Invalid email or password","instance":"/api/v1/keycloak/login","status":400,"title":"Bad request","errorCode":"BAD_REQUEST","msg":"[Axios Error] [signIn]"}
+{"level":40,"time":1775065032839,"pid":19428,"hostname":"ELTECH","email":"admin@gmail.com","msg":"Auth provider signIn failed"}
+{"level":30,"time":1775065034343,"pid":19428,"hostname":"ELTECH","msg":"Nodemailer transporter ready"}
+{"level":30,"time":1775065039844,"pid":19428,"hostname":"ELTECH","msg":"Request to safe URL http://localhost:8081/api/v1/keycloak/login, skipping token interceptor"}
+{"level":50,"time":1775065039939,"pid":19428,"hostname":"ELTECH","error":"Request failed with status code 400","detail":"Invalid email or password","instance":"/api/v1/keycloak/login","status":400,"title":"Bad request","errorCode":"BAD_REQUEST","msg":"Upstream API error"}
+{"level":50,"time":1775065039943,"pid":19428,"hostname":"ELTECH","email":"admin@gmail.com","msg":"Failed to sign in"}
+{"level":40,"time":1775065039943,"pid":19428,"hostname":"ELTECH","detail":"Invalid email or password","instance":"/api/v1/keycloak/login","status":400,"title":"Bad request","errorCode":"BAD_REQUEST","msg":"[Axios Error] [signIn]"}
+{"level":40,"time":1775065039943,"pid":19428,"hostname":"ELTECH","email":"admin@gmail.com","msg":"Auth provider signIn failed"}
+{"level":30,"time":1775065051233,"pid":19428,"hostname":"ELTECH","msg":"Request to safe URL http://localhost:8081/api/v1/keycloak/login, skipping token interceptor"}
+{"level":30,"time":1775065051394,"pid":19428,"hostname":"ELTECH","access_token":"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJKdXZ3YXFoX0ZDanpHTTVEZnpzdUxkZS12UEdOV0d0WXJJR0ZOQ3FzekRRIn0.eyJleHAiOjE3NzUwNjUzNTEsImlhdCI6MTc3NTA2NTA1MSwianRpIjoiYTgzYjIyMmItOTk3Yy00NTAxLWIyMWUtZDNhMDBhYWQ4ODc1IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9raWNrc3RhcnQtcmVhbG0iLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNjdjOGI4OTEtYjIxYy00M2E0LTg4MWYtOWJmYjA1OGQyMzYxIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoia2lja3N0YXJ0LWNsaWVudCIsInNlc3Npb25fc3RhdGUiOiI0MWE3YzVlYS01MzRhLTQwNjgtOTZiYy0yNGI0YmFlYzcwMGMiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1raWNrc3RhcnQtcmVhbG0iLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVVNFUiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsInNpZCI6IjQxYTdjNWVhLTUzNGEtNDA2OC05NmJjLTI0YjRiYWVjNzAwYyIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiQWRtaW4gQWRtaW4iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSJ9.pDpyJG565LxkuCT2Rwu52V1FR3zsxegK9p2pIXCbD1AuaUDdaF6bd4HxUltruHhqCYWMrgQkte3sbDdoLRPk1Wdn5PQ1QPzS0TLghP3MbCj8HAsvnCkJv_U2xQ0yk9MCppFZgxVhYVO7aKfxXSnwUDzET1OGu29RtINEaqoZXU0ODD1ltllST7sBja03fGqQ8GmqVSTRqLKhARuEgaVNBn0D_TgRMF1kvgbMjIOyPv6oiz1DGmqSTxNoxvVDcBm4ZPfQRmN0qKx1d09LBKtuDRS-_2mZipaDbTNr63WxYVCRMThnLO2AxQ9mzHzH0aNXLTalmjc5SJkgq59Xe8TwcQ","msg":"Access token"}
+{"level":30,"time":1775065054171,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775065055031,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775065057840,"pid":19428,"hostname":"ELTECH","msg":"Logged out successfully"}
+{"level":30,"time":1775065058474,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775065058813,"pid":19428,"hostname":"ELTECH","msg":"Nodemailer transporter ready"}
+{"level":30,"time":1775065108192,"pid":19428,"hostname":"ELTECH","msg":"Request to safe URL http://localhost:8081/api/v1/keycloak/login, skipping token interceptor"}
+{"level":30,"time":1775065108291,"pid":19428,"hostname":"ELTECH","access_token":"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJKdXZ3YXFoX0ZDanpHTTVEZnpzdUxkZS12UEdOV0d0WXJJR0ZOQ3FzekRRIn0.eyJleHAiOjE3NzUwNjU0MDgsImlhdCI6MTc3NTA2NTEwOCwianRpIjoiYWMxODRiZWYtMzQyYS00NGIwLTk1ZjMtYTVlZWZlZjlkZGQ2IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL3JlYWxtcy9raWNrc3RhcnQtcmVhbG0iLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNjdjOGI4OTEtYjIxYy00M2E0LTg4MWYtOWJmYjA1OGQyMzYxIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoia2lja3N0YXJ0LWNsaWVudCIsInNlc3Npb25fc3RhdGUiOiIzYjVjMWMwNS03ZTUxLTQ5NWYtOTQ1YS0wNmI2ZjZjY2VhMTkiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1raWNrc3RhcnQtcmVhbG0iLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVVNFUiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsInNpZCI6IjNiNWMxYzA1LTdlNTEtNDk1Zi05NDVhLTA2YjZmNmNjZWExOSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiQWRtaW4gQWRtaW4iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW4iLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSJ9.b_4OUz73NucffkNXMUKSC5WOFiIQmOXhYJlDfdtP5W-YfkAl745X_--1POm49WFNhQ5iM54LU8sMh_1LJ8euRlAwG7GxnyLZ9BzKpfDvH7QGS5Yrtbt6JRmtVTpDEMWeUpNTfX1YpBXV1SxHLBB9GMC99fWR1W-6ujOagtxkKchuLPh9RsZkQ7vHBB7Ln_Lvwwm82crKpxbHy_hqi0wnRr1oryMnk3IGLqS0OPPfNz6AggtbZwOlEVAt1BMSnpJ3fU-iqjEAS8UiMjguvpgtIfs0n8RGM2JB3BguNxjWbpy4bAFv3dNvxumFz30A35QJSilxTPslVJpwOe3nAmIYfw","msg":"Access token"}
+{"level":30,"time":1775065109067,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}
+{"level":30,"time":1775065109654,"pid":19428,"hostname":"ELTECH","count":4,"msg":"Fetched users"}

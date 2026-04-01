@@ -79,7 +79,10 @@ export function ImageUpload(props: ImageUploadProps) {
     function handleUploadSuccess(result: CloudinaryUploadWidgetResults) {
       if (result.event !== "success" || typeof result.info !== "object") return;
       const info = result.info as { public_id: string; secure_url: string };
-      // If replacing an existing image, delete the old one silently
+      // Restore scroll before state update — the widget remounts on value change
+      // which prevents the normal onClose cleanup from running
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
       if (publicId) deleteImageAction(publicId);
       onChange(info.secure_url, info.public_id);
     }
@@ -115,6 +118,9 @@ export function ImageUpload(props: ImageUploadProps) {
               uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
               options={{ folder: uploadFolder, maxFiles: 1, resourceType: "image" }}
               onSuccess={handleUploadSuccess}
+              onClose={() => {
+                document.body.style.overflow = "";
+              }}
             >
               {({ open }) => (
                 <button
@@ -167,6 +173,8 @@ export function ImageUpload(props: ImageUploadProps) {
   function handleUploadSuccessMultiple(result: CloudinaryUploadWidgetResults) {
     if (result.event !== "success" || typeof result.info !== "object") return;
     const info = result.info as { public_id: string; secure_url: string };
+    document.body.style.overflow = "";
+    document.documentElement.style.overflow = "";
     onChange([...values, { publicId: info.public_id, url: info.secure_url }]);
   }
 
@@ -212,6 +220,9 @@ export function ImageUpload(props: ImageUploadProps) {
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
         options={{ folder: uploadFolder, multiple: true, resourceType: "image" }}
         onSuccess={handleUploadSuccessMultiple}
+        onClose={() => {
+          document.body.style.overflow = "";
+        }}
       >
         {({ open }) => (
           <button
