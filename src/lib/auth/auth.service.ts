@@ -167,7 +167,6 @@ export async function logout(
   const config: Config = { access_token: session.user.access_token };
 
   try {
-    console.log("Logging out with params:", params);
     await apiClient(false, config).post(logoutUrl, params);
     logger.info("Logged out successfully");
     return { ok: true, data: {} };
