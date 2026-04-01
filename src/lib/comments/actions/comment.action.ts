@@ -1,166 +1,33 @@
 "use server";
 
-import { headers } from "next/headers";
+import { revalidatePath } from "next/cache";
 import {
   createComment,
   updateComment,
   deleteComment,
 } from "@/lib/comments/services/comment.service";
-import {
-  Comment,
-  CommentCreate,
-  CommentUpdate,
-  commentSchema,
-} from "@/lib/comments/models/comment.model";
-import { ApiErrorResponse } from "@/shared/errors/api-error.server";
-import { ApiError } from "@/shared/errors/api-error";
-import { Result } from "@/shared/models/response.model";
-import { auth } from "@/lib/auth";
-import { getLogger } from "@/config/logger.config";
+import { CommentCreate, CommentUpdate } from "@/lib/comments/models/comment.model";
 
-const logger = getLogger("server");
-
-/**
- * Server Action: Create a new comment
- * Safely handles comment creation on the server side
- */
-export async function createCommentAction(data: CommentCreate): Promise<Result<Comment, ApiError>> {
-  const validation = commentSchema.safeParse(data);
-  if (!validation.success) {
-    return {
-      ok: false,
-      error: {
-        status: 400,
-        detail: validation.error.message,
-        title: "Bad Request",
-        instance: undefined,
-        errorCode: "VALIDATION_ERROR",
-      },
-    };
+export async function createCommentAction(data: CommentCreate) {
+  const result = await createComment(data);
+  if (result.ok) {
+    revalidatePath("/comments");
   }
-
-  const session = await auth();
-
-  if (!session?.user) {
-    const err = {
-      status: 401,
-      detail: "You must be logged in",
-      title: "Unauthorized",
-      instance: undefined,
-      errorCode: "UNAUTHORIZED",
-    };
-    logger.warn(
-      {
-        status: err.status,
-        message: err.detail,
-      },
-      "Unauthorized",
-    );
-    return {
-      ok: false,
-      error: err,
-    };
-  }
-
-  const config = { headers: await headers(), access_token: session.user.access_token };
-  try {
-    const res = await createComment(config, validation.data);
-
-    return res;
-  } catch (error: any) {
-    const errMsg = ApiErrorResponse(error, "createComment action");
-    return {
-      ok: false,
-      error: errMsg,
-    };
-  }
+  return result;
 }
 
-/**
- * Server Action: Update an existing comment
- * Safely handles comment updates on the server side
- */
-export async function updateCommentAction(
-  id: number,
-  data: CommentUpdate,
-): Promise<Result<Comment, ApiError>> {
-  const session = await auth();
-
-  if (!session?.user) {
-    const err = {
-      status: 401,
-      detail: "You must be logged in",
-      title: "Unauthorized",
-      instance: undefined,
-      errorCode: "UNAUTHORIZED",
-    };
-    logger.warn(
-      {
-        status: err.status,
-        message: err.detail,
-      },
-      "Unauthorized",
-    );
-    return {
-      ok: false,
-      error: err,
-    };
+export async function updateCommentAction(id: number, data: CommentUpdate) {
+  const result = await updateComment(id, data);
+  if (result.ok) {
+    revalidatePath("/comments");
   }
-
-  const config = { headers: await headers(), access_token: session.user.access_token };
-  try {
-    const res = await updateComment(config, id, data);
-
-    return res;
-  } catch (error: any) {
-    const errMsg = ApiErrorResponse(error, "updateComment action");
-    return {
-      ok: false,
-      error: errMsg,
-    };
-  }
+  return result;
 }
 
-/**
- * Server Action: Delete a comment
- * Safely handles comment deletion on the server side
- */
-export async function deleteCommentAction(
-  id: number,
-): Promise<Result<{ success: boolean }, ApiError>> {
-  const session = await auth();
-
-  if (!session?.user) {
-    const err = {
-      status: 401,
-      detail: "You must be logged in",
-      title: "Unauthorized",
-      instance: undefined,
-      errorCode: "UNAUTHORIZED",
-    };
-    logger.warn(
-      {
-        status: err.status,
-        message: err.detail,
-      },
-      "Unauthorized",
-    );
-    return {
-      ok: false,
-      error: err,
-    };
+export async function deleteCommentAction(id: number) {
+  const result = await deleteComment(id);
+  if (result.ok) {
+    revalidatePath("/comments");
   }
-
-  const config = { headers: await headers(), access_token: session.user.access_token };
-  try {
-    const res = await deleteComment(config, id);
-
-    return res;
-  } catch (error: any) {
-    const errMsg = ApiErrorResponse(error, "deleteComment action");
-    return {
-      ok: false,
-      error: errMsg,
-    };
-  }
+  return result;
 }

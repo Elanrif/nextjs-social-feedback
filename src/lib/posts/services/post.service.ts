@@ -11,10 +11,11 @@ import {
   parsePostCreate,
   parsePostUpdate,
 } from "@/lib/posts/models/post.model";
-import { validateId, validationError } from "@/utils/utils.server";
+import { validateId } from "@/utils/utils.server";
 import { Page, Result } from "@/shared/models/response.model";
-import { ApiError } from "@/shared/errors/api-error";
+import { ApiError, badRequestApiError, unauthorizedApiError } from "@/shared/errors/api-error";
 import { ApiErrorResponse } from "@/shared/errors/api-error.server";
+import { auth } from "@/lib/auth";
 
 /**
  * ⚠️ Never trust the client input
@@ -85,18 +86,36 @@ export async function fetchPostById(id: number, config?: Config): Promise<Result
 /**
  * Create a new post
  */
-export async function createPost(
-  config: Config,
-  post: PostCreate,
-): Promise<Result<Post, ApiError>> {
+export async function createPost(post: PostCreate): Promise<Result<Post, ApiError>> {
   /**
-   * ⚠️ Never trust the client input
-   * ❌ Someone can bypass the form
-   * ✅ Protection against malicious bugs
+   * Check user authentication (RBAC)
+   */
+  const session = await auth();
+  if (!session?.user) {
+    logger.warn(
+      { context: "createPost" },
+      "Not logged in: only authenticated users can create posts",
+    );
+    return { ok: false, error: unauthorizedApiError() };
+  }
+
+  const config: Config = { access_token: session.user.access_token };
+
+  /**
+   * Validate input data
    */
   const parse = parsePostCreate(post);
-  if (!parse.success) return validationError(parse.error.issues, "Invalid post data");
+  if (!parse.success) {
+    logger.warn({ context: "createPost" }, "Validation failed for post creation");
+    return {
+      ok: false,
+      error: badRequestApiError(parse.error.message),
+    };
+  }
 
+  /**
+   * Attempt to create via API
+   */
   try {
     const res = await apiClient(false, config).post<unknown, AxiosResponse<Post>>(
       POSTS_URL,
@@ -117,22 +136,39 @@ export async function createPost(
 /**
  * Update an existing post
  */
-export async function updatePost(
-  config: Config,
-  id: number,
-  post: PostUpdate,
-): Promise<Result<Post, ApiError>> {
+export async function updatePost(id: number, post: PostUpdate): Promise<Result<Post, ApiError>> {
   /**
-   * ⚠️ Never trust the client input
-   * ❌ Someone can bypass the form
-   * ✅ Protection against malicious bugs
+   * Check user authentication (RBAC)
+   */
+  const session = await auth();
+  if (!session?.user) {
+    logger.warn(
+      { context: "updatePost" },
+      "Not logged in: only authenticated users can update posts",
+    );
+    return { ok: false, error: unauthorizedApiError() };
+  }
+
+  const config: Config = { access_token: session.user.access_token };
+
+  /**
+   * Validate input data
    */
   const idError = validateId(id);
   if (idError) return idError;
 
   const parse = parsePostUpdate(post);
-  if (!parse.success) return validationError(parse.error.issues, "Invalid post data");
+  if (!parse.success) {
+    logger.warn({ context: "updatePost" }, "Validation failed for post update");
+    return {
+      ok: false,
+      error: badRequestApiError(parse.error.message),
+    };
+  }
 
+  /**
+   * Attempt to update via API
+   */
   try {
     const res = await apiClient(false, config).patch<unknown, AxiosResponse<Post>>(
       `${POSTS_URL}/${id}`,
@@ -153,13 +189,30 @@ export async function updatePost(
 /**
  * Delete a post
  */
-export async function deletePost(
-  config: Config,
-  id: number,
-): Promise<Result<{ success: boolean }, ApiError>> {
+export async function deletePost(id: number): Promise<Result<{ success: boolean }, ApiError>> {
+  /**
+   * Check user authentication (RBAC)
+   */
+  const session = await auth();
+  if (!session?.user) {
+    logger.warn(
+      { context: "deletePost" },
+      "Not logged in: only authenticated users can delete posts",
+    );
+    return { ok: false, error: unauthorizedApiError() };
+  }
+
+  const config: Config = { access_token: session.user.access_token };
+
+  /**
+   * Validate input data
+   */
   const idError = validateId(id);
   if (idError) return idError;
 
+  /**
+   * Attempt to delete via API
+   */
   try {
     await apiClient(false, config).delete(`${POSTS_URL}/${id}`);
     logger.info({ id }, "Post deleted successfully");

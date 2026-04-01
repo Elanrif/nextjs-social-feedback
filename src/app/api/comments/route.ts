@@ -12,8 +12,6 @@ export const dynamic = "force-dynamic";
  * Fetch all comments
  */
 export async function GET(request: NextRequest) {
-  const reqHeaders = new Headers(request.headers);
-  const config = { headers: reqHeaders };
   const { searchParams } = request.nextUrl;
   const filters: CommentFilters = {
     postId: searchParams.get("postId") ? Number(searchParams.get("postId")) : undefined,
@@ -23,15 +21,7 @@ export async function GET(request: NextRequest) {
     sort: searchParams.get("sort") ?? undefined,
   };
   try {
-    const response = await fetchComments(filters, config);
-
-    if (!response.ok) {
-      const error = response.error!;
-      return NextResponse.json(response, {
-        status: error.status,
-      });
-    }
-
+    const response = await fetchComments(filters);
     return NextResponse.json(response, {
       status: 200,
     });

@@ -18,14 +18,6 @@ export async function GET(request: NextRequest, { params }: { params: Params }) 
 
   try {
     const response = await fetchCommentById(commentId);
-
-    if (!response.ok) {
-      const error = response.error!;
-      return NextResponse.json(response, {
-        status: error.status,
-      });
-    }
-
     return NextResponse.json(response, {
       status: 200,
     });

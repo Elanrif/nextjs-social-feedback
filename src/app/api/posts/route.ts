@@ -19,19 +19,8 @@ export async function GET(request: NextRequest) {
     sort: searchParams.get("sort") ?? undefined,
   };
 
-  const reqHeaders = new Headers(request.headers);
-  const config = { headers: reqHeaders };
-
   try {
-    const response = await fetchPosts(filters, config);
-
-    if (!response.ok) {
-      const error = response.error!;
-      return NextResponse.json(response, {
-        status: error.status,
-      });
-    }
-
+    const response = await fetchPosts(filters);
     return NextResponse.json(response, {
       status: 200,
     });

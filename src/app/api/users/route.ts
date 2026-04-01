@@ -1,8 +1,6 @@
 import { fetchAllUsers, createUser } from "@lib/users/services/user.service";
 import { NextRequest, NextResponse } from "next/server";
-import { parseUserCreate } from "@/lib/users/models/user.model";
 import { getLogger } from "@config/logger.config";
-import { validationError } from "@/utils/utils.server";
 import { ApiErrorResponse } from "@/shared/errors/api-error.server";
 
 const logger = getLogger("server");
@@ -13,19 +11,9 @@ export const dynamic = "force-dynamic";
  * GET /api/users
  * Fetch all users
  */
-export async function GET(request: NextRequest) {
-  const reqHeaders = new Headers(request.headers);
-  const config = { headers: reqHeaders };
-
+export async function GET() {
   try {
-    const response = await fetchAllUsers(config);
-
-    if (!response.ok) {
-      return NextResponse.json(response, {
-        status: response.error?.status || 500,
-      });
-    }
-
+    const response = await fetchAllUsers();
     return NextResponse.json(response, {
       status: 200,
     });
@@ -43,28 +31,9 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
-  const parsed = parseUserCreate(body);
-  if (!parsed.success) {
-    const err = validationError(parsed.error.issues, "Invalid user data");
-    return NextResponse.json(err, {
-      status: 400,
-    });
-  }
-
-  const reqHeaders = new Headers(request.headers);
-  const config = { headers: reqHeaders };
 
   try {
-    // UserFormData includes confirmPassword which the backend ignores
-
-    const response = await createUser(config, parsed.data as any);
-
-    if (!response.ok) {
-      return NextResponse.json(response, {
-        status: response.error.status,
-      });
-    }
-
+    const response = await createUser(body);
     return NextResponse.json(response, {
       status: 201,
     });

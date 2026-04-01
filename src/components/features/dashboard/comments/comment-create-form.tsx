@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useCreateComment } from "@/lib/comments/hooks/use-comments";
+import { usePosts } from "@/lib/posts/hooks/use-posts";
 import { toast } from "react-toastify";
 import { ROUTES } from "@/utils/routes";
 import { CommentFormData, commentSchema } from "@/lib/comments/models/comment.model";
@@ -12,10 +13,12 @@ import { icLight } from "@/components/ui/form/input-class";
 import { SectionTitle } from "@/components/ui/form/section-title";
 import { Field } from "@/components/ui/form/field";
 import { FormError } from "@/components/ui/form/form-error";
+import { useSession } from "next-auth/react";
 
 const { DASHBOARD, COMMENTS } = ROUTES;
 
 export function CommentCreateForm() {
+  const { data: session } = useSession();
   const {
     register,
     handleSubmit,
@@ -25,12 +28,14 @@ export function CommentCreateForm() {
     defaultValues: {
       content: "",
       postId: 0,
+      authorId: session?.user.id ? Number(session.user.id) : 0,
     },
   });
 
   const router = useRouter();
   const [apiError, setApiError] = useState<string | null>(null);
   const { mutate: create, isPending: loading } = useCreateComment();
+  const { data: postsPage, isLoading: postsLoading } = usePosts({ size: 100 });
 
   const onSubmit = (data: CommentFormData) => {
     setApiError(null);
@@ -38,8 +43,8 @@ export function CommentCreateForm() {
       { ...data, postId: Number(data.postId) },
       {
         onSuccess: (comment) => {
-          toast.success("Commentaire créé avec succès");
           router.push(`${DASHBOARD}${COMMENTS}/${comment?.id}`);
+          toast.success("Commentaire créé avec succès");
         },
         onError: (err) => {
           const message = err instanceof Error ? err.message : "Erreur lors de la création";
@@ -76,17 +81,24 @@ export function CommentCreateForm() {
             />
             <Field
               variant="light"
-              label="Post ID"
+              label="Post"
               error={errors.postId?.message}
               icon={<BookOpen className="w-4 h-4" />}
             >
-              <input
-                {...register("postId", { valueAsNumber: true })}
-                type="number"
-                min={1}
-                placeholder="Ex: 1"
-                className={icLight}
-              />
+              {postsLoading ? (
+                <input disabled value="Chargement des posts..." className={icLight} />
+              ) : (
+                <select {...register("postId", { valueAsNumber: true })} className={icLight}>
+                  <option value={0} style={{ color: "#9ca3af" }}>
+                    Sélectionner un post
+                  </option>
+                  {postsPage?.content?.map((post) => (
+                    <option key={post.id} value={post.id} style={{ fontWeight: "bold" }}>
+                      {post.title}
+                    </option>
+                  ))}
+                </select>
+              )}
             </Field>
             <Field
               variant="light"

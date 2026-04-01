@@ -648,7 +648,6 @@ Your project uses a clean separation between server and client services:
 // Server-side service (for API routes, server components)
 // src/lib/products/services/product.service.ts
 export async function fetchProducts(
-  config: Config,
   filters?: ProductFiltersParams,
 ): Promise<PageProduct<Product[]> | CrudApiError> {
   const res = await apiClient(true, config).get(PRODUCTS_URL);

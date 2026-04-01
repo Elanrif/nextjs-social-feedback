@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ROUTES } from "@/utils/routes";
-import { signOutAction } from "@/lib/auth/actions/auth";
+import { signOutAction } from "@/lib/auth/actions/auth.action";
 import LoadingPage from "@/components/features/loading-page";
 
 interface SignOutButtonProps {

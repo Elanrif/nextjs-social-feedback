@@ -24,6 +24,7 @@ export interface Comment {
 export interface CommentCreate {
   content: string;
   postId: number;
+  authorId: number;
 }
 
 /**
@@ -33,7 +34,8 @@ export type CommentUpdate = Partial<CommentCreate>;
 
 export const commentSchema = z.object({
   content: z.string().min(1, "Le commentaire ne peut pas être vide"),
-  postId: z.coerce.number().int("L'ID du post doit être un nombre"),
+  postId: z.coerce.number().int().min(1, "Veuillez sélectionner un post"),
+  authorId: z.number().int().min(1, "L'auteur est requis"),
 });
 
 export type CommentFormData = z.infer<typeof commentSchema>;

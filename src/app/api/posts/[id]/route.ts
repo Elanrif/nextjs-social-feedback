@@ -16,16 +16,8 @@ export async function GET(request: NextRequest, { params }: { params: Params }) 
   const { id } = await params;
   const postId = Number.parseInt(id, 10);
 
-  const reqHeaders = new Headers(request.headers);
-  const config = { headers: reqHeaders };
-
   try {
-    const response = await fetchPostById(postId, config);
-
-    if (!response.ok) {
-      return NextResponse.json(response, { status: response.error.status });
-    }
-
+    const response = await fetchPostById(postId);
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
     const errMsg = ApiErrorResponse(error, "fetchPostById");

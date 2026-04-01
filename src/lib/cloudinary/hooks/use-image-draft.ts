@@ -1,6 +1,7 @@
+/* eslint-disable unicorn/no-nested-ternary */
 "use client";
 
-import { useState } from "react";
+import { useCallback, useRef, useSyncExternalStore } from "react";
 import { extractPublicId } from "@/lib/cloudinary/cloudinary.utils";
 
 type ImageDraft = { url: string; publicId: string };
@@ -29,23 +30,17 @@ type UseImageDraftReturn = {
   clearDraft: () => void;
 };
 
-function readDraft(storageKey: string): ImageDraft | null {
-  if (typeof window === "undefined") return null;
-  const raw = localStorage.getItem(storageKey);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as ImageDraft;
-  } catch {
-    localStorage.removeItem(storageKey);
-    return null;
-  }
+function notifyChange(storageKey: string) {
+  window.dispatchEvent(new CustomEvent(`ls:${storageKey}`));
 }
 
 /**
  * Hook générique pour gérer un upload d'image avec persistance localStorage.
  *
- * Initialise l'état depuis localStorage (draft non sauvegardé) ou depuis la valeur
- * serveur (`initialUrl`). Pas de useEffect — lecture unique au mount via lazy useState.
+ * Utilise useSyncExternalStore pour éviter les problèmes d'hydratation SSR
+ * et les setState synchrones dans useEffect.
+ * - getServerSnapshot → null  (server et hydration initiale identiques)
+ * - getSnapshot       → lit localStorage (après hydration)
  *
  * @example — profil utilisateur
  * const avatar = useImageDraft({ storageKey: "profile:avatar", initialUrl: user.avatarUrl });
@@ -64,32 +59,59 @@ export function useImageDraft({
   storageKey,
   initialUrl,
 }: UseImageDraftOptions): UseImageDraftReturn {
-  const [url, setUrl] = useState<string>(() => {
-    const draft = readDraft(storageKey);
-    if (draft?.url && draft.url !== initialUrl) return draft.url;
-    return initialUrl ?? "";
-  });
+  // Cache the last snapshot by raw string — useSyncExternalStore compares by reference,
+  // so returning a new object each call causes an infinite loop.
+  const snapshotCache = useRef<{ raw: string; parsed: ImageDraft } | null>(null);
 
-  const [publicId, setPublicId] = useState<string>(() => {
-    const draft = readDraft(storageKey);
-    if (draft?.url && draft.url !== initialUrl) return draft.publicId;
-    return initialUrl ? extractPublicId(initialUrl) : "";
-  });
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      window.addEventListener("storage", callback);
+      window.addEventListener(`ls:${storageKey}`, callback);
+      return () => {
+        window.removeEventListener("storage", callback);
+        window.removeEventListener(`ls:${storageKey}`, callback);
+      };
+    },
+    [storageKey],
+  );
+
+  const getSnapshot = useCallback((): ImageDraft | null => {
+    const raw = localStorage.getItem(storageKey);
+    if (!raw) return null;
+    if (snapshotCache.current?.raw === raw) return snapshotCache.current.parsed;
+    try {
+      const parsed = JSON.parse(raw) as ImageDraft;
+      snapshotCache.current = { raw, parsed };
+      return parsed;
+    } catch {
+      localStorage.removeItem(storageKey);
+      return null;
+    }
+  }, [storageKey]);
+
+  const draft = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    () => null, // server snapshot — identique au server HTML, pas de mismatch
+  );
+
+  const draftIsValid = !!draft?.url && draft.url !== initialUrl;
+  const url = draftIsValid ? draft.url : (initialUrl ?? "");
+  const publicId = draftIsValid ? draft.publicId : initialUrl ? extractPublicId(initialUrl) : "";
 
   function handleChange(newUrl: string, newPublicId: string) {
-    setUrl(newUrl);
-    setPublicId(newPublicId);
     localStorage.setItem(storageKey, JSON.stringify({ url: newUrl, publicId: newPublicId }));
+    notifyChange(storageKey);
   }
 
   function handleRemove() {
-    setUrl("");
-    setPublicId("");
     localStorage.removeItem(storageKey);
+    notifyChange(storageKey);
   }
 
   function clearDraft() {
     localStorage.removeItem(storageKey);
+    notifyChange(storageKey);
   }
 
   return { url, publicId, handleChange, handleRemove, clearDraft };

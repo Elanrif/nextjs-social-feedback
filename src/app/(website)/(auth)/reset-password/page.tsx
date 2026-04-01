@@ -16,7 +16,7 @@ import {
   Shield,
   ShieldCheck,
 } from "lucide-react";
-import { resetPasswordTokenAction } from "@/lib/auth/actions/auth";
+import { resetPasswordTokenAction } from "@/lib/auth/actions/auth.action";
 import { ROUTES } from "@/utils/routes";
 import { Field } from "@/components/ui/form/field";
 import { icDarkPwd } from "@/components/ui/form/input-class";

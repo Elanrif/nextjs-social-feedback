@@ -14,13 +14,16 @@ import { Field } from "@/components/ui/form/field";
 import { FormError } from "@/components/ui/form/form-error";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { useImageDraft } from "@/lib/cloudinary/hooks/use-image-draft";
+import { useSession } from "next-auth/react";
 
 const { DASHBOARD, POSTS } = ROUTES;
 
 export function PostCreateForm() {
+  const { data: session } = useSession();
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<PostFormData>({
     resolver: zodResolver(postSchema) as any,
@@ -29,6 +32,7 @@ export function PostCreateForm() {
       imageUrl: "",
       description: "",
       likes: 0,
+      authorId: session?.user.id ? Number(session.user.id) : 0,
     },
   });
 
@@ -41,17 +45,28 @@ export function PostCreateForm() {
     initialUrl: undefined,
   });
 
+  function handleImageChange(url: string, publicId: string) {
+    image.handleChange(url, publicId);
+    setValue("imageUrl", url);
+  }
+
+  function handleImageRemove() {
+    image.handleRemove();
+    setValue("imageUrl", "");
+  }
+
   const onSubmit = (data: PostFormData) => {
     setApiError(null);
     create(
-      { ...data, likes: Number(data.likes), imageUrl: image.url || data.imageUrl },
+      { ...data, likes: Number(data.likes), imageUrl: data.imageUrl || image.url },
       {
         onSuccess: (post) => {
-          toast.success("Post créé avec succès");
           image.clearDraft();
           router.push(`${DASHBOARD}${POSTS}/${post?.id}`);
+          toast.success("Post créé avec succès");
         },
         onError: (err) => {
+          console.error("❌ Erreur:", err);
           const message = err instanceof Error ? err.message : "Erreur lors de la création";
           setApiError(message);
         },
@@ -97,8 +112,8 @@ export function PostCreateForm() {
                 <ImageUpload
                   value={image.url}
                   publicId={image.publicId}
-                  onChange={image.handleChange}
-                  onRemove={image.handleRemove}
+                  onChange={handleImageChange}
+                  onRemove={handleImageRemove}
                   variant="light"
                 />
               </div>

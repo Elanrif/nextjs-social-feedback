@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { fetchAllUsers } from "@/lib/users/services/user.service";
 import { fetchPosts } from "@/lib/posts/services/post.service";
 import { fetchComments } from "@/lib/comments/services/comment.service";
-import { headers } from "next/headers";
 import Link from "next/link";
 import {
   MessageSquare,
@@ -14,9 +13,10 @@ import {
   CheckCircle2,
   ShieldCheck,
 } from "lucide-react";
-import { auth } from "@/lib/auth";
 import { cn } from "@/utils/utils";
 import { DashboardHero } from "@/components/features/dashboard/dashboard-hero";
+import { UserRole } from "@/lib/users/models/user.model";
+import { auth } from "@/lib/auth";
 
 export const metadata = {
   title: "Dashboard",
@@ -28,13 +28,10 @@ export default async function DashboardPage() {
   if (!session?.user) redirect("/sign-in?callbackUrl=/dashboard");
   const user = session.user;
 
-  const reqHeaders = await headers();
-  const config = { headers: reqHeaders, access_token: user.access_token };
-
   const [usersRes, postsRes, commentsRes] = await Promise.all([
-    fetchAllUsers(config),
-    fetchPosts({ size: 100 }, config),
-    fetchComments({ size: 100 }, config),
+    fetchAllUsers(),
+    fetchPosts({ size: 100 }),
+    fetchComments({ size: 100 }),
   ]);
 
   const users = usersRes.ok ? usersRes.data : [];
@@ -256,10 +253,12 @@ export default async function DashboardPage() {
                     className={cn(
                       "shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full",
                       "text-xs font-medium",
-                      u.role === "ADMIN" ? "bg-slate-900 text-white" : "bg-gray-100 text-gray-600",
+                      u.role === UserRole.ADMIN
+                        ? "bg-slate-900 text-white"
+                        : "bg-gray-100 text-gray-600",
                     )}
                   >
-                    {u.role === "ADMIN" && <ShieldCheck className="w-3 h-3" />}
+                    {u.role === UserRole.ADMIN && <ShieldCheck className="w-3 h-3" />}
                     {u.role}
                   </span>
                 </Link>

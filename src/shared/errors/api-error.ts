@@ -80,3 +80,17 @@ export const forbiddenApiError = (detail = "Insufficient permissions"): ApiError
     errorCode: "INSUFFICIENT_PERMISSIONS",
   } as ApiError;
 };
+
+/**
+ *
+ * @param detail
+ * @returns
+ */
+export const badRequestApiError = (detail = "Bad Request"): ApiError => {
+  return {
+    status: 400,
+    title: "Bad Request",
+    detail,
+    errorCode: "BAD_REQUEST",
+  } as ApiError;
+};

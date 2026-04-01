@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { sendPasswordResetAction } from "@/lib/auth/actions/auth";
+import { sendPasswordResetAction } from "@/lib/auth/actions/auth.action";
 import { searchUsersFilter } from "@/lib/users/services/user.client.service";
 import {
   Mail,

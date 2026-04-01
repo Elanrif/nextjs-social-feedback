@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { ROUTES } from "@/utils/routes";
 import { User as UserIcon, Mail, Phone, Pencil, ArrowLeft, Save } from "lucide-react";
 import { ProfileUserFormData, ProfileUserSchema } from "@/lib/auth/models/auth.model";
-import { editProfileAction } from "@/lib/auth/actions/auth";
+import { editProfileAction } from "@/lib/auth/actions/auth.action";
 import { Field } from "@/components/ui/form/field";
 import { FormError } from "@/components/ui/form/form-error";
 import { isApiError } from "@/shared/errors/api-error";

@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getLogger } from "@config/logger.config";
 import { fetchUserById, updateUser, deleteUser } from "@/lib/users/services/user.service";
-import { parseUserUpdate } from "@/lib/users/models/user.model";
-import { validationError } from "@/utils/utils.server";
 import { ApiErrorResponse } from "@/shared/errors/api-error.server";
 
 const logger = getLogger("server");
@@ -17,16 +15,8 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   const { id } = await params;
   const userId = Number.parseInt(id, 10);
 
-  const reqHeaders = new Headers(request.headers);
-  const config = { headers: reqHeaders };
-
   try {
-    const response = await fetchUserById(userId, config);
-    if (!response.ok) {
-      return NextResponse.json(response, {
-        status: response.error?.status || 500,
-      });
-    }
+    const response = await fetchUserById(userId);
     return NextResponse.json(response, {
       status: 200,
     });
@@ -45,28 +35,10 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   const { id } = await params;
   const userId = Number.parseInt(id, 10);
-
   const body = await request.json().catch(() => null);
-  const parsed = parseUserUpdate(body);
-  if (!parsed.success) {
-    const err = validationError(parsed.error.issues, "Invalid user data");
-    return NextResponse.json(err, {
-      status: 400,
-    });
-  }
-
-  const reqHeaders = new Headers(request.headers);
-  const config = { headers: reqHeaders };
 
   try {
-    const response = await updateUser(userId, parsed.data, config);
-    if (!response.ok) {
-      const error = response.error;
-      return NextResponse.json(response, {
-        status: error.status,
-      });
-    }
-    logger.info({ userId }, "User updated");
+    const response = await updateUser(userId, body);
     return NextResponse.json(response, {
       status: 200,
     });
@@ -86,19 +58,8 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
   const { id } = await params;
   const userId = Number.parseInt(id, 10);
 
-  const reqHeaders = new Headers(request.headers);
-  const config = { headers: reqHeaders };
-
   try {
-    const response = await deleteUser(userId, config);
-
-    if (!response.ok) {
-      const error = response.error;
-      return NextResponse.json(response, {
-        status: error.status,
-      });
-    }
-
+    const response = await deleteUser(userId);
     logger.info({ userId }, "User deleted");
     return NextResponse.json(response, {
       status: 200,

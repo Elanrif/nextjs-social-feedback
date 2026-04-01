@@ -14,10 +14,12 @@ import { Field } from "@/components/ui/form/field";
 import { FormError } from "@/components/ui/form/form-error";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { useImageDraft } from "@/lib/cloudinary/hooks/use-image-draft";
+import { useSession } from "next-auth/react";
 
 const { DASHBOARD, POSTS } = ROUTES;
 
 export function PostEditForm({ loadedPost }: { loadedPost: Post }) {
+  const { data: session } = useSession();
   const {
     register,
     handleSubmit,
@@ -29,6 +31,7 @@ export function PostEditForm({ loadedPost }: { loadedPost: Post }) {
       imageUrl: loadedPost?.imageUrl || "",
       description: loadedPost?.description || "",
       likes: loadedPost?.likes ?? 0,
+      authorId: session?.user.id ? Number(session.user.id) : 0,
     },
   });
 
@@ -50,9 +53,9 @@ export function PostEditForm({ loadedPost }: { loadedPost: Post }) {
       },
       {
         onSuccess: (post) => {
-          toast.success("Post modifié avec succès");
           image.clearDraft();
           router.push(`${DASHBOARD}${POSTS}/${post?.id}`);
+          toast.success("Post modifié avec succès");
         },
         onError: (err) => {
           const message = err instanceof Error ? err.message : "Erreur lors de la modification";

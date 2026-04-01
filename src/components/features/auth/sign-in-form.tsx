@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginFormData, LoginSchema } from "@/lib/auth/models/auth.model";
 import Link from "next/link";
 import { ROUTES } from "@/utils/routes";
-import { signInAction } from "@/lib/auth/actions/auth";
+import { signInAction } from "@/lib/auth/actions/auth.action";
 import { Field } from "@/components/ui/form/field";
 import { FormError } from "@/components/ui/form/form-error";
 import { icDark, icDarkPwd } from "@/components/ui/form/input-class";

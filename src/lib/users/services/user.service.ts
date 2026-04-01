@@ -10,9 +10,9 @@ import {
   UserSearchFilter,
 } from "@lib/users/models/user.model";
 import { getLogger } from "@config/logger.config";
-import { validateId, validationError } from "@/utils/utils.server";
+import { validateId } from "@/utils/utils.server";
 import { Result } from "@/shared/models/response.model";
-import { ApiError, forbiddenApiError } from "@/shared/errors/api-error";
+import { ApiError, forbiddenApiError, badRequestApiError } from "@/shared/errors/api-error";
 import { ApiErrorResponse } from "@/shared/errors/api-error.server";
 import { auth } from "@/lib/auth";
 
@@ -31,9 +31,9 @@ const {
 
 const logger = getLogger("server");
 
-export async function fetchAllUsers(config: Config): Promise<Result<User[], ApiError>> {
+export async function fetchAllUsers(): Promise<Result<User[], ApiError>> {
   try {
-    const res = await apiClient(true, config).get<User[]>(usersUrl);
+    const res = await apiClient(true).get<User[]>(usersUrl);
     logger.info({ count: res.data.length }, "Fetched users");
     return { ok: true, data: res.data };
   } catch (error) {
@@ -48,25 +48,38 @@ export async function fetchAllUsers(config: Config): Promise<Result<User[], ApiE
 /**
  * Create a new user
  */
-export async function createUser(
-  config: Config,
-  user: Omit<User, "id">,
-): Promise<Result<User, ApiError>> {
-  // Check user role (RBAC)
+export async function createUser(user: Omit<User, "id">): Promise<Result<User, ApiError>> {
+  /**
+   * Check user authentication (RBAC)
+   */
   const session = await auth();
   if (!session?.user || session.user.role !== "ADMIN") {
-    logger.warn({ context: "createUser" }, "Unauthorized: only ADMIN can create users");
+    logger.warn({ context: "createUser" }, "Unauthorized: only ADMIN users can create new users");
     return {
       ok: false,
       error: forbiddenApiError("Only ADMIN users can create new users"),
     };
   }
 
-  const parse = parseUserCreate(user);
-  if (!parse.success) return validationError(parse.error.issues, "Invalid user data");
+  const config: Config = { access_token: session.user.access_token };
 
+  /**
+   * Validate input data
+   */
+  const parse = parseUserCreate(user);
+  if (!parse.success) {
+    logger.warn({ context: "createUser" }, "Validation failed for user creation");
+    return {
+      ok: false,
+      error: badRequestApiError(parse.error.message),
+    };
+  }
+
+  /**
+   * Attempt to create via API
+   */
   try {
-    const res = await apiClient(true, config).post<User>(usersUrl, parse.data);
+    const res = await apiClient(false, config).post<User>(usersUrl, parse.data);
     logger.info({ id: res.data.id }, "User created successfully");
     return { ok: true, data: res.data };
   } catch (error) {
@@ -79,12 +92,12 @@ export async function createUser(
   }
 }
 
-export async function fetchUserById(id: number, config: Config): Promise<Result<User, ApiError>> {
+export async function fetchUserById(id: number): Promise<Result<User, ApiError>> {
   const idError = validateId(id);
   if (idError) return idError;
 
   try {
-    const res = await apiClient(true, config).get<User>(`${usersUrl}/${id}`);
+    const res = await apiClient(true).get<User>(`${usersUrl}/${id}`);
     return { ok: true, data: res.data };
   } catch (error) {
     logger.error({ id }, "Failed to fetch user");
@@ -97,7 +110,6 @@ export async function fetchUserById(id: number, config: Config): Promise<Result<
 
 export async function searchUsersFilter(
   filters: UserSearchFilter,
-  config: Config,
 ): Promise<Result<User[], ApiError>> {
   const params = new URLSearchParams();
   if (filters.email) params.set("email", filters.email);
@@ -106,9 +118,7 @@ export async function searchUsersFilter(
   if (filters.isActive !== undefined) params.set("isActive", String(filters.isActive));
 
   try {
-    const res = await apiClient(true, config).get<User[]>(
-      `${usersUrl}/search?${params.toString()}`,
-    );
+    const res = await apiClient(true).get<User[]>(`${usersUrl}/search?${params.toString()}`);
     logger.info({ count: res.data.length, filters }, "Users search completed");
     return { ok: true, data: res.data };
   } catch (error) {
@@ -123,26 +133,41 @@ export async function searchUsersFilter(
 export async function updateUser(
   id: number,
   user: UserUpdateFormData,
-  config: Config,
 ): Promise<Result<User, ApiError>> {
-  const idError = validateId(id);
-  if (idError) return idError;
-
-  // Check user role (RBAC)
+  /**
+   * Check user authentication (RBAC)
+   */
   const session = await auth();
   if (!session?.user || session.user.role !== "ADMIN") {
-    logger.warn({ context: "updateUser" }, "Unauthorized: only ADMIN can update users");
+    logger.warn({ context: "updateUser" }, "Unauthorized: only ADMIN users can update users");
     return {
       ok: false,
       error: forbiddenApiError("Only ADMIN users can update users"),
     };
   }
 
-  const parse = parseUserUpdate(user);
-  if (!parse.success) return validationError(parse.error.issues, "Invalid user data");
+  const config: Config = { access_token: session.user.access_token };
 
+  /**
+   * Validate input data
+   */
+  const idError = validateId(id);
+  if (idError) return idError;
+
+  const parse = parseUserUpdate(user);
+  if (!parse.success) {
+    logger.warn({ context: "updateUser" }, "Validation failed for user update");
+    return {
+      ok: false,
+      error: badRequestApiError(parse.error.message),
+    };
+  }
+
+  /**
+   * Attempt to update via API
+   */
   try {
-    const res = await apiClient(true, config).patch<User>(`${usersUrl}/${id}`, parse.data);
+    const res = await apiClient(false, config).patch<User>(`${usersUrl}/${id}`, parse.data);
     logger.info({ id }, "User updated successfully");
     return { ok: true, data: res.data };
   } catch (error) {
@@ -157,25 +182,32 @@ export async function updateUser(
 /**
  * Delete a user
  */
-export async function deleteUser(
-  id: number,
-  config: Config,
-): Promise<Result<{ success: boolean }, ApiError>> {
-  const idError = validateId(id);
-  if (idError) return idError;
-
-  // Check user role (RBAC)
+export async function deleteUser(id: number): Promise<Result<{ success: boolean }, ApiError>> {
+  /**
+   * Check user authentication (RBAC)
+   */
   const session = await auth();
   if (!session?.user || session.user.role !== "ADMIN") {
-    logger.warn({ context: "deleteUser" }, "Unauthorized: only ADMIN can delete users");
+    logger.warn({ context: "deleteUser" }, "Unauthorized: only ADMIN users can delete users");
     return {
       ok: false,
       error: forbiddenApiError("Only ADMIN users can delete users"),
     };
   }
 
+  const config: Config = { access_token: session.user.access_token };
+
+  /**
+   * Validate input data
+   */
+  const idError = validateId(id);
+  if (idError) return idError;
+
+  /**
+   * Attempt to delete via API
+   */
   try {
-    await apiClient(true, config).delete(`${usersUrl}/${id}`);
+    await apiClient(false, config).delete(`${usersUrl}/${id}`);
     logger.info({ id }, "User deleted successfully");
     return { ok: true, data: { success: true } };
   } catch (error) {
