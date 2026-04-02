@@ -5,7 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { ROUTES } from "@/utils/routes";
-import { User, UserFormData, UserSchema } from "@/lib/users/models/user.model";
+import { User } from "@/lib/users/models/user.model";
+import { UserFormData, UserSchema } from "@/lib/users/schemas/user.schema";
 import { useUpdateUser } from "@/lib/users/hooks/use-users";
 import { usePasswordValidation } from "@/hooks/use-password-validation";
 import {

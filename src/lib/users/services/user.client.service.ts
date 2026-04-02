@@ -1,6 +1,11 @@
 import { AxiosResponse } from "axios";
 import { proxyEnvironment } from "@config/proxy-api.config";
-import { User, UserUpdate, UserSearchFilter } from "@lib/users/models/user.model";
+import {
+  User,
+  UserCreatePayload,
+  UserUpdate,
+  UserSearchFilter,
+} from "@lib/users/models/user.model";
 import { frontendHttp } from "@config/axios/frontend-http.config";
 import { ApiError } from "@/shared/errors/api-error";
 import { Result } from "@/shared/models/response.model";
@@ -49,7 +54,7 @@ export async function updateUser(id: number, user: UserUpdate): Promise<Result<U
 /**
  * Create a new user (client-side)
  */
-export async function createUser(user: Omit<User, "id">): Promise<Result<User, ApiError>> {
+export async function createUser(user: UserCreatePayload): Promise<Result<User, ApiError>> {
   const res = await frontendHttp().post<unknown, AxiosResponse<Result<User, ApiError>>>(
     usersUrl,
     user,

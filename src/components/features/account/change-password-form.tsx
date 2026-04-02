@@ -13,7 +13,7 @@ import ValidationItem from "@/components/ui/validation-item";
 import {
   ChangePasswordProfileFormData,
   ChangePasswordProfileSchema,
-} from "@/lib/auth/models/auth.model";
+} from "@/lib/auth/schemas/auth.schema";
 import { useSession } from "next-auth/react";
 import { changePasswordProfileAction, signOutAction } from "@/lib/auth/actions/auth.action";
 import { isApiError } from "@/shared/errors/api-error";

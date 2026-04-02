@@ -3,19 +3,19 @@
 import apiClient, { Config } from "@config/api.config";
 import environment from "@config/environment.config";
 import { AxiosResponse } from "axios";
-import { parseResetPassword, ResetPassword, User } from "@lib/users/models/user.model";
+import { ResetPassword, User } from "@lib/users/models/user.model";
+import { parseResetPassword } from "@lib/users/schemas/user.schema";
 import { getLogger } from "@/config/logger.config";
+import { AuthPayload, Login } from "@lib/auth/models/auth.model";
 import {
-  AuthPayload,
   ChangePasswordProfileFormData,
-  Login,
   parseChangePasswordProfile,
   parseLogin,
   parseProfileUser,
   parseRegister,
   ProfileUserFormData,
   RegisterFormData,
-} from "@lib/auth/models/auth.model";
+} from "@lib/auth/schemas/auth.schema";
 import { validateId } from "@/utils/utils.server";
 import { ApiError, unauthorizedApiError, badRequestApiError } from "@/shared/errors/api-error";
 import { Result } from "@/shared/models/response.model";

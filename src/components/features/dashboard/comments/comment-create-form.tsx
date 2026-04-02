@@ -7,7 +7,7 @@ import { useCreateComment } from "@/lib/comments/hooks/use-comments";
 import { usePosts } from "@/lib/posts/hooks/use-posts";
 import { toast } from "react-toastify";
 import { ROUTES } from "@/utils/routes";
-import { CommentFormData, commentSchema } from "@/lib/comments/models/comment.model";
+import { CommentFormData, commentSchema } from "@/lib/comments/schemas/comment.schema";
 import { ArrowLeft, MessageSquare, Save, FileText, BookOpen } from "lucide-react";
 import { icLight } from "@/components/ui/form/input-class";
 import { SectionTitle } from "@/components/ui/form/section-title";

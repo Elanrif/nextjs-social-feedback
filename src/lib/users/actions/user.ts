@@ -2,11 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { createUser, deleteUser, updateUser } from "../services/user.service";
-import type { User } from "../models/user.model";
+import type { User, UserCreatePayload } from "../models/user.model";
 import { ApiError } from "@/shared/errors/api-error";
 import { Result } from "@/shared/models/response.model";
 
-export async function createUserAction(data: Omit<User, "id">): Promise<Result<User, ApiError>> {
+export async function createUserAction(data: UserCreatePayload): Promise<Result<User, ApiError>> {
   const result = await createUser(data);
   if (result.ok) {
     revalidatePath("/dashboard/users");

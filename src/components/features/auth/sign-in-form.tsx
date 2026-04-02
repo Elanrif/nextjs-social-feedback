@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, User } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginFormData, LoginSchema } from "@/lib/auth/models/auth.model";
+import { LoginFormData, LoginSchema } from "@/lib/auth/schemas/auth.schema";
 import Link from "next/link";
 import { ROUTES } from "@/utils/routes";
 import { signInAction } from "@/lib/auth/actions/auth.action";

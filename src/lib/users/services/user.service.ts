@@ -2,13 +2,12 @@
 
 import apiClient, { Config } from "@config/api.config";
 import environment from "@config/environment.config";
+import { User, UserCreatePayload, UserSearchFilter } from "@/lib/users/models/user.model";
 import {
   parseUserCreate,
   parseUserUpdate,
-  User,
   UserUpdateFormData,
-  UserSearchFilter,
-} from "@lib/users/models/user.model";
+} from "@lib/users/schemas/user.schema";
 import { getLogger } from "@config/logger.config";
 import { validateId } from "@/utils/utils.server";
 import { Result } from "@/shared/models/response.model";
@@ -48,7 +47,7 @@ export async function fetchAllUsers(): Promise<Result<User[], ApiError>> {
 /**
  * Create a new user
  */
-export async function createUser(user: Omit<User, "id">): Promise<Result<User, ApiError>> {
+export async function createUser(user: UserCreatePayload): Promise<Result<User, ApiError>> {
   /**
    * Check user authentication (RBAC)
    */

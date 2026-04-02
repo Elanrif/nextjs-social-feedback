@@ -4,13 +4,8 @@ import { AxiosResponse } from "axios";
 import apiClient, { Config } from "@config/api.config";
 import environment from "@config/environment.config";
 import { getLogger } from "@config/logger.config";
-import {
-  Comment,
-  CommentCreate,
-  CommentUpdate,
-  parseCommentCreate,
-  parseCommentUpdate,
-} from "@/lib/comments/models/comment.model";
+import { Comment, CommentCreate, CommentUpdate } from "@/lib/comments/models/comment.model";
+import { parseCommentCreate, parseCommentUpdate } from "@/lib/comments/schemas/comment.schema";
 import { validateId } from "@/utils/utils.server";
 import { Page, Result } from "@/shared/models/response.model";
 import { ApiError, badRequestApiError, unauthorizedApiError } from "@/shared/errors/api-error";

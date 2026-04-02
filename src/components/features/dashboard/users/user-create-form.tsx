@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { ROUTES } from "@/utils/routes";
-import { UserFormData, UserSchema } from "@/lib/users/models/user.model";
+import { UserFormData, UserSchema } from "@/lib/users/schemas/user.schema";
 import { useCreateUser } from "@/lib/users/hooks/use-users";
 import { usePasswordValidation } from "@/hooks/use-password-validation";
 import {
@@ -57,19 +57,16 @@ export function UserCreateForm() {
 
   const onSubmit = (data: UserFormData) => {
     setApiError(null);
-    create(
-      { ...data, password: data.password || "tempPassword123" },
-      {
-        onSuccess: () => {
-          toast.success("Utilisateur créé avec succès !");
-          router.push(`${DASHBOARD}${USERS}`);
-        },
-        onError: (err) => {
-          const message = err instanceof Error ? err.message : "Erreur lors de la création";
-          setApiError(message);
-        },
+    create(data, {
+      onSuccess: () => {
+        toast.success("Utilisateur créé avec succès !");
+        router.push(`${DASHBOARD}${USERS}`);
       },
-    );
+      onError: (err) => {
+        const message = err instanceof Error ? err.message : "Erreur lors de la création";
+        setApiError(message);
+      },
+    });
   };
 
   return (

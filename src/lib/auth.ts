@@ -4,7 +4,7 @@ import NextAuth, { type DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import moment from "moment";
 import { getLogger } from "@/config/logger.config";
-import { LoginSchema } from "@/lib/auth/models/auth.model";
+import { LoginSchema } from "@/lib/auth/schemas/auth.schema";
 import { signIn as restSignIn, refreshToken as restRefreshToken } from "@/lib/auth/auth.service";
 import { isTokenExpired } from "@/config/auth.utils";
 
@@ -82,7 +82,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         } = result.data;
 
         return {
-          id: u.id,
+          id: String(u.id),
           email: u.email,
           name: `${u.firstName} ${u.lastName}`,
           role: u.role,
