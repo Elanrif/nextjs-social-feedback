@@ -14,6 +14,7 @@ import { FormError } from "@/components/ui/form/form-error";
 import { icDark, icDarkPwd } from "@/components/ui/form/input-class";
 import { isApiError } from "@/shared/errors/api-error";
 import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 export function SignUpForm() {
   const router = useRouter();
@@ -68,18 +69,20 @@ export function SignUpForm() {
       if (isApiError(result)) {
         setError(result.detail || "Échec de la création du compte");
         setLoading(false);
+        toast.error("Échec de la création du compte.");
         return;
       }
 
       // Same as sign-in: Server Action updated cookies, force client session refresh.
       await update();
-
       router.push("/dashboard");
+      toast.success("Compte créé avec succès !");
       router.refresh();
       // loading reste true pendant la navigation
     } catch (error: any) {
       setError(error?.message || "Une erreur inattendue est survenue");
       setLoading(false);
+      toast.error("Échec de la création du compte.");
     }
   };
 

@@ -14,6 +14,7 @@ import { FormError } from "@/components/ui/form/form-error";
 import { icDark, icDarkPwd } from "@/components/ui/form/input-class";
 import { isApiError } from "@/shared/errors/api-error";
 import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 export function SignInForm() {
   const router = useRouter();
@@ -48,19 +49,21 @@ export function SignInForm() {
       if (isApiError(result)) {
         setApiError(result.detail || "Une erreur est survenue.");
         setLoading(false);
+        toast.error("Échec de la connexion.");
         return;
       }
 
       // Server Action signIn sets the cookie, but the client SessionProvider
       // doesn't automatically know it changed. Force a re-fetch of /api/auth/session.
       await update();
-
       router.push("/dashboard");
+      toast.success("Connexion réussie !");
       router.refresh();
       // isLoading reste true pendant la navigation
     } catch (error: any) {
       setApiError(error?.message || "Une erreur est survenue.");
       setLoading(false);
+      toast.error("Échec de la connexion.");
     }
   };
 
