@@ -13,7 +13,7 @@ function PostSkeleton() {
           <div className="h-2 w-20 bg-muted rounded" />
         </div>
       </div>
-      <div className="mt-3 ml-[52px] space-y-2">
+      <div className="mt-3 ml-13 space-y-2">
         <div className="h-3 w-full bg-muted rounded" />
         <div className="h-3 w-4/5 bg-muted rounded" />
         <div className="h-3 w-3/5 bg-muted rounded" />

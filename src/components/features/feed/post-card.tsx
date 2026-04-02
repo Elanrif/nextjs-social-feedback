@@ -2,15 +2,25 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Heart, MessageCircle, Repeat2, Send, MoreHorizontal, BadgeCheck, X } from "lucide-react";
+import { Heart, MessageCircle, Repeat2, Send, Trash2, BadgeCheck, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { CommentItem } from "./comment-item";
-import { useComments } from "@/lib/comments/hooks/use-comments";
+import { useComments, useCreateComment } from "@/lib/comments/hooks/use-comments";
+import { useDeletePost } from "@/lib/posts/hooks/use-posts";
+import { useSession } from "next-auth/react";
 import type { Post } from "@/lib/posts/models/post.model";
 import { UserRole } from "@/lib/users/models/user.model";
 import { isValidImgUrl } from "@/utils/utils";
+import { toast } from "react-toastify";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -26,23 +36,82 @@ function getInitials(firstName: string, lastName: string) {
 
 // ── PostComments (lazy-loaded on expand) ─────────────────────────────────────
 
-function PostComments({ postId }: { postId: number }) {
+function PostComments({ postId, authorName }: { postId: number; authorName: string }) {
   const { data, isLoading } = useComments({ postId, size: 5 });
   const comments = data?.content ?? [];
+  const { data: session } = useSession();
+  const [commentText, setCommentText] = useState("");
+  const { mutate: createComment, isPending } = useCreateComment();
 
-  if (isLoading) {
-    return <p className="py-4 text-xs text-muted-foreground text-center">Chargement…</p>;
-  }
+  const handleSubmitComment = () => {
+    if (!commentText.trim()) return;
+    if (!session?.user?.id) return;
 
-  if (comments.length === 0) {
-    return <p className="py-4 text-xs text-muted-foreground text-center">Aucun commentaire</p>;
-  }
+    createComment(
+      {
+        content: commentText,
+        postId,
+        authorId: Number(session.user.id),
+      },
+      {
+        onSuccess: () => {
+          setCommentText("");
+          toast.success("Commentaire ajouté avec succès");
+        },
+      },
+    );
+  };
+
+  const renderCommentsList = () => {
+    if (isLoading) {
+      return <p className="py-4 text-xs text-muted-foreground text-center">Chargement…</p>;
+    }
+
+    if (comments.length === 0) {
+      return <p className="py-4 text-xs text-muted-foreground text-center">Aucun commentaire</p>;
+    }
+
+    return (
+      <div className="divide-y divide-border">
+        {comments.map((comment) => (
+          <CommentItem key={comment.id} comment={comment} />
+        ))}
+      </div>
+    );
+  };
 
   return (
-    <div className="divide-y divide-border">
-      {comments.map((comment) => (
-        <CommentItem key={comment.id} comment={comment} />
-      ))}
+    <div className="space-y-3">
+      {/* Input de création */}
+      {session?.user && (
+        <div className="flex items-end gap-2 pb-3 border-b border-border">
+          <Input
+            placeholder={`Répondre à ${authorName}`}
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmitComment();
+              }
+            }}
+            className="flex-1 text-sm h-9"
+            disabled={isPending}
+          />
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={handleSubmitComment}
+            disabled={!commentText.trim() || isPending}
+            className="shrink-0 text-blue-500"
+          >
+            <Send className="size-4" />
+          </Button>
+        </div>
+      )}
+
+      {/* Affichage des commentaires */}
+      {renderCommentsList()}
     </div>
   );
 }
@@ -58,11 +127,30 @@ export function PostCard({ post }: PostCardProps) {
   const [likeCount, setLikeCount] = useState(post.likes);
   const [showComments, setShowComments] = useState(false);
   const [lightbox, setLightbox] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { data: session } = useSession();
+  const { data: commentsData } = useComments({ postId: post.id, size: 100 });
+  const { mutate: deletePost, isPending: isDeleting } = useDeletePost();
+  const commentCount = commentsData?.content?.length ?? 0;
 
   const { author } = post;
   const initials = getInitials(author.firstName, author.lastName);
   const color = getAvatarColor(author.id);
   const isAdmin = author.role === UserRole.ADMIN;
+  const authorName = `${author.firstName} ${author.lastName}`;
+  const isOwnPost = session?.user?.id === post.author.id.toString();
+
+  const handleDeletePost = () => {
+    deletePost(post.id, {
+      onSuccess: () => {
+        setShowDeleteModal(false);
+        toast.success("Post supprimé avec succès");
+      },
+      onError: (error: any) => {
+        toast.error(error?.message || "Erreur lors de la suppression");
+      },
+    });
+  };
 
   return (
     <article
@@ -100,9 +188,16 @@ export function PostCard({ post }: PostCardProps) {
           </span>
         </div>
 
-        <Button variant="ghost" size="icon-sm" className="text-muted-foreground shrink-0">
-          <MoreHorizontal className="size-4" />
-        </Button>
+        {isOwnPost && (
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className="text-muted-foreground hover:text-red-500 shrink-0 transition-colors"
+            onClick={() => setShowDeleteModal(true)}
+          >
+            <Trash2 className="size-4" />
+          </Button>
+        )}
       </div>
 
       {/* Content */}
@@ -131,7 +226,7 @@ export function PostCard({ post }: PostCardProps) {
             <Dialog open={lightbox} onOpenChange={setLightbox}>
               <DialogContent
                 showCloseButton={false}
-                className="max-w-[92vw] max-h-[92vh] p-0 bg-black/95 border-none shadow-2xl flex
+                className="max-w-[80vw] max-h-[80vh] p-0 bg-black/95 border-none shadow-2xl flex
                   items-center justify-center"
               >
                 <Button
@@ -148,7 +243,7 @@ export function PostCard({ post }: PostCardProps) {
                   alt={post.title}
                   width={1200}
                   height={800}
-                  className="max-w-full max-h-[88vh] object-contain rounded-lg"
+                  className="max-w-[75vw] max-h-[75vh] object-contain rounded-lg"
                 />
               </DialogContent>
             </Dialog>
@@ -183,6 +278,7 @@ export function PostCard({ post }: PostCardProps) {
             onClick={() => setShowComments((v) => !v)}
           >
             <MessageCircle className="size-4" />
+            {commentCount > 0 && <span className="text-xs">{commentCount}</span>}
           </Button>
 
           <Button
@@ -204,11 +300,35 @@ export function PostCard({ post }: PostCardProps) {
 
         {/* Comments section */}
         {showComments && (
-          <div className="mt-2 border-t border-border">
-            <PostComments postId={post.id} />
+          <div className="mt-3 pt-3 border-t border-border">
+            <PostComments postId={post.id} authorName={authorName} />
           </div>
         )}
       </div>
+
+      {/* Delete confirmation modal */}
+      <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Supprimer ce post?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Cette action ne peut pas être annulée. Êtes-vous sûr?
+          </p>
+          <DialogFooter className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteModal(false)}
+              disabled={isDeleting}
+            >
+              Annuler
+            </Button>
+            <Button variant="destructive" onClick={handleDeletePost} disabled={isDeleting}>
+              {isDeleting ? "Suppression..." : "Supprimer"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </article>
   );
 }
